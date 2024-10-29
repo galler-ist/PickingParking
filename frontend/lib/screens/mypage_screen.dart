@@ -3,8 +3,8 @@ import 'package:frontend/components/common/bottom_navigationbar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class MyPageScreen extends StatelessWidget {
+  const MyPageScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +12,15 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home Screen"),
+        title: const Text("My Page"),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Obx(() => Text(
-              'Current Page Index: ${controller.currentIndex.value}',
-              style: const TextStyle(fontSize: 24, color: Colors.black),
-            )),
+      body: const Center(
+        child: Text(
+          "My Page",
+          style: TextStyle(fontSize: 24, color: Colors.black),
+        ),
       ),
       bottomNavigationBar: BottomNavigation(
         onTap: (int index) {

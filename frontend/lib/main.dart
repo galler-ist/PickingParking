@@ -7,6 +7,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/screens/home_screen.dart';
+import 'package:frontend/screens/reservation_screen.dart';
+import 'package:frontend/screens/charging_screen.dart';
+import 'package:frontend/screens/mypage_screen.dart';
+import 'package:frontend/screens/management_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +65,10 @@ class App extends StatelessWidget {
       initialRoute: '/home',
       getPages: [
         GetPage(name: '/home', page: () => const HomeScreen()),
+        GetPage(name: '/management', page: () => const ManagementScreen()),
+        GetPage(name: '/reservation', page: () => const ReservationScreen()),
+        GetPage(name: '/myPage', page: () => const MyPageScreen()),
+        GetPage(name: '/charging', page: () => const ChargingScreen()),
       ],
     );
   }

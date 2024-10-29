@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 class MainController extends GetxController {
   var fcmToken = "".obs;
   var accessToken = "".obs;
-  var currentIndex = 10.obs;
+  var currentIndex = 0.obs;
+  var pageStack = <int>[0].obs;
 
   void changePage(int index) {
     currentIndex.value = index;
@@ -14,18 +15,23 @@ class MainController extends GetxController {
           break;
         }
       case 1:
-        if (Get.currentRoute != '/camera') {
-          Get.offAllNamed('/camera');
+        if (Get.currentRoute != '/charging') {
+          Get.offAllNamed('/charging');
           break;
         }
       case 2:
-        if (Get.currentRoute != '/history') {
-          Get.offAllNamed('/history');
+        if (Get.currentRoute != '/management') {
+          Get.offAllNamed('/management');
           break;
         }
       case 3:
-        if (Get.currentRoute != '/setting') {
-          Get.offAllNamed('/setting');
+        if (Get.currentRoute != '/reservation') {
+          Get.offAllNamed('/reservation');
+          break;
+        }
+      case 4:
+        if (Get.currentRoute != '/myPage') {
+          Get.offAllNamed('/myPage');
           break;
         }
     }
