@@ -10,8 +10,8 @@ class MainController extends GetxController {
     currentIndex.value = index;
     switch (index) {
       case 0:
-        if (Get.currentRoute != '/home') {
-          Get.offAllNamed('/home');
+        if (Get.currentRoute != '/management') {
+          Get.offAllNamed('/management');
           break;
         }
       case 1:
@@ -20,8 +20,8 @@ class MainController extends GetxController {
           break;
         }
       case 2:
-        if (Get.currentRoute != '/management') {
-          Get.offAllNamed('/management');
+        if (Get.currentRoute != 'home') {
+          Get.offAllNamed('/home');
           break;
         }
       case 3:
