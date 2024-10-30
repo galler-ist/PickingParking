@@ -11,6 +11,10 @@ class ChargingScreen extends StatelessWidget {
     final MainController controller = Get.find();
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Charging"),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       backgroundColor: Colors.white,
       body: const Center(
         child: Text(

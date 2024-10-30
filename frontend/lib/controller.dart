@@ -7,6 +7,7 @@ class MainController extends GetxController {
   var pageStack = <int>[0].obs;
 
   void changePage(int index) {
+    if (index < 0 || index >= 5) return;
     currentIndex.value = index;
     switch (index) {
       case 0:
@@ -15,8 +16,8 @@ class MainController extends GetxController {
           break;
         }
       case 1:
-        if (Get.currentRoute != '/charging') {
-          Get.offAllNamed('/charging');
+        if (Get.currentRoute != '/reservation') {
+          Get.offAllNamed('/reservation');
           break;
         }
       case 2:
@@ -25,8 +26,8 @@ class MainController extends GetxController {
           break;
         }
       case 3:
-        if (Get.currentRoute != '/reservation') {
-          Get.offAllNamed('/reservation');
+        if (Get.currentRoute != '/charging') {
+          Get.offAllNamed('/charging');
           break;
         }
       case 4:

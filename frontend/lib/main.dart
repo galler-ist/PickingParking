@@ -58,7 +58,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        primaryColor: const Color(0xFFA1E4E4),
+        primaryColor: const Color(0xFF4C99F3),
         primaryColorLight: const Color(0xFFE3F7F7),
         cardColor: const Color(0xFFF2F3F5),
       ),
