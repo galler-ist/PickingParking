@@ -40,7 +40,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const NotificationPage()),
+                    builder: (context) => const NotificationScreen()),
               );
             },
             child: Container(
