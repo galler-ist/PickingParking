@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/controller.dart';
 
 class BottomNavigation extends StatelessWidget {
@@ -22,39 +23,25 @@ class BottomNavigation extends StatelessWidget {
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       onTap: onTap,
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.local_parking,
-            size: 30,
-          ),
+          icon: SvgPicture.asset('assets/icons/icon_management.svg'),
           label: "관리",
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.access_time,
-          ),
+          icon: SvgPicture.asset('assets/icons/icon_reservation.svg'),
           label: "예약",
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-            size: 30,
-          ),
+          icon: SvgPicture.asset('assets/icons/icon_home.svg'),
           label: "홈",
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.electric_car,
-            size: 30,
-          ),
+          icon: SvgPicture.asset('assets/icons/icon_recharging.svg'),
           label: "충전",
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
-            size: 30,
-          ),
+          icon: SvgPicture.asset('assets/icons/icon_mypage.svg'),
           label: "마이페이지",
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigationbar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/components/common/top_bar.dart';
 
 class ChargingScreen extends StatelessWidget {
   const ChargingScreen({Key? key}) : super(key: key);
@@ -11,10 +12,7 @@ class ChargingScreen extends StatelessWidget {
     final MainController controller = Get.find();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Charging"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      appBar: TopBar(onNotificationTap: () {}),
       backgroundColor: Colors.white,
       body: const Center(
         child: Text(

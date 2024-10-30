@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigationbar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/components/common/top_bar.dart';
 
 class ManagementScreen extends StatelessWidget {
   const ManagementScreen({Key? key}) : super(key: key);
@@ -11,10 +12,7 @@ class ManagementScreen extends StatelessWidget {
     final MainController controller = Get.find<MainController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Management"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      appBar: TopBar(onNotificationTap: () {}),
       backgroundColor: Colors.white,
       body: const Center(
         child: Text(
