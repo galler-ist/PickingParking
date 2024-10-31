@@ -91,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     try {
       final isAvailable =
-          await apiService.emailCheck({'email': emailController.text});
+          await apiService.userIdCheck({'email': emailController.text});
 
       if (!isAvailable) {
         setState(() {

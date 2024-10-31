@@ -59,7 +59,7 @@ class ApiService {
     }
   }
 
-  Future<dynamic> emailCheck(Map<String, dynamic> formData) async {
+  Future<dynamic> userIdCheck(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/members/emailCheck');
     try {
       final response = await http.post(

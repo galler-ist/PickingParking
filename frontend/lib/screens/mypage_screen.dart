@@ -131,9 +131,10 @@ class _SettingScreenState extends State<MyPageScreen> {
                   screen: MyReportScreen(),
                 ),
                 const SettingScreenItem(
-                  title: "내 저장소",
+                  title: "포인트 내역",
                   screen: GalleryScreen(),
                 ),
+                // 로그아웃 버튼은 이후 삭제할 것
                 SettingItem(
                   title: "로그아웃",
                   onTap: logout,
