@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/common/bottom_navigationbar.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';

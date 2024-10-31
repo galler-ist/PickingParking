@@ -7,7 +7,7 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/screens/login_screen.dart';
 
 // Urecar 오류 해결 위한 임시 패키지
-import 'package:frontend/components/common/bottom_navigationbar.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/setting_screen/setting_item.dart';
 import 'package:frontend/components/setting_screen/setting_screen_item.dart';
 import 'package:frontend/screens/preparation_screen.dart';
