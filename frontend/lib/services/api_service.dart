@@ -5,26 +5,54 @@ import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg; // 서버와 http 통신을 하기 위해 필요한 패키지
+import 'package:mime/mime.dart';
+import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
   String? baseUrl = dotenv.env['FLUTTER_APP_SERVER_URL'];
 
-  Future<dynamic> signUp(Map<String, dynamic> formData) async {
+  Future<dynamic> signUp(
+      Map<String, dynamic> formData, File? vehicleImage) async {
     final url = Uri.parse('$baseUrl/members/signup');
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(formData),
-      );
+      var request = http.MultipartRequest('POST', url)
+        ..headers['Content-Type'] = 'application/json';
+
+      // formData의 다른 필드 추가
+      formData.forEach((key, value) {
+        if (value is String) {
+          request.fields[key] = value;
+        }
+      });
+
+      // 차량 이미지가 있는 경우에만 추가
+      if (vehicleImage != null) {
+        // 파일의 MIME 타입을 가져옵니다.
+        final mimeType = lookupMimeType(vehicleImage.path);
+        final fileStream =
+            http.ByteStream(Stream.castFrom(vehicleImage.openRead()));
+        final length = await vehicleImage.length();
+
+        // MultipartFile 추가
+        request.files.add(http.MultipartFile(
+          'car_image', // 필드 이름 (서버에서 인식할 이름)
+          fileStream,
+          length,
+          filename: vehicleImage.path.split('/').last,
+          contentType: MediaType.parse(mimeType ?? 'application/octet-stream'),
+        ));
+      }
+
+      // 요청 전송
+      final response = await request.send();
+      // 응답 처리
       if (response.statusCode == 200) {
         return response.statusCode;
       } else {
-        final responseData = jsonDecode(response.body);
-        return responseData;
+        final responseData = await response.stream.bytesToString();
+        return jsonDecode(responseData);
       }
     } catch (e) {
       return e;

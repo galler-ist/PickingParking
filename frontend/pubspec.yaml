@@ -43,7 +43,10 @@ dependencies:
   dio: ^5.7.0
   flutter_secure_storage: ^9.2.2
   remedi_kopo: ^0.0.2
-
+  webview_flutter: ^2.8.0
+  image_picker: ^1.1.2
+  mime_dart: ^3.0.0
+  http_parser: ^4.0.0 
 
 
 

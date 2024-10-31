@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:remedi_kopo/remedi_kopo.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+import 'package:frontend/controller.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
-import 'package:frontend/controller.dart';
 import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/services/api_service.dart';
-import 'package:get/get.dart';
-import 'package:remedi_kopo/remedi_kopo.dart';
 import 'package:frontend/components/common/top_bar.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -28,6 +32,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final MainController controller = Get.put(MainController());
   final formKey = GlobalKey<FormState>();
+  XFile? vehicleImage; // 차량 이미지를 저장할 변수
   Map<String, dynamic> formData = {};
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -38,6 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController zipCodeController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController addressDetailController = TextEditingController();
+  final TextEditingController carNumberController = TextEditingController();
 
   String? emailError;
   String? emailSuccess;
@@ -46,6 +52,17 @@ class _SignupScreenState extends State<SignupScreen> {
   String? nameError;
   String? telError;
   String? addressError;
+  String? carNumberError;
+
+  Future<void> pickVehicleImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      vehicleImage = pickedFile; // 선택한 이미지를 변수에 저장
+    });
+  }
 
   void searchAddress(BuildContext context) async {
     KopoModel? model = await Get.to(() => RemediKopo());
@@ -104,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
       nameError = null;
       telError = null;
       addressError = null;
+      carNumberError = null;
     });
 
     bool isValid = true;
@@ -139,28 +157,18 @@ class _SignupScreenState extends State<SignupScreen> {
       });
       isValid = false;
     }
-
-    if (nameController.text.isEmpty) {
-      setState(() {
-        nameError = "이름을 입력하세요.";
-      });
-      isValid = false;
-    }
-
     if (phoneController.text.isEmpty) {
       setState(() {
         telError = "전화번호를 입력하세요.";
       });
       isValid = false;
     }
-
-    if (addressController.text.isEmpty) {
+    if (carNumberController.text.isEmpty) {
       setState(() {
-        addressError = "주소를 입력하세요.";
+        carNumberError = "차량번호를 입력하세요";
       });
       isValid = false;
     }
-
     if (isValid) {
       formKey.currentState!.save();
       final apiService = ApiService();
@@ -170,12 +178,16 @@ class _SignupScreenState extends State<SignupScreen> {
         'zipCode': formData.remove('zip_code') ?? ''
       };
       try {
-        final res = await apiService.signUp(formData);
+        File? vehicleFile =
+            vehicleImage != null ? File(vehicleImage!.path) : null;
+        final res =
+            await apiService.signUp(formData, vehicleFile); // vehicleImage 전달
         if (res == 200) {
           Get.offAll(LoginScreen(
-              imagePath: widget.imagePath,
-              longitude: widget.longitude,
-              latitude: widget.latitude));
+            imagePath: widget.imagePath,
+            longitude: widget.longitude,
+            latitude: widget.latitude,
+          ));
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
@@ -206,7 +218,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               const SizedBox(height: 50),
-              const InputLabel(name: "이메일"),
+              const InputLabel(name: "아이디"),
               Input(
                 controller: emailController,
                 inputType: TextInputType.emailAddress,
@@ -235,15 +247,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 inputType: TextInputType.visiblePassword,
                 obscure: true,
               ),
-              if (confirmPasswordError != null)
-                ValidatorText(text: confirmPasswordError!),
-              const InputLabel(name: "이름"),
-              Input(
-                controller: nameController,
-                onSaved: (value) {
-                  formData['name'] = value ?? '';
-                },
-              ),
               if (nameError != null) ValidatorText(text: nameError!),
               const InputLabel(name: "휴대전화 번호"),
               Input(
@@ -253,20 +256,34 @@ class _SignupScreenState extends State<SignupScreen> {
                   formData['tel'] = value ?? '';
                 },
               ),
-              if (telError != null) ValidatorText(text: telError!),
-              const InputLabel(name: "주소"),
+              // 차량 번호 관련해서 controller 고쳐야함!
+              if (nameError != null) ValidatorText(text: nameError!),
+              const InputLabel(name: "차량 번호"),
               Input(
-                controller: addressController,
-                onTap: () => searchAddress(context),
-                readonly: true,
-              ),
-              if (addressError != null) ValidatorText(text: addressError!),
-              Input(
-                controller: addressDetailController,
+                controller: carNumberController,
+                inputType: TextInputType.text,
                 onSaved: (value) {
-                  formData['address_detail'] = value ?? '';
+                  formData['car_number'] = value ?? '';
                 },
               ),
+              if (carNumberError != null) ValidatorText(text: carNumberError!),
+              // 차량 이미지 선택 버튼
+              const InputLabel(name: "차량 등록증"),
+              Center(
+                child: TextButton(
+                  onPressed: pickVehicleImage,
+                  child: Text(vehicleImage != null ? "이미지 선택됨" : "이미지 선택하기"),
+                ),
+              ),
+              // 이미지 미리보기
+              if (vehicleImage != null)
+                Image.file(
+                  File(vehicleImage!.path),
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                ),
+
               const SizedBox(
                 height: 10,
               ),
