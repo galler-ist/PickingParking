@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/common/bottom_navigationbar.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/components/common/top_bar.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({Key? key}) : super(key: key);
@@ -11,11 +12,7 @@ class MyPageScreen extends StatelessWidget {
     final MainController controller = Get.find<MainController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Page"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      backgroundColor: Colors.white,
+      appBar: TopBar(onNotificationTap: () {}),
       body: const Center(
         child: Text(
           "My Page",
