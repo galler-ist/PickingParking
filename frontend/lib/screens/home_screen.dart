@@ -5,6 +5,7 @@ import 'package:frontend/controller.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/screens/charging_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,17 +21,17 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 내 포인트 섹션을 최상단으로 이동
+            // 포인트 섹션
             _buildPointContainer(context),
-
             const SizedBox(height: 20),
 
-            // 내 주차장 및 내 예약 섹션
+            // 내 주차장 섹션
             _buildSectionHeaderWithIcon(
-                SvgPicture.asset('assets/icons/icon_management.svg',
-                    width: 24, height: 24),
-                "내 주차장"),
-            const SizedBox(height: 4), // 제목과 카드 사이 간격
+              SvgPicture.asset('assets/icons/icon_management.svg',
+                  width: 24, height: 24),
+              "내 주차장",
+            ),
+            const SizedBox(height: 4),
             _buildParkingCard(
               context,
               date: "00월 00일 요일",
@@ -39,14 +40,15 @@ class HomeScreen extends StatelessWidget {
               carNumber: "30하 1234",
               width: MediaQuery.of(context).size.width,
             ),
-
             const SizedBox(height: 20),
 
+            // 내 예약 섹션
             _buildSectionHeaderWithIcon(
-                SvgPicture.asset('assets/icons/ icon_reservation.svg',
-                    width: 24, height: 24),
-                "내 예약"),
-            const SizedBox(height: 4), // 제목과 카드 사이 간격
+              SvgPicture.asset('assets/icons/icon_reservation.svg',
+                  width: 24, height: 24),
+              "내 예약",
+            ),
+            const SizedBox(height: 4),
             _buildParkingCard(
               context,
               date: "00월 00일 요일",
@@ -55,13 +57,12 @@ class HomeScreen extends StatelessWidget {
               carNumber: "19:00 ~ 21:00",
               width: MediaQuery.of(context).size.width,
             ),
-
             const SizedBox(height: 16),
 
-            // Wrap을 이용해 반응형 카드 그리드 배치
+            // 차량 카드와 주차장 검색 카드
             Wrap(
-              spacing: 16.0, // 가로 간격
-              runSpacing: 16.0, // 세로 간격
+              spacing: 16.0,
+              runSpacing: 16.0,
               children: [
                 _buildVehicleCard(width: _getCardWidth(context)),
                 _buildSearchParkingCard(width: _getCardWidth(context)),
@@ -78,19 +79,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 가로 크기에 따라 카드 너비 계산
   double _getCardWidth(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth > 800) {
-      return screenWidth / 3 - 32; // 넓은 화면에서는 3열
+      return screenWidth / 3 - 32;
     } else if (screenWidth > 600) {
-      return screenWidth / 2 - 32; // 중간 화면에서는 2열
+      return screenWidth / 2 - 32;
     } else {
-      return screenWidth - 32; // 작은 화면에서는 1열
+      return screenWidth - 32;
     }
   }
 
-  // 섹션 헤더 + 아이콘 (카드 위로 배치)
   Widget _buildSectionHeaderWithIcon(Widget icon, String title) {
     return Row(
       children: [
@@ -109,7 +108,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F3F5),
+        color: const Color(0xFFF6F6F6), // 배경 색상
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Row(
@@ -132,7 +131,10 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Button(
                 text: "충전",
-                onPressed: () {},
+                onPressed: () {
+                  // 충전 버튼 클릭 시 ChargingScreen으로 이동
+                  Get.to(() => const ChargingScreen());
+                },
                 horizontal: 5.0,
                 vertical: 8.0,
                 fontSize: 13.0,
@@ -159,13 +161,19 @@ class HomeScreen extends StatelessWidget {
       width: width,
       child: Card(
         elevation: 2,
+        color: const Color(0xFFF6F6F6),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(date,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              Text(
+                date,
+                style: const TextStyle(
+                  color: Colors.black54, // 검정색 50% 투명도
+                  fontSize: 12,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(location, style: const TextStyle(fontSize: 14)),
               const SizedBox(height: 8),
@@ -175,11 +183,17 @@ class HomeScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(status,
-                          style: const TextStyle(color: Color(0xFF4C99F3))),
-                      Text(carNumber,
-                          style: const TextStyle(
-                              color: Colors.grey, fontSize: 12)),
+                      Text(
+                        status,
+                        style: const TextStyle(color: Color(0xFF4C99F3)),
+                      ),
+                      Text(
+                        carNumber,
+                        style: const TextStyle(
+                          color: Colors.black54, // 검정색 50% 투명도
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -194,9 +208,10 @@ class HomeScreen extends StatelessWidget {
   Widget _buildVehicleCard({required double width}) {
     return Container(
       width: width,
-      child: const Card(
+      child: Card(
         elevation: 2,
-        child: ListTile(
+        color: const Color(0xFFF6F6F6),
+        child: const ListTile(
           title: Text("내 차량"),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -211,16 +226,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 주변 주차장 검색하기 카드
   Widget _buildSearchParkingCard({required double width}) {
     return Container(
       width: width,
       child: Card(
         elevation: 2,
-        child: ListTile(
-          title: const Text("주변 주차장 검색하기"),
-          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-          onTap: () {},
+        color: const Color(0xFFF6F6F6),
+        child: const ListTile(
+          title: Text("주변 주차장 검색하기"),
+          trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
         ),
       ),
     );
