@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/common/bottom_navigationbar.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/common/top_bar.dart';
@@ -13,7 +13,6 @@ class ManagementScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
-      backgroundColor: Colors.white,
       body: const Center(
         child: Text(
           "Management",
