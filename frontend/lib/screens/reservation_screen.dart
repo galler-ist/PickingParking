@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/components/map/map_parking_submit.dart';
 
 class ReservationScreen extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   final MapController _mapController = MapController();
   LatLng? currentCenter;
   bool loading = true;
+  bool showParkingSubmit = false; // ParkingSubmit 위젯 표시 여부
 
   @override
   void initState() {
@@ -72,6 +74,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
     }
   }
 
+  void _toggleParkingSubmit() {
+    setState(() {
+      showParkingSubmit = !showParkingSubmit; // 상태 토글
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +111,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       body: Column(
         children: [
           Expanded(
+            flex: showParkingSubmit ? 1 : 2, // ParkingSubmit 표시 여부에 따라 비율 조정
             child: loading
                 ? const Center(child: CircularProgressIndicator())
                 : Stack(
@@ -111,7 +120,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       FlutterMap(
                         mapController: _mapController,
                         options: MapOptions(
-                          center: LatLng(37.50125721312779, 127.03957422312601),
+                          center: currentCenter,
                           minZoom: 10.0,
                           zoom: 15.0,
                           maxZoom: 19.0,
@@ -136,17 +145,22 @@ class _ReservationScreenState extends State<ReservationScreen> {
                     ],
                   ),
           ),
+          if (showParkingSubmit) // ParkingSubmit 위젯을 조건부로 표시
+            Expanded(
+              flex: 1, // ParkingSubmit 위젯의 비율을 1로 설정
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ParkingSubmit(
+                  latitude: currentCenter!.latitude,
+                  longitude: currentCenter!.longitude,
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () {
-                // 등록하기 버튼 동작 구현
-                if (currentCenter != null) {
-                  print(
-                      '등록할 위치: ${currentCenter!.latitude}, ${currentCenter!.longitude}');
-                }
-              },
-              child: Text('등록하기'),
+              onPressed: _toggleParkingSubmit, // 버튼 클릭 시 상태 토글
+              child: Text(showParkingSubmit ? '닫기' : '등록하기'), // 버튼 텍스트 변경
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
               ),
