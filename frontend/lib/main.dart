@@ -14,7 +14,8 @@ import 'package:frontend/screens/management_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await dotenv.load(
+      fileName: 'assets/config/.env'); // await Firebase.initializeApp();
 
   runApp(const LoadingApp());
   void checkPermissions() async {
@@ -26,15 +27,13 @@ Future<void> main() async {
       await Permission.location.request();
     }
     if (await Permission.camera.isDenied) {
-      await Permission.location.request();
+      await Permission.camera.request();
     }
   }
 
   checkPermissions();
 
   final MainController controller = Get.put(MainController());
-
-  // await dotenv.load(fileName: 'assets/config/.env');
 
   runApp(const App());
 }
@@ -66,7 +65,7 @@ class App extends StatelessWidget {
       getPages: [
         GetPage(name: '/home', page: () => const HomeScreen()),
         GetPage(name: '/management', page: () => const ManagementScreen()),
-        GetPage(name: '/reservation', page: () => const ReservationScreen()),
+        GetPage(name: '/reservation', page: () => ReservationScreen()),
         GetPage(name: '/myPage', page: () => const MyPageScreen()),
         GetPage(name: '/charging', page: () => const ChargingScreen()),
       ],

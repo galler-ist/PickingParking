@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:remedi_kopo/remedi_kopo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -40,9 +39,6 @@ class _SignupScreenState extends State<SignupScreen> {
       TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController zipCodeController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController addressDetailController = TextEditingController();
   final TextEditingController carNumberController = TextEditingController();
 
   String? emailError;
@@ -51,7 +47,6 @@ class _SignupScreenState extends State<SignupScreen> {
   String? confirmPasswordError;
   String? nameError;
   String? telError;
-  String? addressError;
   String? carNumberError;
 
   Future<void> pickVehicleImage() async {
@@ -62,24 +57,6 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       vehicleImage = pickedFile; // 선택한 이미지를 변수에 저장
     });
-  }
-
-  void searchAddress(BuildContext context) async {
-    KopoModel? model = await Get.to(() => RemediKopo());
-
-    if (model != null) {
-      final postcode = model.zonecode ?? '';
-      zipCodeController.text = postcode;
-      formData['zip_code'] = postcode;
-
-      final address = model.address ?? '';
-      addressController.text = address;
-      formData['address_base'] = address;
-
-      final buildingName = model.buildingName ?? '';
-      addressDetailController.text = buildingName;
-      formData['address_detail'] = buildingName;
-    }
   }
 
   Future<void> checkEmailDuplicate() async {
@@ -120,7 +97,6 @@ class _SignupScreenState extends State<SignupScreen> {
       confirmPasswordError = null;
       nameError = null;
       telError = null;
-      addressError = null;
       carNumberError = null;
     });
 
