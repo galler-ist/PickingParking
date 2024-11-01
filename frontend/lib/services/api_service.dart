@@ -12,6 +12,7 @@ import 'package:http_parser/http_parser.dart';
 class ApiService {
   final MainController controller = Get.put(MainController());
   String? baseUrl = dotenv.env['FLUTTER_APP_SERVER_URL'];
+  String? googleApi = dotenv.env['GOOGLE_API_KEY'];
 
   Future<dynamic> signUp(
       Map<String, dynamic> formData, File? vehicleImage) async {
@@ -56,6 +57,22 @@ class ApiService {
       }
     } catch (e) {
       return e;
+    }
+  }
+
+  Future<dynamic> searchMap(String query) async {
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=$googleApi');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        return responseData['predictions'];
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
     }
   }
 
