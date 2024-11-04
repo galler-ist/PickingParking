@@ -60,6 +60,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       );
       setState(() {
         currentCenter = LatLng(position.latitude, position.longitude);
+        loading = false;
       });
     } catch (e) {
       print("Error fetching location: $e");
@@ -115,7 +116,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           center: currentCenter,
                           minZoom: 10.0,
                           zoom: 15.0,
-                          maxZoom: 19.0,
+                          maxZoom: 18.0,
                           onPositionChanged: _onMapMove,
                         ),
                         children: [
@@ -155,6 +156,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               child: Text(showParkingSubmit ? '닫기' : '등록하기'), // 버튼 텍스트 변경
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
+                backgroundColor: Colors.blue,
               ),
             ),
           ),
