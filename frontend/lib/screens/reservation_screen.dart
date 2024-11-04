@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart'; // flutter_map에서 LatLng 사용
+import 'package:latlong2/latlong.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/components/map/map_parking_submit.dart';
 
 class ReservationScreen extends StatefulWidget {
+  const ReservationScreen({super.key});
   @override
   _ReservationScreenState createState() => _ReservationScreenState();
 }
 
 class _ReservationScreenState extends State<ReservationScreen> {
-  double? centerLng;
-  double? centerLat;
+  final MapController _mapController = MapController();
+  LatLng? currentCenter;
   bool loading = true;
+  bool showParkingSubmit = false; // ParkingSubmit 위젯 표시 여부
 
   @override
   void initState() {
     super.initState();
+    currentCenter = LatLng(37.50125721312779, 127.03957422312601); // 초기 위치 설정
     getPosition();
+  }
+
+  void _onMapMove(MapPosition position, bool hasGesture) {
+    setState(() {
+      currentCenter = position.center;
+    });
   }
 
   Future<void> getPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("Location services are disabled.");
-      setState(() {
-        loading = false; // 위치 서비스가 비활성화일 경우 로딩 종료
-      });
       return;
     }
 
@@ -34,68 +42,124 @@ class _ReservationScreenState extends State<ReservationScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         print("Location permissions are denied.");
-        setState(() {
-          loading = false; // 권한이 거부된 경우 로딩 종료
-        });
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       print("Location permissions are permanently denied.");
-      setState(() {
-        loading = false; // 권한이 영구적으로 거부된 경우 로딩 종료
-      });
       return;
     }
 
     try {
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+        locationSettings: AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
+      );
       setState(() {
-        centerLng = position.longitude;
-        centerLat = position.latitude;
-        loading = false; // 위치를 가져온 후 로딩 종료
+        currentCenter = LatLng(position.latitude, position.longitude);
       });
     } catch (e) {
       print("Error fetching location: $e");
-      setState(() {
-        loading = false; // 위치 가져오기에 실패한 경우 로딩 종료
-      });
     }
+  }
+
+  void _toggleParkingSubmit() {
+    setState(() {
+      showParkingSubmit = !showParkingSubmit; // 상태 토글
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('지도 화면')),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : FlutterMap(
-              options: MapOptions(
-                center: LatLng(centerLat!, centerLng!), // null 체크 필요
-                zoom: 15.0,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: ['a', 'b', 'c'],
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: LatLng(centerLat!, centerLng!),
-                      builder: (ctx) => const Icon(
-                        Icons.location_pin,
-                        color: Colors.red,
-                        size: 40,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+      appBar: AppBar(
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: '장소를 검색하세요',
+            suffixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
+            contentPadding: const EdgeInsets.all(8.0),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            onPressed: () {
+              if (currentCenter != null) {
+                _mapController.move(currentCenter!, 15.0);
+                print(
+                    'Current center: ${currentCenter!.latitude}, ${currentCenter!.longitude}');
+              }
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            flex: showParkingSubmit ? 1 : 2, // ParkingSubmit 표시 여부에 따라 비율 조정
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          center: currentCenter,
+                          minZoom: 10.0,
+                          zoom: 15.0,
+                          maxZoom: 19.0,
+                          onPositionChanged: _onMapMove,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            subdomains: ['a', 'b', 'c'],
+                          ),
+                        ],
+                      ),
+                      // 고정된 핀 아이콘
+                      Center(
+                        child: SvgPicture.asset(
+                          'assets/icons/pin_map.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+          if (showParkingSubmit) // ParkingSubmit 위젯을 조건부로 표시
+            Expanded(
+              flex: 1, // ParkingSubmit 위젯의 비율을 1로 설정
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ParkingSubmit(
+                  latitude: currentCenter!.latitude,
+                  longitude: currentCenter!.longitude,
+                ),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: _toggleParkingSubmit, // 버튼 클릭 시 상태 토글
+              child: Text(showParkingSubmit ? '닫기' : '등록하기'), // 버튼 텍스트 변경
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
