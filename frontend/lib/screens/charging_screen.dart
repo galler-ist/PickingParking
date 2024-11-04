@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:get/get.dart';
-import 'package:frontend/controller.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/components/common/custom_modal.dart';
+import 'complete_screen.dart';
+import 'package:frontend/controller.dart';
 
 class ChargingScreen extends StatelessWidget {
   const ChargingScreen({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class ChargingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.find<MainController>();
-    final String dummyPoint = "100,000P"; // 더미 포인트 데이터
+    final String dummyPoint = "100,000P";
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
@@ -29,7 +31,6 @@ class ChargingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 현재 포인트 표시 섹션
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
@@ -55,16 +56,12 @@ class ChargingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-            // 충전하기 섹션 헤더
             _buildSectionHeaderWithIcon(
               SvgPicture.asset('assets/icons/icon_point.svg',
                   width: 24, height: 24),
               "충전하기",
             ),
             const SizedBox(height: 20),
-
-            // 충전 옵션 그리드
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -75,7 +72,11 @@ class ChargingScreen extends StatelessWidget {
                 ),
                 itemCount: chargingOptions.length,
                 itemBuilder: (context, index) {
-                  return _buildChargingCard(chargingOptions[index]["amount"]!);
+                  return GestureDetector(
+                    onTap: () => _showChargingModal(context),
+                    child:
+                        _buildChargingCard(chargingOptions[index]["amount"]!),
+                  );
                 },
               ),
             ),
@@ -87,6 +88,26 @@ class ChargingScreen extends StatelessWidget {
           controller.changePage(index);
         },
       ),
+    );
+  }
+
+  void _showChargingModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomModal(
+          title: "충전 확인",
+          content: "충전하시겠습니까?",
+          onConfirm: () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CompleteScreen()),
+            );
+          },
+          onCancel: () => Navigator.of(context).pop(),
+        );
+      },
     );
   }
 
