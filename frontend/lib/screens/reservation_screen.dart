@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/components/map/map_parking_submit.dart';
 
 class ReservationScreen extends StatefulWidget {
+  const ReservationScreen({super.key});
   @override
   _ReservationScreenState createState() => _ReservationScreenState();
 }
@@ -33,9 +34,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       print("Location services are disabled.");
-      setState(() {
-        loading = false; // 위치 서비스가 비활성화일 경우 로딩 종료
-      });
       return;
     }
 
@@ -44,33 +42,27 @@ class _ReservationScreenState extends State<ReservationScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         print("Location permissions are denied.");
-        setState(() {
-          loading = false; // 권한이 거부된 경우 로딩 종료
-        });
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       print("Location permissions are permanently denied.");
-      setState(() {
-        loading = false; // 권한이 영구적으로 거부된 경우 로딩 종료
-      });
       return;
     }
 
     try {
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+        locationSettings: AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
+      );
       setState(() {
         currentCenter = LatLng(position.latitude, position.longitude);
-        loading = false; // 위치를 가져온 후 로딩 종료
       });
     } catch (e) {
       print("Error fetching location: $e");
-      setState(() {
-        loading = false; // 위치 가져오기에 실패한 경우 로딩 종료
-      });
     }
   }
 
@@ -87,17 +79,17 @@ class _ReservationScreenState extends State<ReservationScreen> {
         title: TextField(
           decoration: InputDecoration(
             hintText: '장소를 검색하세요',
-            suffixIcon: Icon(Icons.search),
+            suffixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            contentPadding: EdgeInsets.all(8.0),
+            contentPadding: const EdgeInsets.all(8.0),
           ),
         ),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location),
             onPressed: () {
               if (currentCenter != null) {
                 _mapController.move(currentCenter!, 15.0);

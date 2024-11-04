@@ -4,17 +4,18 @@ import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ParkingMap extends StatefulWidget {
+class _ParkingMap extends StatefulWidget {
   @override
   _ParkingMapState createState() => _ParkingMapState();
 }
 
-class _ParkingMapState extends State<ParkingMap> {
+class _ParkingMapState extends State<_ParkingMap> {
   final LatLng center = LatLng(37.5665, 126.9780); // 서울 좌표 예시
   List<Marker> parkingMarkers = [];
 
   Future<void> fetchParkingLocations() async {
-    final String apiKey = "YOUR_API_KEY";
+    print(center.latitude);
+    const String apiKey = "YOUR_API_KEY";
     final String url =
         "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=parking&key=$apiKey";
 
@@ -51,7 +52,7 @@ class _ParkingMapState extends State<ParkingMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('주변 주차장 보기')),
+      appBar: AppBar(title: const Text('주변 주차장 보기')),
       body: FlutterMap(
         options: MapOptions(
           center: center,
