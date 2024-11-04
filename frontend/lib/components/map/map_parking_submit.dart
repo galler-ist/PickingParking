@@ -35,8 +35,8 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
   }
 
   Future<void> _fetchAddress() async {
-    const naverApiId = '3i1rm7eji2'; // 여기에 네이버 API 키 입력
-    const naverApiKey = 'rXnUqjSKLFR8Q74ISQvysyxebUSDXNgfVA7N1U3U';
+    final naverApiId = dotenv.env['NAVER_Api_Id']; // 여기에 네이버 API 키 입력
+    final naverApiKey = dotenv.env['NAVER_Api_KEY'];
     final url =
         'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${widget.longitude},${widget.latitude}&output=json&orders=roadaddr';
 
@@ -44,8 +44,8 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'x-ncp-apigw-api-key-id': naverApiId, // 클라이언트 ID
-          'x-ncp-apigw-api-key': naverApiKey, // 클라이언트 Secret
+          'x-ncp-apigw-api-key-id': naverApiId!, // 클라이언트 ID
+          'x-ncp-apigw-api-key': naverApiKey!, // 클라이언트 Secret
         },
       );
 
