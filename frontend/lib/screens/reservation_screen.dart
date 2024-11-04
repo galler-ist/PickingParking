@@ -4,6 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/components/map/map_parking_submit.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
+import 'package:frontend/controller.dart';
+import 'package:get/get.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});
@@ -75,6 +78,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final MainController controller = Get.find<MainController>();
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -161,6 +165,11 @@ class _ReservationScreenState extends State<ReservationScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigation(
+        onTap: (int index) {
+          controller.changePage(index);
+        },
       ),
     );
   }
