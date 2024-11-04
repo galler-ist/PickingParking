@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:frontend/screens/parking_zome_submit_complete_screen.dart';
+import 'package:frontend/screens/home_screen.dart';
 
 class ParkingSubmit extends StatefulWidget {
   final double latitude;
@@ -35,7 +38,7 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
   }
 
   Future<void> _fetchAddress() async {
-    final naverApiId = dotenv.env['NAVER_Api_Id']; // 여기에 네이버 API 키 입력
+    final naverApiId = dotenv.env['NAVER_Api_Id'];
     final naverApiKey = dotenv.env['NAVER_Api_KEY'];
     final url =
         'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${widget.longitude},${widget.latitude}&output=json&orders=roadaddr';
@@ -44,8 +47,8 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'x-ncp-apigw-api-key-id': naverApiId!, // 클라이언트 ID
-          'x-ncp-apigw-api-key': naverApiKey!, // 클라이언트 Secret
+          'x-ncp-apigw-api-key-id': naverApiId!,
+          'x-ncp-apigw-api-key': naverApiKey!,
         },
       );
 
@@ -54,10 +57,10 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
         print(data['results'][0]['land']);
         if (data["results"][0].isNotEmpty) {
           setState(() {
-            address1 = data["results"][0]['region']['area1']['name']; // 도로명 주소
-            address2 = data["results"][0]['region']['area2']['name']; // 도로명 주소
-            address3 = data["results"][0]['region']['area3']['name']; // 도로명 주소
-            address4 = data["results"][0]['land']['name']; // 도로명 주소
+            address1 = data["results"][0]['region']['area1']['name'];
+            address2 = data["results"][0]['region']['area2']['name'];
+            address3 = data["results"][0]['region']['area3']['name'];
+            address4 = data["results"][0]['land']['name'];
             loading = false;
           });
         } else {
@@ -80,6 +83,38 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
     }
   }
 
+  Future<void> _submitAddress() async {
+    final address = addressController.text;
+    final detailedAddress = detailedAddressController.text;
+    final data = jsonEncode({
+      'address': address,
+      'detailedAddress': detailedAddress,
+    });
+    print('미리 볼 JSON 데이터 :  $data');
+    // final url = 'YOUR_API_ENDPOINT'; // 실제 API 엔드포인트로 변경하세요
+
+    // try {
+    //   final response = await http.post(
+    //     Uri.parse(url),
+    //     headers: {"Content-Type": "application/json"},
+    //     body: jsonEncode({
+    //       'address': address,
+    //       'detailed_address': detailedAddress,
+    //       'latitude': widget.latitude,
+    //       'longitude': widget.longitude,
+    //     }),
+    //   );
+
+    //   if (response.statusCode == 200) {
+    //     print('주소 제출 성공');
+    //   } else {
+    //     print('주소 제출 실패: ${response.statusCode}');
+    //   }
+    // } catch (e) {
+    //   print('오류 발생: $e');
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -94,12 +129,12 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
             ),
             const SizedBox(height: 8),
             loading
-                ? const CircularProgressIndicator() // 로딩 중일 때 인디케이터 표시
+                ? const CircularProgressIndicator()
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${address1} ${address2} ${address3} ${address4}', // 현재 핀 위치
+                        '현재 핀 위치: ${address1 ?? ''} ${address2 ?? ''} ${address3 ?? ''} ${address4 ?? ''}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
@@ -109,10 +144,10 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
                           labelText: '주소',
                           border: OutlineInputBorder(),
                         ),
-                        readOnly: true, // 주소 필드를 읽기 전용으로 설정
+                        readOnly: true,
                         onTap: () {
                           addressController.text =
-                              '${address1} ${address2} ${address3} ${address4}'; // 가져온 주소 설정
+                              '${address1 ?? ''} ${address2 ?? ''} ${address3 ?? ''} ${address4 ?? ''}';
                         },
                       ),
                       const SizedBox(height: 16),
@@ -122,6 +157,14 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
                           labelText: '상세 주소',
                           border: OutlineInputBorder(),
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          _submitAddress();
+                          Get.to(() => ParkingZoneSubmitComplete());
+                        },
+                        child: const Text('주소 제출하기'),
                       ),
                     ],
                   ),
