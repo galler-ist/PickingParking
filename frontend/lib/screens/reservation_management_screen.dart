@@ -10,6 +10,11 @@ class ReservationManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.find<MainController>();
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    // 반응형 아이콘 및 텍스트 크기
+    double iconSize = screenWidth < 400 ? 50 : 60;
+    double fontSize = screenWidth < 400 ? 12 : 14;
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
@@ -54,14 +59,17 @@ class ReservationManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Action Icons Row (4 items in one row with white background)
+              // Action Icons Row (반응형 아이콘 크기 및 텍스트 크기 조정)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildActionIcon(Icons.access_time, "예약 관리"),
-                  _buildActionIcon(Icons.local_parking, "찜한 주차장"),
-                  _buildActionIcon(Icons.receipt_long, "각종 내역"),
-                  _buildActionIcon(Icons.settings, "차량 설정"),
+                  _buildActionIcon(
+                      Icons.access_time, "예약 관리", iconSize, fontSize),
+                  _buildActionIcon(
+                      Icons.local_parking, "찜한 주차장", iconSize, fontSize),
+                  _buildActionIcon(
+                      Icons.receipt_long, "각종 내역", iconSize, fontSize),
+                  _buildActionIcon(Icons.settings, "차량 설정", iconSize, fontSize),
                 ],
               ),
               const SizedBox(height: 24),
@@ -114,30 +122,29 @@ class ReservationManagementScreen extends StatelessWidget {
   }
 
   // Helper method to build action icon with label and white background
-  Widget _buildActionIcon(IconData iconData, String label) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.white, // White background for the icon
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Icon(iconData, size: 30, color: Colors.blue),
+  Widget _buildActionIcon(
+      IconData iconData, String label, double iconSize, double fontSize) {
+    return Column(
+      children: [
+        Container(
+          width: iconSize,
+          height: iconSize,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(label, style: const TextStyle(fontSize: 14)),
-        ],
-      ),
+          child: Icon(iconData, size: iconSize * 0.5, color: Colors.blue),
+        ),
+        const SizedBox(height: 8),
+        Text(label, style: TextStyle(fontSize: fontSize)),
+      ],
     );
   }
 
@@ -158,7 +165,7 @@ class ReservationManagementScreen extends StatelessWidget {
     String? amount,
   }) {
     return Container(
-      width: double.infinity, // Set full width to match other sections
+      width: double.infinity,
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: Colors.grey[200],

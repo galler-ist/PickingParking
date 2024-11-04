@@ -13,14 +13,19 @@ class ManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.find<MainController>();
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    bool isWideScreen = screenWidth > 600;
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Wrap(
+            spacing: 16.0,
+            runSpacing: 16.0,
+            alignment: WrapAlignment.center,
             children: [
               _buildManagementCard(
                 icon: SvgPicture.asset('assets/icons/icon_reservation.svg',
@@ -33,8 +38,9 @@ class ManagementScreen extends StatelessWidget {
                         builder: (context) => ReservationManagementScreen()),
                   );
                 },
+                cardWidth:
+                    isWideScreen ? (screenWidth - 64) / 2 : screenWidth - 32,
               ),
-              const SizedBox(width: 16),
               _buildManagementCard(
                 icon: SvgPicture.asset('assets/icons/icon_management.svg',
                     width: 64),
@@ -46,6 +52,8 @@ class ManagementScreen extends StatelessWidget {
                         builder: (context) => ParkingZoneManagementScreen()),
                   );
                 },
+                cardWidth:
+                    isWideScreen ? (screenWidth - 64) / 2 : screenWidth - 32,
               ),
             ],
           ),
@@ -63,11 +71,12 @@ class ManagementScreen extends StatelessWidget {
     required Widget icon,
     required String label,
     required VoidCallback onTap,
+    required double cardWidth,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 150,
+        width: cardWidth,
         height: 200,
         decoration: BoxDecoration(
           color: Colors.grey[200],
