@@ -14,7 +14,7 @@ public class Charge {
     @Column(columnDefinition = "INT UNSIGNED", name= "charge_seq")
     private Integer seq;
 
-    @ManyToOne(fetch = FetchType.LAZYoptional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "user_seq")
     private User user;
 
@@ -24,7 +24,7 @@ public class Charge {
     @Column(nullable = false, name = "charge_time")
     private LocalDateTime time;
 
-    @ManyToOne(optional = falsefetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "point_seq")
     private Point point;
 }

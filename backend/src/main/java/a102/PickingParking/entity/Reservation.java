@@ -20,22 +20,16 @@ public class Reservation {
     @Column(nullable = false, name = "end_time")
     private LocalDateTime endTime;
 
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "payment_seq")
     private Payment payment;
 
-    @ManyToOne(fetch = FetchType.LAZYoptional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "zone_seq")
     private ParkingZone zone;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_seq")
-    private Payment payment;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "user_seq")
     private User user;
 

@@ -13,7 +13,7 @@ public class Point {
     @Column(columnDefinition = "INT UNSIGNED", name = "point_seq")
     private Integer seq;
 
-    @ManyToOne(fetch = FetchType.LAZYoptional = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "user_seq")
     private User user;
 
