@@ -14,6 +14,5 @@ public class PickingParkingApplication {
 //		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
 		SpringApplication.run(PickingParkingApplication.class, args);
 	}
-
 }
 

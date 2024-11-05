@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "user")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,17 +12,18 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true, columnDefinition = "INT UNSIGNED")
-    private int seq;
+    @Column(columnDefinition = "INT UNSIGNED", name = "user_seq")
+    private Integer seq;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 20, name = "user_id")
     private String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 20, name = "user_pw")
     private String password;
 
+    @Column(nullable = false)
     @Builder.Default
-    private int points = 0;
+    private Integer point = 0;
 
     @Column(name = "created_at")
     @Builder.Default
@@ -33,6 +32,6 @@ public class User {
     @Column(name = "unsubcribed_at")
     private LocalDateTime unsubcribedDate;
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20, name = "user_phone")
     private String phoneNumber;
 }

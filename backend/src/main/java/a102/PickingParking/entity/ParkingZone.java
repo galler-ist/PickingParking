@@ -1,36 +1,39 @@
 package a102.PickingParking.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-
+import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "parking_zone")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParkingZone {
-    // 주차장 seq(zone_seq), 주차장 위치(location), 위도(location_x), 경도(location_y), 요금(price), 이용가능 여부(zone_status), 이용자 seq(user_seq), 주차장 구획 번호(prk_cmpr)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name= "zone_seq")
-    private int seq;
+    @Column(columnDefinition = "INT UNSIGNED", name = "zone_seq")
+    private Integer seq;
 
+    @Column(nullable = false, unique = true, length = 100)
     private String location;
 
-    @Column(precision = 10, scale = 6, name = "location_x")
+    @Column(nullable = false, precision = 10, scale = 6, name = "location_x")
     private BigDecimal latitude;
-    @Column(precision = 10, scale = 6, name = "location_y")
+    @Column(nullable = false, precision = 10, scale = 6, name = "location_y")
     private BigDecimal longitude;
 
-    private int price;
+    @Column(nullable = false)
+    private Integer price;
 
-    @Column(name= "zone_status")
+    @Column(name = "zone_status")
     @Enumerated(EnumType.STRING)
     private ZoneStatus status; // R, B, Y
 
     @ManyToOne()
-    @JoinColumn(name = "user_seq")
+    @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "user_seq")
     private User user;
 
+    @Column(nullable = false, unique = true, length = 20)
     private String prk_cmpr;
 }
