@@ -17,7 +17,7 @@ public class Payment {
     @Column(nullable = false, name = "total_price")
     private Integer price;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = falsefetch = FetchType.LAZY)
     @JoinColumn(nullable = false, columnDefinition  = "INT UNSIGNED", name = "zone_seq")
     private ParkingZone zone;
 
@@ -31,4 +31,9 @@ public class Payment {
     @Column(name = "payment_source")
     @Enumerated(EnumType.STRING)
     private PaymentSource source; // IMMEDIATE, RESERVATION
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "point_seq")
+    private Point point;
+
 }

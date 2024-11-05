@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "INT UNSIGNED", name = "user_seq")
+    @Column(columnDefinition = "INT UNSIGNED", name = "user_seq", name = "user_seq")
     private Integer seq;
 
-    @Column(nullable = false, unique = true, length = 20, name = "user_id")
+    @Column(nullable = false, unique = true, length = 20, name = "user_id", name = "user_id")
     private String username;
 
-    @Column(nullable = false, length = 20, name = "user_pw")
+    @Column(nullable = false, length = 20, name = "user_pw", name = "user_pw")
     private String password;
 
     @Column(nullable = false)
@@ -32,6 +32,6 @@ public class User {
     @Column(name = "unsubcribed_at")
     private LocalDateTime unsubcribedDate;
 
-    @Column(nullable = false, length = 20, name = "user_phone")
+    @Column(nullable = false, length = 20, name = "user_phone", name = "user_phone")
     private String phoneNumber;
 }

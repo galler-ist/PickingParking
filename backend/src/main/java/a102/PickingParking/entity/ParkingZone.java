@@ -30,7 +30,7 @@ public class ParkingZone {
     @Enumerated(EnumType.STRING)
     private ZoneStatus status; // R, B, Y
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "user_seq")
     private User user;
 

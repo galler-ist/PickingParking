@@ -13,7 +13,7 @@ public class Car {
     @Column(columnDefinition = "INT UNSIGNED", name= "car_seq")
     private Integer seq;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZYoptional = false)
     @JoinColumn(nullable = false, columnDefinition  = "INT UNSIGNED", name = "user_seq")
     private User user;
 
