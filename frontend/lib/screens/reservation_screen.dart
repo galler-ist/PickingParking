@@ -7,6 +7,9 @@ import 'package:frontend/components/map/map_parking_submit.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
+import 'package:frontend/components/map/parking_zone_marker.dart';
+import 'package:flutter_compass_v2/flutter_compass_v2.dart';
+import 'dart:math' as math;
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});
@@ -19,12 +22,34 @@ class _ReservationScreenState extends State<ReservationScreen> {
   LatLng? currentCenter;
   bool loading = true;
   bool showParkingSubmit = false; // ParkingSubmit 위젯 표시 여부
+  List<LatLng> parkingLocations = []; // 주차장 좌표 리스트
+  double? _direction; // 기기의 방향 각도
 
   @override
   void initState() {
     super.initState();
     currentCenter = LatLng(37.50125721312779, 127.03957422312601); // 초기 위치 설정
     getPosition();
+    // 주차장 좌표 리스트 예시
+    parkingLocations = [
+      LatLng(37.5012, 127.0395),
+      LatLng(37.5020, 127.0400),
+      LatLng(37.5030, 127.0410),
+    ];
+    // 방향 감지 시작
+    FlutterCompass.events!.listen((event) {
+      setState(() {
+        _direction = event.heading;
+        print('Current direction: $_direction degrees'); // 현재 방향 로그
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('Current Direction: ${_direction?.toStringAsFixed(2)}°'),
+          duration: const Duration(seconds: 2), // 2초 동안 표시
+        ),
+      );
+    });
   }
 
   void _onMapMove(MapPosition position, bool hasGesture) {
@@ -129,15 +154,20 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                             subdomains: ['a', 'b', 'c'],
                           ),
+                          MarkerLayer(
+                            markers: parkingLocations.map((location) {
+                              return Marker(
+                                point: location,
+                                builder: (ctx) => Transform.rotate(
+                                  angle: (_direction != null
+                                      ? -(_direction! * (math.pi / 180))
+                                      : 0),
+                                  child: ParkingZoneMarker(),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ],
-                      ),
-                      // 고정된 핀 아이콘
-                      Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/pin_map.svg',
-                          width: 40,
-                          height: 40,
-                        ),
                       ),
                     ],
                   ),
@@ -153,17 +183,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
                 ),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: _toggleParkingSubmit, // 버튼 클릭 시 상태 토글
-              child: Text(showParkingSubmit ? '닫기' : '등록하기'), // 버튼 텍스트 변경
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
-                backgroundColor: Colors.blue,
-              ),
-            ),
-          ),
         ],
       ),
       bottomNavigationBar: BottomNavigation(

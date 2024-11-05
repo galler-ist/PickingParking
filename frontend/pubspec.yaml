@@ -52,6 +52,8 @@ dependencies:
   flutter_map: any
   google_maps_flutter: any 
   latlong2: ^0.8.2
+  flutter_compass_v2: any
+
 
 
 dev_dependencies:
