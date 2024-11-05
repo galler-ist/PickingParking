@@ -17,7 +17,7 @@ public class Payment {
     @Column(name = "total_price")
     private int price;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_seq")
     private ParkingZone zone;
 
@@ -28,7 +28,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentSource source; // IMMEDIATE, RESERVATION
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_seq")
     private Point point;
 

@@ -13,7 +13,7 @@ public class Car {
     @Column(name= "car_seq")
     private int seq;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
     private User user;
 

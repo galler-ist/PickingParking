@@ -22,16 +22,16 @@ public class Immediate {
     // 이제 주차장 , 결제, 이용자 seq 넣어야하는데,
     // 관계 아직 몰라~~~~~~~~~~
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_seq")
     private ParkingZone zone;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_seq")
     private Payment payment;
 
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
     private User user;
 

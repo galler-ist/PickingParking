@@ -12,7 +12,7 @@ public class Charge {
     @Column(name= "charge_seq")
     private int seq;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
     private User user;
 
@@ -22,7 +22,7 @@ public class Charge {
     @Column(name = "charge_time")
     private LocalDate time;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_seq")
     private Point point;
 
