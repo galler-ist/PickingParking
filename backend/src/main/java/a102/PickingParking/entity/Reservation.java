@@ -28,7 +28,6 @@ public class Reservation {
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "zone_seq")
     private ParkingZone zone;
 
-    @JoinColumn(name = "user_seq")
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "user_seq")
     private User user;

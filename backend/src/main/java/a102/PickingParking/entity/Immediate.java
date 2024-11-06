@@ -25,7 +25,6 @@ public class Immediate {
     // 관계 아직 몰라~~~~~~~~~~
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_seq")
     @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "payment_seq")
     private Payment payment;
 
