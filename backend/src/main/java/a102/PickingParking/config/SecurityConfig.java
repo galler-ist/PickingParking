@@ -40,7 +40,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 관리
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/public/**").permitAll() // 공개 경로 설정
+                        .requestMatchers("/api/**",
+                        "/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
+                       "/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui/**",
+                       "/webjars/**", "/swagger-ui.html").permitAll() // 공개 경로 설정
                         .anyRequest().authenticated() // 나머지 경로는 인증 요구
                 );
 

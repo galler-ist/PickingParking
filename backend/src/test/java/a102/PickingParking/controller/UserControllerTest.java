@@ -1,5 +1,6 @@
 package a102.PickingParking.controller;
 
+import a102.PickingParking.dto.UserRequestDto;
 import a102.PickingParking.dto.UserSignupRequestDto;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.service.UserService;
@@ -55,7 +56,7 @@ public class UserControllerTest {
 
         //when
         //then
-        mockMvc.perform(post("/api/users/register")
+        mockMvc.perform(post("/api/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userSignupRequestDto)))
                 .andExpect(status().isOk())
@@ -67,10 +68,20 @@ public class UserControllerTest {
     @DisplayName("로그인 API 테스트")
     public void testLoginUser() throws Exception{
         //given
-        
-        //when
-        
-        //then
+        UserRequestDto userRequestDto = new UserRequestDto("testUser", "testPass", null);
+        User user = User.builder()
+                .username(userRequestDto.getUser_id())
+                .password(passwordEncoder.encode(userRequestDto.getUser_pw()))
+                .build();
+
+        when(userService.loginUser(userRequestDto.getUser_id(), userRequestDto.getUser_pw())).thenReturn(user);
+
+        //when then
+        mockMvc.perform(post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("로그인 성공"));
     }
 
 }
