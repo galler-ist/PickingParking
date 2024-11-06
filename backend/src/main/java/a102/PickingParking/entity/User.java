@@ -3,32 +3,35 @@ package a102.PickingParking.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-@Entity
-@Table(name = "users")
-@Getter
-@Setter
-@Builder
 
+@Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true, columnDefinition = "BIGINT UNSIGNED")
-    private Long seq;
+    @Column(columnDefinition = "INT UNSIGNED", name = "user_seq")
+    private Integer seq;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 20, name = "user_id")
     private String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255, name = "user_pw")
     private String password;
 
+    @Column(nullable = false)
     @Builder.Default
-    private int points = 0;
+    private Integer point = 0;
 
+    @Column(name = "created_at")
     @Builder.Default
-    private LocalDateTime signupDate = LocalDateTime.now();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-    private LocalDateTime withdrawalDate;
+    @Column(name = "unsubcribed_at")
+    private LocalDateTime unsubcribedDate;
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20, name = "user_phone")
     private String phoneNumber;
 }
