@@ -6,7 +6,6 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/screens/charging_screen.dart';
-import 'package:frontend/screens/splash_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -126,7 +125,7 @@ class HomeScreen extends StatelessWidget {
               Button(
                 text: "충전",
                 onPressed: () {
-                  Get.to(() => SplashScreen());
+                  Get.to(() => ChargingScreen());
                 },
                 horizontal: 5.0,
                 vertical: 8.0,

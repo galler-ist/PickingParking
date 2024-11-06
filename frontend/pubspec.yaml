@@ -52,7 +52,6 @@ dependencies:
   flutter_map: any
   google_maps_flutter: any
   latlong2: ^0.8.2
-  flutter_native_splash: ^2.0.6
 
 
 dev_dependencies:
@@ -115,12 +114,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-flutter_native_splash:
-  color: "#000000"  # 스플래시 배경색
-  image: assets/icons/logo.png  # 스플래시 화면에 표시할 이미지 경로
-  android: true
-  ios: true
-  fullscreen: true
+
 
 
 

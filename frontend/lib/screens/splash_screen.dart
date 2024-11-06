@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:frontend/controller.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -35,9 +37,15 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // 핀이 내려온 후 흔들림 애니메이션 시작
+    Get.put(MainController());
+
     _downwardController.forward().then((_) {
       _tiltController.forward();
+      _tiltController.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          Get.offNamed('/home');
+        }
+      });
     });
   }
 
@@ -51,16 +59,15 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xF404040),
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // 회전된 'P' 텍스트
             Transform.translate(
               offset: Offset(7, 34),
               child: Transform.rotate(
-                angle: -0.395398, // -45도 회전
+                angle: -0.395398,
                 child: Text(
                   'P',
                   style: TextStyle(
@@ -71,12 +78,11 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ),
-            // 핀 내려오고 고정 + 좌우 흔들림 애니메이션
             SlideTransition(
               position: _pinAnimation,
               child: RotationTransition(
                 turns: _tiltAnimation,
-                alignment: Alignment.bottomCenter, // 아래쪽을 축으로 고정
+                alignment: Alignment.bottomCenter,
                 child: Image.asset(
                   'assets/icons/pin.png',
                   width: 40,
