@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/controller.dart';
+import 'parking_zone_history_screen.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
   const ParkingZoneManagementScreen({Key? key}) : super(key: key);
@@ -12,7 +14,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     final MainController controller = Get.find<MainController>();
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // 아이콘 크기와 텍스트 크기를 화면 크기에 맞춰 반응형으로 조정
     double iconSize = screenWidth < 400 ? 50 : 60;
     double fontSize = screenWidth < 400 ? 12 : 14;
 
@@ -24,7 +25,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
@@ -47,31 +47,31 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _buildParkingDetailRow("현재 주차중인 차량", "없음"),
-                    _buildParkingDetailRow(
-                        "개방 예정 시간", "3월 12일 (수) 10:00 ~ 3월 13일 (목) 10"),
-                    _buildParkingDetailRow(
-                        "접수된 예약", "3월 12일 (수) 21:00 ~ 3월 13일 (목) 10:00"),
+                    _buildParkingDetailRow("개방 예정 시간", "~ 3월 13일 (목) 10"),
+                    _buildParkingDetailRow("접수된 예약", " ~ 3월 13일 (목) 10:00"),
                     _buildParkingDetailRow("예약 차량", "12가 1234"),
                     _buildParkingDetailRow("시간당 요금", "900 P/분"),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Action Icons Row (반응형 아이콘 크기 및 텍스트 크기 조정)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildActionIcon(Icons.share, "공유 개방", iconSize, fontSize),
                   _buildActionIcon(Icons.report, "간편 신고", iconSize, fontSize),
-                  _buildActionIcon(Icons.receipt, "각종 내역", iconSize, fontSize),
+                  _buildActionIcon(
+                    Icons.receipt,
+                    "각종 내역",
+                    iconSize,
+                    fontSize,
+                    onTap: () => Get.to(() => ParkingZoneHistoryScreen()),
+                  ),
                   _buildActionIcon(
                       Icons.settings, "주차장 설정", iconSize, fontSize),
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Recent Parking History Section with full width
               Container(
                 width: double.infinity,
                 child: Column(
@@ -89,8 +89,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Recent Report History Section with full width
               Container(
                 width: double.infinity,
                 child: Column(
@@ -118,7 +116,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build parking detail row
   Widget _buildParkingDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -135,34 +132,36 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build action icon with label and white background
   Widget _buildActionIcon(
-      IconData iconData, String label, double iconSize, double fontSize) {
-    return Column(
-      children: [
-        Container(
-          width: iconSize,
-          height: iconSize,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
+      IconData iconData, String label, double iconSize, double fontSize,
+      {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: iconSize,
+            height: iconSize,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(iconData, size: iconSize * 0.5, color: Colors.blue),
           ),
-          child: Icon(iconData, size: iconSize * 0.5, color: Colors.blue),
-        ),
-        const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: fontSize)),
-      ],
+          const SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: fontSize)),
+        ],
+      ),
     );
   }
 
-  // Helper method to build section header
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
@@ -170,7 +169,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build history item
   Widget _buildHistoryItem({
     required String title,
     required String vehicle,
