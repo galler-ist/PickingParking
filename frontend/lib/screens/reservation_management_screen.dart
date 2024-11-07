@@ -3,7 +3,8 @@ import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
-import 'reservation_history_screen.dart';
+import 'package:frontend/screens/reservation_history_screen.dart';
+import 'package:frontend/screens/car_setting_screen.dart';
 
 class ReservationManagementScreen extends StatelessWidget {
   const ReservationManagementScreen({Key? key}) : super(key: key);
@@ -70,7 +71,13 @@ class ReservationManagementScreen extends StatelessWidget {
                     fontSize,
                     onTap: () => Get.to(() => const ReservationHistoryScreen()),
                   ),
-                  _buildActionIcon(Icons.settings, "차량 설정", iconSize, fontSize),
+                  _buildActionIcon(
+                    Icons.settings,
+                    "차량 설정",
+                    iconSize,
+                    fontSize,
+                    onTap: () => Get.to(() => const CarSettingScreen()),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),

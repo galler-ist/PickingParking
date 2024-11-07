@@ -6,6 +6,8 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/parking_zone_history_screen.dart';
 import 'package:frontend/components/common/custom_modal.dart';
+import 'package:frontend/screens/parking_zone_setting_screen.dart';
+import 'package:frontend/screens/reservation_screen.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
   const ParkingZoneManagementScreen({Key? key}) : super(key: key);
@@ -55,6 +57,15 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Get.to(() => const ReservationScreen()),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
+                  backgroundColor: Theme.of(context).primaryColor,
+                ),
+                child: const Text("주차장 등록"),
+              ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -75,7 +86,12 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                     onTap: () => Get.to(() => ParkingZoneHistoryScreen()),
                   ),
                   _buildActionIcon(
-                      Icons.settings, "주차장 설정", iconSize, fontSize),
+                    Icons.settings,
+                    "주차장 설정",
+                    iconSize,
+                    fontSize,
+                    onTap: () => Get.to(ParkingZoneSettingScreen()),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),

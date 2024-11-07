@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/top_bar.dart';
 
-class ParkingZoneSettingScreen extends StatelessWidget {
-  const ParkingZoneSettingScreen({Key? key}) : super(key: key);
+class CarSettingScreen extends StatelessWidget {
+  const CarSettingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class ParkingZoneSettingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "내 주차장 정보",
+                  "내 차량 정보",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -42,7 +42,7 @@ class ParkingZoneSettingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "주차장 상세",
+                        "차량 상세",
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -69,11 +69,11 @@ class ParkingZoneSettingScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  _buildDetailRow("주차장 이름", "서울 역삼 멀티캠퍼스 주차장"),
+                  _buildDetailRow("차량 번호", "12가 1234"),
                   const SizedBox(height: 8),
-                  _buildDetailRow("주차장 위치", "서울특별시 강남구 역삼동"),
+                  _buildDetailRow("차종", "현대 아반떼"),
                   const SizedBox(height: 8),
-                  _buildDetailRow("시간당 요금", "900 P/분"),
+                  _buildDetailRow("차량 색상", "흰색"),
                 ],
               ),
             ),
