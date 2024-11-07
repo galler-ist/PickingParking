@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
-import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/controller.dart';
-import 'parking_zone_history_screen.dart';
+import 'package:frontend/screens/parking_zone_history_screen.dart';
+import 'package:frontend/components/common/custom_modal.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
   const ParkingZoneManagementScreen({Key? key}) : super(key: key);
@@ -59,7 +60,13 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildActionIcon(Icons.share, "공유 개방", iconSize, fontSize),
-                  _buildActionIcon(Icons.report, "간편 신고", iconSize, fontSize),
+                  _buildActionIcon(
+                    Icons.report,
+                    "간편 신고",
+                    iconSize,
+                    fontSize,
+                    onTap: () => _showReportModal(context),
+                  ),
                   _buildActionIcon(
                     Icons.receipt,
                     "각종 내역",
@@ -116,6 +123,36 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     );
   }
 
+  void _showReportModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomModal(
+          title: "신고 확인",
+          content: "이 차량을 신고하시겠습니까?",
+          onConfirm: () {
+            Navigator.of(context).pop();
+            _showCompletionModal(context);
+          },
+          onCancel: () => Navigator.of(context).pop(),
+        );
+      },
+    );
+  }
+
+  void _showCompletionModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomModal(
+          title: "신고 완료",
+          content: "신고가 성공적으로 접수되었습니다.",
+          onConfirm: () => Navigator.of(context).pop(),
+        );
+      },
+    );
+  }
+
   Widget _buildParkingDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -133,8 +170,12 @@ class ParkingZoneManagementScreen extends StatelessWidget {
   }
 
   Widget _buildActionIcon(
-      IconData iconData, String label, double iconSize, double fontSize,
-      {VoidCallback? onTap}) {
+    IconData iconData,
+    String label,
+    double iconSize,
+    double fontSize, {
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
