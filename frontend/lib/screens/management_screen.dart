@@ -32,11 +32,7 @@ class ManagementScreen extends StatelessWidget {
                     width: 64),
                 label: "예약 관리",
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ReservationManagementScreen()),
-                  );
+                  Get.to(() => ReservationManagementScreen());
                 },
                 cardWidth:
                     isWideScreen ? (screenWidth - 64) / 2 : screenWidth - 32,
@@ -46,11 +42,7 @@ class ManagementScreen extends StatelessWidget {
                     width: 64),
                 label: "주차장 관리",
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ParkingZoneManagementScreen()),
-                  );
+                  Get.to(() => ParkingZoneManagementScreen());
                 },
                 cardWidth:
                     isWideScreen ? (screenWidth - 64) / 2 : screenWidth - 32,
