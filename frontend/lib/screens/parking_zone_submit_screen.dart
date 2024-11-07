@@ -8,13 +8,14 @@ import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 
-class ReservationScreen extends StatefulWidget {
-  const ReservationScreen({super.key});
+class ParkingZoneSubmitScreen extends StatefulWidget {
+  const ParkingZoneSubmitScreen({super.key});
   @override
-  _ReservationScreenState createState() => _ReservationScreenState();
+  _ParkingZoneSubmitScreenState createState() =>
+      _ParkingZoneSubmitScreenState();
 }
 
-class _ReservationScreenState extends State<ReservationScreen> {
+class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
   final MapController _mapController = MapController();
   LatLng? currentCenter;
   bool loading = true;
