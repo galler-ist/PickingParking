@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "parking_zone")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingZone {
