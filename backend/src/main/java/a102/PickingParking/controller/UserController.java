@@ -17,18 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입 API
-//    @PostMapping("/signup")
-//    public ResponseEntity<String> signupUser(@RequestParam String username,
-//                                             @RequestParam String password,
-//                                             @RequestParam String phoneNumber) {
-//        try {
-//            userService.signupUser(username, password, phoneNumber);
-//            return ResponseEntity.ok("회원가입이 완료되었습니다.");
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-//    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> signupUser(@RequestBody UserSignupRequestDto userSignupRequestDto) {
         try {
@@ -54,3 +43,15 @@ public class UserController {
         }
     }
 }
+// 회원가입 API
+//    @PostMapping("/signup")
+//    public ResponseEntity<String> signupUser(@RequestParam String username,
+//                                             @RequestParam String password,
+//                                             @RequestParam String phoneNumber) {
+//        try {
+//            userService.signupUser(username, password, phoneNumber);
+//            return ResponseEntity.ok("회원가입이 완료되었습니다.");
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
