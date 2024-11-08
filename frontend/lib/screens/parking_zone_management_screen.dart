@@ -7,7 +7,7 @@ import 'package:frontend/controller.dart';
 import 'package:frontend/screens/parking_zone_history_screen.dart';
 import 'package:frontend/components/common/custom_modal.dart';
 import 'package:frontend/screens/parking_zone_setting_screen.dart';
-import 'package:frontend/screens/reservation_screen.dart';
+import 'package:frontend/screens/parking_zone_submit_screen.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
   const ParkingZoneManagementScreen({Key? key}) : super(key: key);
@@ -59,7 +59,7 @@ class ParkingZoneManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => Get.to(() => const ReservationScreen()),
+                onPressed: () => Get.to(() => const ParkingZoneSubmitScreen()),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
                   backgroundColor: Theme.of(context).primaryColor,

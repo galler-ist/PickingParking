@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // 앱 내에서 민감한 데이터를 안전하게 보관하고 액세스하는 데 사용되는 패키지
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart' as dio_pkg; // 서버와 http 통신을 하기 위해 필요한 패키지
+import 'package:dio/dio.dart' as dio_pkg;
 import 'package:mime/mime.dart';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
-  String? baseUrl = dotenv.env['FLUTTER_APP_SERVER_URL'];
+  String? baseUrl = dotenv.env['BASE_URL'];
   String? googleApi = dotenv.env['GOOGLE_API_KEY'];
 
   Future<dynamic> signUp(
@@ -103,7 +103,7 @@ class ApiService {
 
   Future<dynamic> login(Map<String, dynamic> formData) async {
     const storage = FlutterSecureStorage();
-    final url = Uri.parse('$baseUrl/login');
+    final url = Uri.parse('$baseUrl/user/login');
     try {
       final response = await http.post(
         url,
@@ -114,16 +114,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        controller.memberEmail.value = formData['email'];
         controller.accessToken.value = responseData['accessToken'];
-        controller.memberId.value = responseData['memberId'];
-        controller.memberName.value = responseData['memberName'];
-        controller.memberRole.value = responseData['memberRole'];
-        await storage.write(
-            key: "login",
-            value:
-                "${controller.memberEmail.value} ${controller.accessToken.value} ${controller.memberId.value} ${controller.memberName.value} ${controller.memberRole.value}");
-        await sendFCMToken();
+        // await storage.write(
+        //     key: "login",
+        //     value:
+        //         "${controller.memberEmail.value} ${controller.accessToken.value} ${controller.memberId.value} ${controller.memberName.value} ${controller.memberRole.value}");
+        // await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -135,31 +131,31 @@ class ApiService {
     }
   }
 
-  Future<dynamic> sendFCMToken() async {
-    final url = Uri.parse('$baseUrl/members/token');
-    if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
-      return 0;
-    }
-    final formData = {
-      "memberId": controller.memberId.value,
-      "token": controller.fcmToken.value
-    };
-    try {
-      final response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(formData));
-      if (response.statusCode == 200) {
-        return 200;
-      } else {
-        final responseData = jsonDecode(response.body);
-        return responseData;
-      }
-    } catch (e) {
-      return e;
-    }
-  }
+  // Future<dynamic> sendFCMToken() async {
+  //   final url = Uri.parse('$baseUrl/members/token');
+  //   if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
+  //     return 0;
+  //   }
+  //   final formData = {
+  //     "memberId": controller.memberId.value,
+  //     "token": controller.fcmToken.value
+  //   };
+  //   try {
+  //     final response = await http.post(url,
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(formData));
+  //     if (response.statusCode == 200) {
+  //       return 200;
+  //     } else {
+  //       final responseData = jsonDecode(response.body);
+  //       return responseData;
+  //     }
+  //   } catch (e) {
+  //     return e;
+  //   }
+  // }
 
   Future<dynamic> withdraw(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/members');

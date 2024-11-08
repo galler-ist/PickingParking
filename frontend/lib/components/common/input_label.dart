@@ -8,7 +8,7 @@ class InputLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 60,
+        horizontal: 10,
       ),
       child: Text(
         name,

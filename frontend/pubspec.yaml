@@ -54,9 +54,7 @@ dependencies:
   latlong2: ^0.8.2
   flutter_compass_v2: any
   table_calendar: ^3.1.2
-  intl : any
-
-
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -117,10 +115,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
-
-
-
-
-
-
