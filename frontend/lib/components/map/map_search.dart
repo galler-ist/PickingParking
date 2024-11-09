@@ -1,73 +1,77 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class _ParkingMap extends StatefulWidget {
+String searchText = '';
+List<String> items = ['item1', 'item2', 'item3', 'item4'];
+List<String> itemContents = [
+  'Item 1 Contents',
+  'Item 2 Contents',
+  'Item 3 Contents',
+  'Item 4 Contents',
+];
+
+class MapSearch extends StatefulWidget {
+  final Function(double, double) onLocationSelected;
+
+  MapSearch({Key? key, required this.onLocationSelected}) : super(key: key);
+
   @override
-  _ParkingMapState createState() => _ParkingMapState();
+  _MapSearchState createState() => _MapSearchState();
 }
 
-class _ParkingMapState extends State<_ParkingMap> {
-  final LatLng center = LatLng(37.5665, 126.9780); // 서울 좌표 예시
-  List<Marker> parkingMarkers = [];
+class _MapSearchState extends State<MapSearch> {
+  final TextEditingController _controller = TextEditingController();
 
-  Future<void> fetchParkingLocations() async {
-    print(center.latitude);
-    const String apiKey = "YOUR_API_KEY";
-    final String url =
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=parking&key=$apiKey";
-
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List results = data['results'];
-
-      setState(() {
-        parkingMarkers = results.map((place) {
-          final lat = place['geometry']['location']['lat'];
-          final lng = place['geometry']['location']['lng'];
-          return Marker(
-            point: LatLng(lat, lng),
-            builder: (ctx) => Icon(
-              Icons.local_parking,
-              color: Colors.blue,
-              size: 30,
-            ),
-          );
-        }).toList();
-      });
-    } else {
-      print("Error fetching parking locations: ${response.statusCode}");
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchParkingLocations();
+  void cardClickEvent(BuildContext context, int index) {
+    String content = itemContents[index];
+    print('다음 데이터를 받았다! $content');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('주변 주차장 보기')),
-      body: FlutterMap(
-        options: MapOptions(
-          center: center,
-          zoom: 16.0,
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: '검색어를 입력해주세요.',
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              setState(() {
+                searchText = value;
+              });
+            },
+          ),
         ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
+        Expanded(
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (searchText.isNotEmpty &&
+                  !items[index]
+                      .toLowerCase()
+                      .contains(searchText.toLowerCase())) {
+                return SizedBox.shrink();
+              } else {
+                return Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.all(Radius.elliptical(20, 20))),
+                  child: ListTile(
+                    title: Text(items[index]),
+                    onTap: () => cardClickEvent(context, index),
+                  ),
+                );
+              }
+            },
           ),
-          MarkerLayer(
-            markers: parkingMarkers,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
