@@ -6,12 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRequestDto {
-    private String user_id;
+    private String userId;
     private String user_pw;
     private String user_phone;
 
-    public UserRequestDto(String user_id, String user_pw, String user_phone) {
-        this.user_id = user_id;
+    public UserRequestDto(String userId, String user_pw, String user_phone) {
+        this.userId = userId;
         this.user_pw = user_pw;
         this.user_phone = user_phone;
     }

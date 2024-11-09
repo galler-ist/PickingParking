@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserRequestDto userRequestDto) {
         try {
-            userService.loginUser(userRequestDto.getUser_id(),
+            userService.loginUser(userRequestDto.getUserId(),
                     userRequestDto.getUser_pw());
             return ResponseEntity.ok("로그인 성공");
         } catch (IllegalArgumentException e) {
