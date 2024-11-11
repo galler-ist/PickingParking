@@ -1,5 +1,6 @@
 package a102.PickingParking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class Car {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, columnDefinition  = "INT UNSIGNED", name = "user_seq")
+    @JsonIgnore
     private User user;
 
     @Column(nullable = false, unique = true, length = 20, name= "car_plate")
@@ -24,8 +26,4 @@ public class Car {
     @Column(length = 1000, name = "car_submit_image")
     private String submitImage;
 
-    // UserSeq를 반환하는 메서드
-    public Integer getUserSeq() {
-        return user != null ? user.getSeq() : null;
-    }
 }

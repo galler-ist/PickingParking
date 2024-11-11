@@ -2,6 +2,7 @@ package a102.PickingParking.controller;
 
 import a102.PickingParking.entity.Car;
 import a102.PickingParking.service.CarService;
+import a102.PickingParking.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,14 @@ import java.util.List;
 @Tag(name = "자동차 API", description = "자동차 관련 API")
 public class CarController {
 
+    private final CarService carService;
+    private final UserService userService; // UserService 필드 추가
+
     @Autowired
-    private CarService carService;
+    public CarController(CarService carService, UserService userService) {
+        this.carService = carService;
+        this.userService = userService; // UserService 주입
+    }
 
     // 챠량 등록
     @PostMapping("/{userId}")
