@@ -20,6 +20,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // userId로 사용자 조회
+    public Optional<User> getUserByUserId(String userId) {
+        return userRepository.findByUserId(userId);
+    }
+
     // 회원가입
     public User signupUser(String userId, String password, String phoneNumber) {
         if (userRepository.findByUserId(userId).isPresent()) {
