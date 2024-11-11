@@ -28,11 +28,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
     {
       "longitude": 127.039574,
       "latitude": 37.501257,
-      "parking_zone_name": "Gangnam Parking Zone A",
+      "parking_zone_name": "역삼 멀티캠퍼스",
       "fee": 500,
       "time": [
-        {"start": "06:00", "end": "08:00"},
-        {"start": "09:00", "end": "23:59"}
+        {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
+        {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"},
+        {"start": "2024-11-11T00:00:00", "end": "2024-11-11T23:59:59"},
+        {"start": "2024-11-12T00:00:00", "end": "2024-11-12T08:00:00"},
+        {"start": "2024-11-12T10:00:00", "end": "2024-11-12T12:00:00"},
+        {"start": "2024-11-12T14:00:00", "end": "2024-11-12T23:59:59"},
       ]
     },
     {
@@ -41,8 +45,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
       "parking_zone_name": "Gangnam Parking Zone B",
       "fee": 417,
       "time": [
-        {"start": "05:00", "end": "08:00"},
-        {"start": "09:00", "end": "23:59"}
+        {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
+        {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"}
       ]
     },
     {
@@ -51,8 +55,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
       "parking_zone_name": "Gangnam Parking Zone C",
       "fee": 583,
       "time": [
-        {"start": "06:00", "end": "08:00"},
-        {"start": "09:00", "end": "23:59"}
+        {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
+        {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"}
       ]
     }
   ];
@@ -79,9 +83,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 
+  // 주차장 검색 기능
   @override
   Widget build(BuildContext context) {
-    // 검색어에 따라 주차 구역 필터링
     List<Map<String, dynamic>> filteredData = dummyData.where((data) {
       return data['parking_zone_name']
           .toLowerCase()
@@ -93,13 +97,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
         children: [
           // 검색창 및 연관 검색어 리스트
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
                 hintText: '주차 구역 검색',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onChanged: (value) {
@@ -109,8 +113,10 @@ class _ReservationScreenState extends State<ReservationScreen> {
               },
             ),
           ),
+          // 검색창에 문자 썼을 때 나타나는 위젯
           if (searchText.isNotEmpty)
-            Expanded(
+            Container(
+              height: 60.0 * filteredData.length,
               child: ListView.builder(
                 itemCount: filteredData.length,
                 itemBuilder: (context, index) {
@@ -128,8 +134,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
                 },
               ),
             ),
+          // 지도 구현
           Expanded(
-            flex: showReservationSubmit ? 1 : 3,
+            flex: showReservationSubmit ? 1 : 2,
             child: loading
                 ? const Center(child: CircularProgressIndicator())
                 : Stack(
