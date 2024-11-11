@@ -16,29 +16,25 @@ class ApiService {
 
   Future<dynamic> signUp(
       Map<String, dynamic> formData, File? vehicleImage) async {
-    final url = Uri.parse('$baseUrl/members/signup');
+    final url = Uri.parse('$baseUrl/api/user/signup');
     try {
       var request = http.MultipartRequest('POST', url)
         ..headers['Content-Type'] = 'application/json';
 
-      // formData의 다른 필드 추가
       formData.forEach((key, value) {
         if (value is String) {
           request.fields[key] = value;
         }
       });
 
-      // 차량 이미지가 있는 경우에만 추가
       if (vehicleImage != null) {
-        // 파일의 MIME 타입을 가져옵니다.
         final mimeType = lookupMimeType(vehicleImage.path);
         final fileStream =
             http.ByteStream(Stream.castFrom(vehicleImage.openRead()));
         final length = await vehicleImage.length();
 
-        // MultipartFile 추가
         request.files.add(http.MultipartFile(
-          'car_image', // 필드 이름 (서버에서 인식할 이름)
+          'car_image',
           fileStream,
           length,
           filename: vehicleImage.path.split('/').last,
@@ -46,9 +42,7 @@ class ApiService {
         ));
       }
 
-      // 요청 전송
       final response = await request.send();
-      // 응답 처리
       if (response.statusCode == 200) {
         return response.statusCode;
       } else {

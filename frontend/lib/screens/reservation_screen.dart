@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:frontend/components/map/parking_zone_reservation.dart';
 import 'package:flutter_compass_v2/flutter_compass_v2.dart';
 import 'dart:math' as math;
-import 'package:frontend/controller.dart';
 import 'package:frontend/components/map/map_reservation_submit.dart';
 
 class ReservationScreen extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/screens/parking_zome_submit_complete_screen.dart';
+import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
 
 class ReservationSubmit extends StatefulWidget {
   final double latitude;

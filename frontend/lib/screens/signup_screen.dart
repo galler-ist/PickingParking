@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
