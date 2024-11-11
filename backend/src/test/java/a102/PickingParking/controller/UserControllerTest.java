@@ -46,7 +46,7 @@ public class UserControllerTest {
         //given
         UserSignupRequestDto userSignupRequestDto = new UserSignupRequestDto("testUser", "testPass", "01012345678");
         User user = User.builder()
-                .username(userSignupRequestDto.getUser_id())
+                .userId(userSignupRequestDto.getUser_id())
                 .password(passwordEncoder.encode(userSignupRequestDto.getUser_pw()))
                 .phoneNumber(userSignupRequestDto.getUser_phone())
                 .build();
@@ -68,9 +68,9 @@ public class UserControllerTest {
     @DisplayName("로그인 API 테스트")
     public void testLoginUser() throws Exception{
         //given
-        UserRequestDto userRequestDto = new UserRequestDto("testUser", "testPass", null);
+        UserRequestDto userRequestDto = new UserRequestDto("testUser", "testPass");
         User user = User.builder()
-                .username(userRequestDto.getUser_id())
+                .userId(userRequestDto.getUser_id())
                 .password(passwordEncoder.encode(userRequestDto.getUser_pw()))
                 .build();
 

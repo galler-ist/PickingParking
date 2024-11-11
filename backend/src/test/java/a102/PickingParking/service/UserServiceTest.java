@@ -37,16 +37,16 @@ class UserServiceTest {
     @Test
     public void 회원가입(){
         //given
-        String username = "testUser";
+        String userId = "testUser";
         String password = "testPassword";
         String phoneNumber = "01012345678";
 
         //when
-        User savedUser = userService.signupUser(username, password, phoneNumber);
+        User savedUser = userService.signupUser(userId, password, phoneNumber);
 
         // then
         assertNotNull(savedUser);
-        assertEquals(username, savedUser.getUsername());
+        assertEquals(userId, savedUser.getUserId());
         assertTrue(passwordEncoder.matches(password, savedUser.getPassword()));
         assertEquals(phoneNumber, savedUser.getPhoneNumber());
     }
@@ -54,17 +54,17 @@ class UserServiceTest {
     @Test
     public void 로그인(){
         // given
-        String username = "testUser";
+        String userId = "testUser";
         String password = "testPassword";
         String phoneNumber = "01012345678";
-        userService.signupUser(username, password, phoneNumber); // 회원가입 진행
+        userService.signupUser(userId, password, phoneNumber); // 회원가입 진행
 
         // when
-        User loggedInUser = userService.loginUser(username, password);
+        User loggedInUser = userService.loginUser(userId, password);
 
         // then
         assertNotNull(loggedInUser);
-        assertEquals(username, loggedInUser.getUsername());
+        assertEquals(userId, loggedInUser.getUserId());
     }
 
 }
