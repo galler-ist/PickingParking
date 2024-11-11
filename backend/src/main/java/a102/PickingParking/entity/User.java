@@ -17,7 +17,7 @@ public class User {
     private Integer seq;
 
     @Column(nullable = false, unique = true, length = 20, name = "user_id")
-    private String username;
+    private String userId;
 
     @Column(nullable = false, length = 255, name = "user_pw")
     private String password;
