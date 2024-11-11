@@ -23,4 +23,9 @@ public class Car {
 
     @Column(length = 1000, name = "car_submit_image")
     private String submitImage;
+
+    // UserSeq를 반환하는 메서드
+    public Integer getUserSeq() {
+        return user != null ? user.getSeq() : null;
+    }
 }
