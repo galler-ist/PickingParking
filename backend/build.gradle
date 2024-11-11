@@ -37,7 +37,7 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.6.2'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // LocalDateTime
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2' // JUnit 5 전체 라이브러리
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // JUnit 5 포함
 }
