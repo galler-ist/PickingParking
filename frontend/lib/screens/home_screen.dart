@@ -21,11 +21,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 포인트 섹션
             _buildPointContainer(context),
             const SizedBox(height: 20),
-
-            // 내 주차장 섹션
             _buildSectionHeaderWithIcon(
               SvgPicture.asset('assets/icons/icon_management.svg',
                   width: 24, height: 24),
@@ -41,8 +38,6 @@ class HomeScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
             ),
             const SizedBox(height: 20),
-
-            // 내 예약 섹션
             _buildSectionHeaderWithIcon(
               SvgPicture.asset('assets/icons/icon_reservation.svg',
                   width: 24, height: 24),
@@ -58,8 +53,6 @@ class HomeScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
             ),
             const SizedBox(height: 16),
-
-            // 차량 카드와 주차장 검색 카드
             Wrap(
               spacing: 16.0,
               runSpacing: 16.0,
@@ -108,7 +101,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F6F6), // 배경 색상
+        color: const Color(0xFFF6F6F6),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Row(
@@ -132,8 +125,7 @@ class HomeScreen extends StatelessWidget {
               Button(
                 text: "충전",
                 onPressed: () {
-                  // 충전 버튼 클릭 시 ChargingScreen으로 이동
-                  Get.to(() => const ChargingScreen());
+                  Get.to(() => ChargingScreen());
                 },
                 horizontal: 5.0,
                 vertical: 8.0,
@@ -170,7 +162,7 @@ class HomeScreen extends StatelessWidget {
               Text(
                 date,
                 style: const TextStyle(
-                  color: Colors.black54, // 검정색 50% 투명도
+                  color: Colors.black54,
                   fontSize: 12,
                 ),
               ),
@@ -190,7 +182,7 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         carNumber,
                         style: const TextStyle(
-                          color: Colors.black54, // 검정색 50% 투명도
+                          color: Colors.black54,
                           fontSize: 12,
                         ),
                       ),
