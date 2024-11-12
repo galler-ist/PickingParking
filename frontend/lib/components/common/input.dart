@@ -32,8 +32,8 @@ class Input extends StatelessWidget {
       padding: const EdgeInsets.only(
         top: 3,
         bottom: 7,
-        right: 60,
-        left: 60,
+        right: 10,
+        left: 10,
       ),
       child: TextFormField(
         controller: controller,

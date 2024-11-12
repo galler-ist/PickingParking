@@ -84,7 +84,6 @@ class _ParkingZoneHistoryScreenState extends State<ParkingZoneHistoryScreen> {
       appBar: TopBar(onNotificationTap: () {}),
       body: Column(
         children: [
-          // 토글 버튼
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -125,7 +124,6 @@ class _ParkingZoneHistoryScreenState extends State<ParkingZoneHistoryScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 날짜 헤더
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
@@ -137,7 +135,6 @@ class _ParkingZoneHistoryScreenState extends State<ParkingZoneHistoryScreen> {
                         ),
                       ),
                     ),
-                    // 해당 날짜의 트랜잭션 또는 신고 데이터
                     if (showParkingHistory)
                       ...dateSection["transactions"].map<Widget>((transaction) {
                         return Container(

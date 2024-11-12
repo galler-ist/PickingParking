@@ -1,28 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/screens/login_screen.dart';
-import 'package:frontend/services/api_service.dart';
-import 'package:frontend/components/common/top_bar.dart';
 
 class SignupScreen extends StatefulWidget {
-  final String? imagePath;
-  final double? longitude;
-  final double? latitude;
-  const SignupScreen({
-    super.key,
-    this.imagePath,
-    this.longitude,
-    this.latitude,
-  });
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -31,255 +19,171 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final MainController controller = Get.put(MainController());
   final formKey = GlobalKey<FormState>();
-  XFile? vehicleImage; // 차량 이미지를 저장할 변수
-  Map<String, dynamic> formData = {};
-  final TextEditingController emailController = TextEditingController();
+  final ImagePicker picker = ImagePicker();
+  XFile? vehicleImage;
+
+  final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   final TextEditingController carNumberController = TextEditingController();
 
-  String? emailError;
-  String? emailSuccess;
+  String? idError;
   String? passwordError;
   String? confirmPasswordError;
-  String? nameError;
-  String? telError;
+  String? phoneError;
   String? carNumberError;
 
   Future<void> pickVehicleImage() async {
-    final ImagePicker picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
-      vehicleImage = pickedFile; // 선택한 이미지를 변수에 저장
+      vehicleImage = pickedFile;
     });
-  }
-
-  Future<void> checkEmailDuplicate() async {
-    final apiService = ApiService();
-    setState(() {
-      emailError = null;
-      emailSuccess = null;
-    });
-
-    try {
-      final isAvailable =
-          await apiService.userIdCheck({'email': emailController.text});
-
-      if (!isAvailable) {
-        setState(() {
-          emailSuccess = "사용 가능한 이메일입니다.";
-          emailError = null;
-          formData["email"] = emailController.text;
-        });
-      } else {
-        setState(() {
-          emailError = "이미 사용 중인 이메일입니다.";
-          emailSuccess = null;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        emailError = "이메일 중복 확인 중 오류가 발생했습니다.";
-        emailSuccess = null;
-      });
-    }
   }
 
   void submitForm() async {
     setState(() {
-      emailError = null;
+      idError = null;
       passwordError = null;
       confirmPasswordError = null;
-      nameError = null;
-      telError = null;
+      phoneError = null;
       carNumberError = null;
     });
 
     bool isValid = true;
 
-    if (emailController.text.isEmpty) {
-      setState(() {
-        emailError = "이메일을 입력하세요.";
-      });
-      isValid = false;
-    } else if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
-        .hasMatch(emailController.text)) {
-      setState(() {
-        emailError = "유효한 이메일 주소를 입력하세요.";
-      });
-      isValid = false;
-    } else if (emailSuccess == null) {
-      setState(() {
-        emailError = "이메일 중복을 확인해주세요.";
-      });
+    // 아이디 입력 검사
+    if (idController.text.isEmpty) {
+      idError = "아이디를 입력하세요.";
       isValid = false;
     }
 
+    // 비밀번호 검사
     if (passwordController.text.length < 6) {
-      setState(() {
-        passwordError = "비밀번호는 6자 이상이어야 합니다.";
-      });
+      passwordError = "비밀번호는 6자 이상이어야 합니다.";
       isValid = false;
     }
 
+    // 비밀번호 확인 검사
     if (confirmPasswordController.text != passwordController.text) {
-      setState(() {
-        confirmPasswordError = "비밀번호가 일치하지 않습니다.";
-      });
+      confirmPasswordError = "비밀번호가 일치하지 않습니다.";
       isValid = false;
     }
+
+    // 전화번호 검사
     if (phoneController.text.isEmpty) {
-      setState(() {
-        telError = "전화번호를 입력하세요.";
-      });
+      phoneError = "휴대폰 번호를 입력하세요.";
       isValid = false;
     }
+
+    // 차량 번호 검사
     if (carNumberController.text.isEmpty) {
-      setState(() {
-        carNumberError = "차량번호를 입력하세요";
-      });
+      carNumberError = "차량 번호를 입력하세요.";
       isValid = false;
     }
+
     if (isValid) {
-      formKey.currentState!.save();
-      final apiService = ApiService();
-      formData['address'] = {
-        'address': formData.remove('address_base') ?? '',
-        'addressDetail': formData.remove('address_detail') ?? '',
-        'zipCode': formData.remove('zip_code') ?? ''
-      };
-      try {
-        File? vehicleFile =
-            vehicleImage != null ? File(vehicleImage!.path) : null;
-        final res =
-            await apiService.signUp(formData, vehicleFile); // vehicleImage 전달
-        if (res == 200) {
-          Get.offAll(LoginScreen(
-            imagePath: widget.imagePath,
-            longitude: widget.longitude,
-            latitude: widget.latitude,
-          ));
-        } else {
-          Get.snackbar('오류', '${res["message"]}',
-              snackPosition: SnackPosition.BOTTOM);
-        }
-      } catch (e) {
-        Get.snackbar('오류', '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
-            snackPosition: SnackPosition.BOTTOM);
-      }
+      print("회원가입 성공");
+      Get.to(() => LoginScreen());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopBar(onNotificationTap: () {}),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 80),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 100),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: 350,
-                ),
-              ),
-              const SizedBox(height: 50),
-              const InputLabel(name: "아이디"),
-              Input(
-                controller: emailController,
-                inputType: TextInputType.emailAddress,
-                buttonText: "중복 확인",
-                onPressed: checkEmailDuplicate,
-              ),
-              if (emailError != null) ValidatorText(text: emailError!),
-              if (emailSuccess != null)
-                ValidatorText(
-                  text: emailSuccess!,
-                  color: Colors.blue,
-                ),
-              const InputLabel(name: "비밀번호"),
-              Input(
-                controller: passwordController,
-                inputType: TextInputType.visiblePassword,
-                obscure: true,
-                onSaved: (value) {
-                  formData['password'] = value ?? '';
-                },
-              ),
-              if (passwordError != null) ValidatorText(text: passwordError!),
-              const InputLabel(name: "비밀번호 확인"),
-              Input(
-                controller: confirmPasswordController,
-                inputType: TextInputType.visiblePassword,
-                obscure: true,
-              ),
-              if (nameError != null) ValidatorText(text: nameError!),
-              const InputLabel(name: "휴대전화 번호"),
-              Input(
-                controller: phoneController,
-                inputType: TextInputType.phone,
-                onSaved: (value) {
-                  formData['tel'] = value ?? '';
-                },
-              ),
-              // 차량 번호 관련해서 controller 고쳐야함!
-              if (nameError != null) ValidatorText(text: nameError!),
-              const InputLabel(name: "차량 번호"),
-              Input(
-                controller: carNumberController,
-                inputType: TextInputType.text,
-                onSaved: (value) {
-                  formData['car_number'] = value ?? '';
-                },
-              ),
-              if (carNumberError != null) ValidatorText(text: carNumberError!),
-              // 차량 이미지 선택 버튼
-              const InputLabel(name: "차량 등록증"),
-              Center(
-                child: TextButton(
-                  onPressed: pickVehicleImage,
-                  child: Text(vehicleImage != null ? "이미지 선택됨" : "이미지 선택하기"),
-                ),
-              ),
-              // 이미지 미리보기
-              if (vehicleImage != null)
-                Image.file(
-                  File(vehicleImage!.path),
-                  height: 150,
-                  width: 150,
-                  fit: BoxFit.cover,
-                ),
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double inputWidth = screenWidth < 600 ? screenWidth * 0.9 : 500;
 
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Button(
-                    text: "회원가입",
-                    onPressed: submitForm,
-                    horizontal: 95,
-                    vertical: 13,
-                    fontSize: 15,
-                  ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: inputWidth),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+                    Center(
+                      child: Image.asset(
+                        'assets/icons/logo.png',
+                        width: inputWidth * 0.6,
+                        height: inputWidth * 0.6,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const InputLabel(name: "아이디"),
+                    Input(
+                      controller: idController,
+                      inputType: TextInputType.text,
+                    ),
+                    if (idError != null) ValidatorText(text: idError!),
+                    const SizedBox(height: 20),
+                    const InputLabel(name: "비밀번호"),
+                    Input(
+                      controller: passwordController,
+                      inputType: TextInputType.visiblePassword,
+                      obscure: true,
+                    ),
+                    if (passwordError != null)
+                      ValidatorText(text: passwordError!),
+                    const SizedBox(height: 20),
+                    const InputLabel(name: "비밀번호 확인"),
+                    Input(
+                      controller: confirmPasswordController,
+                      inputType: TextInputType.visiblePassword,
+                      obscure: true,
+                    ),
+                    if (confirmPasswordError != null)
+                      ValidatorText(text: confirmPasswordError!),
+                    const SizedBox(height: 20),
+                    const InputLabel(name: "휴대폰 번호"),
+                    Input(
+                      controller: phoneController,
+                      inputType: TextInputType.phone,
+                    ),
+                    if (phoneError != null) ValidatorText(text: phoneError!),
+                    const SizedBox(height: 20),
+                    const InputLabel(name: "차량 번호"),
+                    Input(
+                      controller: carNumberController,
+                      inputType: TextInputType.text,
+                    ),
+                    if (carNumberError != null)
+                      ValidatorText(text: carNumberError!),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: TextButton(
+                        onPressed: pickVehicleImage,
+                        child:
+                            Text(vehicleImage != null ? "이미지 선택됨" : "이미지 선택하기"),
+                      ),
+                    ),
+                    if (vehicleImage != null)
+                      Image.file(
+                        File(vehicleImage!.path),
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    const SizedBox(height: 30),
+                    Center(
+                      child: Button(
+                        text: "회원가입",
+                        onPressed: submitForm,
+                        width: inputWidth,
+                        horizontal: 5,
+                        vertical: 15,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
+            ),
           ),
         ),
       ),

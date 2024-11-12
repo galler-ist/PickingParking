@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
 import 'package:frontend/components/common/top_bar.dart';
@@ -7,7 +6,7 @@ import 'package:frontend/controller.dart';
 import 'package:frontend/screens/parking_zone_history_screen.dart';
 import 'package:frontend/components/common/custom_modal.dart';
 import 'package:frontend/screens/parking_zone_setting_screen.dart';
-import 'package:frontend/screens/reservation_screen.dart';
+import 'package:frontend/screens/parking_zone_detail_screen.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
   const ParkingZoneManagementScreen({Key? key}) : super(key: key);
@@ -18,7 +17,7 @@ class ParkingZoneManagementScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     double iconSize = screenWidth < 400 ? 50 : 60;
-    double fontSize = screenWidth < 400 ? 12 : 14;
+    double fontSize = screenWidth < 400 ? 10 : 13;
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
@@ -28,6 +27,11 @@ class ParkingZoneManagementScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 내 주차장 섹션 헤더
+              _buildSectionHeader("내 주차장"),
+              const SizedBox(height: 8),
+
+              // 내 주차장 정보
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
@@ -39,38 +43,32 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "내 주차장",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
                       "서울 역삼 멀티캠퍼스 주차장",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                     _buildParkingDetailRow("현재 주차중인 차량", "없음"),
-                    _buildParkingDetailRow("개방 예정 시간", "~ 3월 13일 (목) 10"),
-                    _buildParkingDetailRow("접수된 예약", " ~ 3월 13일 (목) 10:00"),
+                    _buildParkingDetailRow(
+                        "개방 예정 시간", "3월 12일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
+                    _buildParkingDetailRow(
+                        "접수된 예약", "3월 12일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
                     _buildParkingDetailRow("예약 차량", "12가 1234"),
                     _buildParkingDetailRow("시간당 요금", "900 P/분"),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Get.to(() => const ReservationScreen()),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-                child: const Text("주차장 등록"),
-              ),
-              const SizedBox(height: 24),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildActionIcon(Icons.share, "공유 개방", iconSize, fontSize),
+                  _buildActionIcon(
+                    Icons.access_time,
+                    "예약 관리",
+                    iconSize,
+                    fontSize,
+                    onTap: () => Get.to(() => const ParkingZoneDetailScreen()),
+                  ),
                   _buildActionIcon(
                     Icons.report,
                     "간편 신고",
@@ -95,37 +93,25 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader("최근 주차 내역"),
-                    const SizedBox(height: 8),
-                    _buildHistoryItem(
-                      title: "주차 차량",
-                      vehicle: "04수 1234",
-                      duration: "3월 10일 (일) 12:00 ~ 3월 10일 (일) 21:00",
-                      amount: "4500 P",
-                    ),
-                  ],
-                ),
+
+              // 최근 주차 내역 섹션
+              _buildSectionHeader("최근 주차 내역"),
+              const SizedBox(height: 8),
+              _buildHistoryItem(
+                title: "주차 차량",
+                vehicle: "04수 1234",
+                duration: "3월 10일 (일) 12:00 ~ 3월 10일 (일) 21:00",
+                amount: "4500 P",
               ),
               const SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader("최근 신고 내역"),
-                    const SizedBox(height: 8),
-                    _buildHistoryItem(
-                      title: "신고 차량",
-                      vehicle: "95서 0718",
-                      duration: "3월 10일 (일) 11:52",
-                    ),
-                  ],
-                ),
+
+              // 최근 신고 내역 섹션
+              _buildSectionHeader("최근 신고 내역"),
+              const SizedBox(height: 8),
+              _buildHistoryItem(
+                title: "신고 차량",
+                vehicle: "95서 0718",
+                duration: "3월 10일 (일) 11:52",
               ),
             ],
           ),
@@ -171,15 +157,23 @@ class ParkingZoneManagementScreen extends StatelessWidget {
 
   Widget _buildParkingDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 14, color: Colors.black54)),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          SizedBox(height: 4),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 10),
+            ),
+          ),
         ],
       ),
     );
@@ -222,7 +216,7 @@ class ParkingZoneManagementScreen extends StatelessWidget {
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 
@@ -242,15 +236,36 @@ class ParkingZoneManagementScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("$title: $vehicle",
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text("사용 시간: $duration", style: const TextStyle(fontSize: 14)),
+          _buildDetailRow(title, vehicle),
+          const SizedBox(height: 8),
+          _buildDetailRow("사용 시간", duration),
           if (amount != null) ...[
-            const SizedBox(height: 4),
-            Text("결제 금액: $amount", style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 8),
+            _buildDetailRow("결제 금액", amount),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 10),
+            ),
+          ),
         ],
       ),
     );

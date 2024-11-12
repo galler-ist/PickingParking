@@ -18,10 +18,10 @@ class ParkingZoneSettingScreen extends StatelessWidget {
               children: [
                 const Text(
                   "내 주차장 정보",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add, size: 30),
+                  icon: const Icon(Icons.add, size: 24),
                   onPressed: () {
                     // + 버튼 동작 추가
                   },
@@ -44,31 +44,34 @@ class ParkingZoneSettingScreen extends StatelessWidget {
                       const Text(
                         "주차장 상세",
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 14, fontWeight: FontWeight.bold),
                       ),
-                      PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            // 수정 버튼 동작 추가
-                          } else if (value == 'delete') {
-                            // 삭제 버튼 동작 추가
-                          }
-                        },
-                        itemBuilder: (BuildContext context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Text('수정'),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('삭제'),
-                          ),
-                        ],
-                        icon: const Icon(Icons.more_vert),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 25),
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                            } else if (value == 'delete') {}
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Text('수정'),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('삭제'),
+                            ),
+                          ],
+                          icon: const Icon(Icons.more_vert),
+                          offset: const Offset(0, 40), // 버튼 아래에 메뉴가 나타나도록 조정
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
+
+                  // 주차장 상세 정보 항목들
                   _buildDetailRow("주차장 이름", "서울 역삼 멀티캠퍼스 주차장"),
                   const SizedBox(height: 8),
                   _buildDetailRow("주차장 위치", "서울특별시 강남구 역삼동"),
@@ -83,17 +86,25 @@ class ParkingZoneSettingScreen extends StatelessWidget {
     );
   }
 
+  // Detail Row 통일된 디자인
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 16, color: Colors.black54)),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: const TextStyle(
+                fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
         ],
       ),
     );

@@ -18,13 +18,11 @@ class CarSettingScreen extends StatelessWidget {
               children: [
                 const Text(
                   "내 차량 정보",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add, size: 30),
-                  onPressed: () {
-                    // + 버튼 동작 추가
-                  },
+                  icon: const Icon(Icons.add, size: 24),
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -44,27 +42,28 @@ class CarSettingScreen extends StatelessWidget {
                       const Text(
                         "차량 상세",
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 14, fontWeight: FontWeight.bold),
                       ),
-                      PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            // 수정 버튼 동작 추가
-                          } else if (value == 'delete') {
-                            // 삭제 버튼 동작 추가
-                          }
-                        },
-                        itemBuilder: (BuildContext context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Text('수정'),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('삭제'),
-                          ),
-                        ],
-                        icon: const Icon(Icons.more_vert),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 25),
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                            } else if (value == 'delete') {}
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Text('수정'),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('삭제'),
+                            ),
+                          ],
+                          icon: const Icon(Icons.more_vert),
+                          offset: const Offset(0, 40),
+                        ),
                       ),
                     ],
                   ),
@@ -85,15 +84,22 @@ class CarSettingScreen extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 16, color: Colors.black54)),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: const TextStyle(
+                fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
         ],
       ),
     );
