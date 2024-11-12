@@ -14,28 +14,33 @@ public class PointService {
 
     private final UserRepository userRepository;
 
+    private final PointRepository pointRepository;
+
     @Autowired
-    public PointService(UserRepository userRepository) {
+    public PointService(PointRepository pointRepository, UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.pointRepository = pointRepository;
     }
 
     // 사용자 ID로 현재 포인트 조회
-    public int getCurrentPoints(String user_id) {
-        // 사용자 정보를 조회
-        User user = userRepository.findByUserId(user_id)
+    public void updateUserPoint(String userId) {
+
+        Integer totalPoint = pointRepository.sumPointByUserId(userId);
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
+        if (totalPoint != null) {
+            user.setPoint(totalPoint);
+            userRepository.save(user);
+        };
 
-        return user.getPoint();
 
         // 현재 포인트 반환
     }
-
     // 포인트 충전과 사용
 
-    @Autowired
-    private PointRepository pointRepository;
+
 
     public void pointRequest(PointRequestDto request) {
         // user_id로 user_seq 조회

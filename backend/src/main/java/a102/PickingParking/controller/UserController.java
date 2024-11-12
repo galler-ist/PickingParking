@@ -3,6 +3,8 @@ package a102.PickingParking.controller;
 import a102.PickingParking.dto.UserDeleteDto;
 import a102.PickingParking.dto.UserRequestDto;
 import a102.PickingParking.dto.UserSignupRequestDto;
+import a102.PickingParking.entity.User;
+import a102.PickingParking.service.PointService;
 import a102.PickingParking.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final PointService pointService;
 
 
     @PostMapping("/signup")
@@ -52,6 +55,15 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    // 사용자 포인트 조회
+    @GetMapping("/{userId}/point")
+    public ResponseEntity<Integer> getUserPoint(@PathVariable String userId) {
+        User user = userService.getUserByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException(("존재하지 않는 사용자입니다.")));
+        pointService.updateUserPoint(userId);
+        return ResponseEntity.ok(user.getPoint());
     }
 }
 // 회원가입 API
