@@ -2,6 +2,7 @@ package a102.PickingParking.service;
 
 import a102.PickingParking.dto.PointRequestDto;
 import a102.PickingParking.entity.Point;
+import a102.PickingParking.entity.PointSource;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.repository.PointRepository;
 import a102.PickingParking.repository.UserRepository;
@@ -43,26 +44,59 @@ public class PointService {
 
 
     public void pointRequest(PointRequestDto request) {
+
+        String userId = request.getUserId();
+        int price = request.getPrice();
+        String source = request.getSource().name();
+
         // user_id로 user_seq 조회
-        User user = userRepository.findByUserId(request.getUserId())
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 현재 포인트 확인
-        int currentPoints = user.getPoint();
-
-        // 포인트 증가
-        user.setPoint(currentPoints + request.getPoint_price()); // 요청된 금액만큼 포인트 이동
-
-        // 거래 기록 저장
-        Point point = new Point();
-        point.setSeq(user.getSeq());
-        point.setPrice(request.getPoint_price());
-        point.setSource(request.getPoint_source());
-
-        // 거래 기록을 DB에 저장
-        pointRepository.save(point);
-
-        // 사용자 정보를 DB에 저장 (포인트 업데이트)
-        userRepository.save(user);
+        // 포인트 충전 및 인출 처리
+        if ("CHARGE".equals(source)) {
+            if (price > 0) {
+                // 포인트 충전
+                Point point = new Point();
+                point.setUser(user);
+                point.setPrice(price); // 충전은 양수로 기록
+                point.setSource(PointSource.CHARGE); // 거래 유형 설정
+                pointRepository.save(point); // 포인트 기록 저장
+            } else {
+                // 포인트 인출
+                if (user.getPoint() < -price) {
+                    throw new IllegalArgumentException("인출할 포인트가 부족합니다.");
+                }
+                Point point = new Point();
+                point.setUser(user);
+                point.setPrice(price); // 인출은 음수로 기록
+                point.setSource(PointSource.CHARGE); // 거래 유형 설정 (인출도 CHARGE로 처리)
+                pointRepository.save(point); // 포인트 기록 저장
+            }
+        }
+        // 포인트 사용 및 수익 처리
+        else if ("PAYMENT".equals(source)) {
+            if (price > 0) {
+                // 포인트 수익
+                Point point = new Point();
+                point.setUser(user);
+                point.setPrice(price); // 수익은 양수로 기록
+                point.setSource(PointSource.PAYMENT); // 거래 유형 설정
+                pointRepository.save(point); // 포인트 기록 저장
+            } else {
+                // 포인트 지출
+                if (user.getPoint() < -price) {
+                    throw new IllegalArgumentException("지출할 포인트가 부족합니다.");
+                }
+                Point point = new Point();
+                point.setUser(user);
+                point.setPrice(price); // 지출은 음수로 기록
+                point.setSource(PointSource.PAYMENT); // 거래 유형 설정
+                pointRepository.save(point); // 포인트 기록 저장
+            }
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 거래 유형입니다.");
+        }
+        updateUserPoint(userId);
     }
 }

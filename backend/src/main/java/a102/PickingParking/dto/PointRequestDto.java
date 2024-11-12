@@ -8,13 +8,13 @@ import lombok.Setter;
 @Setter
 public class PointRequestDto {
     private String userId;
-    private int point_price;
-    private PointSource point_source;
+    private int price;
+    private PointSource source;
 
-    public PointRequestDto(String userId, int point_price, PointSource point_source) {
+    public PointRequestDto(String userId, int price, PointSource source) {
         this.userId = userId;
-        this.point_price = point_price;
-        this.point_source = point_source;
+        this.price = price;
+        this.source = source;
     }
 
 }

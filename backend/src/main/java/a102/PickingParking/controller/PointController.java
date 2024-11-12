@@ -1,5 +1,8 @@
 package a102.PickingParking.controller;
 
+import a102.PickingParking.dto.PointRequestDto;
+import a102.PickingParking.entity.Point;
+import a102.PickingParking.entity.PointSource;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.service.PointService;
 import a102.PickingParking.service.UserService;
@@ -33,7 +36,33 @@ public class PointController {
 //        }
 //    }
 
-    @PostMapping("/{userId}")
+    @PostMapping
+    public ResponseEntity<String> handlePoint(@RequestBody PointRequestDto pointRequestDto) {
+        try {
+            pointService.pointRequest(pointRequestDto); // PointRequestDto를 단일 인수로 전달
+            if (pointRequestDto.getSource() == PointSource.CHARGE) {
+                if (pointRequestDto.getPrice()>0) {
+                return ResponseEntity.ok("포인트 충전이 완료되었습니다.");
+                }
+                else {
+                    return ResponseEntity.ok("포인트 인출이 완료되었습니다.");
+                }
+            } else if (pointRequestDto.getSource() == PointSource.PAYMENT) {
+                if (pointRequestDto.getPrice()>0) {
+                return ResponseEntity.ok("주차장 수익이 발생했습니다.");
+                }
+                else {
+                    return  ResponseEntity.ok("포인트 사용이 완료되었습니다.");
+                }
+            } else {
+                return ResponseEntity.badRequest().body("유효하지 않은 거래 유형입니다.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{userId}")
     public ResponseEntity<Integer> getPoint(@PathVariable String userId) {
         User user = userService.getUserByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
