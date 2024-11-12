@@ -11,54 +11,62 @@ class Button extends StatelessWidget {
   final double? radius;
   final Color? backgroundColor;
   final Color? contentColor;
+  final double? width; // 추가된 속성
 
   const Button({
     super.key,
     required this.text,
     required this.onPressed,
-    required this.horizontal,
-    required this.vertical,
+    this.horizontal = 16.0,
+    this.vertical = 12.0,
     required this.fontSize,
     this.icon,
     this.iconSize,
     this.radius,
     this.backgroundColor,
     this.contentColor,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: onPressed == null
-            ? Colors.grey
-            : backgroundColor ?? Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius ?? 10),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: vertical,
-          horizontal: horizontal,
-        ),
-        child: Column(
-          children: [
-            if (icon != null)
-              Icon(
-                icon,
-                size: iconSize ?? 15,
-                color: contentColor ?? Colors.white,
-              ),
-            Text(
-              text,
-              style: TextStyle(
-                color: contentColor ?? Colors.white,
-                fontSize: fontSize,
-              ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontal),
+      child: Container(
+        width: width,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: onPressed == null
+                ? Colors.grey
+                : backgroundColor ?? Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius ?? 10),
             ),
-          ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: vertical,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null)
+                  Icon(
+                    icon,
+                    size: iconSize ?? 15,
+                    color: contentColor ?? Colors.white,
+                  ),
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: contentColor ?? Colors.white,
+                    fontSize: fontSize,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

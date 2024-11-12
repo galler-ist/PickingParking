@@ -94,7 +94,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/icons/logo.png',
                   width: 350,
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/screens/charging_screen.dart';
+import 'package:frontend/screens/car_setting_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -127,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Get.to(() => ChargingScreen());
                 },
-                horizontal: 5.0,
+                horizontal: 1.0,
                 vertical: 8.0,
                 fontSize: 13.0,
                 backgroundColor: Theme.of(context).primaryColor,
@@ -203,16 +204,19 @@ class HomeScreen extends StatelessWidget {
       child: Card(
         elevation: 2,
         color: const Color(0xFFF6F6F6),
-        child: const ListTile(
-          title: Text("내 차량"),
+        child: ListTile(
+          title: const Text("내 차량"),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: const [
               Text("11가 1234", style: TextStyle(color: Color(0xFF4C99F3))),
               SizedBox(width: 8),
               Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             ],
           ),
+          onTap: () {
+            Get.to(() => const CarSettingScreen());
+          },
         ),
       ),
     );
