@@ -40,6 +40,12 @@ dependencies {
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2' // JUnit 5 전체 라이브러리
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // JUnit 5 포함
+
+	//shb) aws iot core용 dependencies 추가함
+	implementation 'com.amazonaws:aws-iot-device-sdk-java:1.3.9' // aws용
+	implementation 'com.amazonaws:aws-java-sdk-iot:1.12.261' // iot용
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2' // json 처리용
+
 }
 
 test {
