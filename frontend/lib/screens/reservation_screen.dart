@@ -29,7 +29,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       "longitude": 127.039574,
       "latitude": 37.501257,
       "parking_zone_name": "역삼 멀티캠퍼스",
-      "fee": 500,
+      "fee": 2000,
       "time": [
         {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
         {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"},
@@ -43,7 +43,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       "longitude": 127.040000,
       "latitude": 37.502000,
       "parking_zone_name": "Gangnam Parking Zone B",
-      "fee": 417,
+      "fee": 3000,
       "time": [
         {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
         {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"}
@@ -53,7 +53,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       "longitude": 127.041000,
       "latitude": 37.503000,
       "parking_zone_name": "Gangnam Parking Zone C",
-      "fee": 583,
+      "fee": 4000,
       "time": [
         {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
         {"start": "2024-11-10T10:00:00", "end": "2024-11-10T23:59:59"}
@@ -97,7 +97,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
         children: [
           // 검색창 및 연관 검색어 리스트
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(top: 20.0),
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -115,25 +115,27 @@ class _ReservationScreenState extends State<ReservationScreen> {
           ),
           // 검색창에 문자 썼을 때 나타나는 위젯
           if (searchText.isNotEmpty)
-            Container(
-              height: 60.0 * filteredData.length,
-              child: ListView.builder(
-                itemCount: filteredData.length,
-                itemBuilder: (context, index) {
-                  var item = filteredData[index];
-                  return ListTile(
-                    title: Text(item['parking_zone_name']),
-                    onTap: () {
-                      // 검색된 주차 구역 클릭 시 지도 위치 이동
-                      _moveToLocation(item['latitude'], item['longitude']);
-                      setState(() {
-                        searchText = ''; // 검색어 초기화
-                      });
-                    },
-                  );
-                },
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var item in filteredData)
+                    ListTile(
+                      title: Text(item['parking_zone_name']),
+                      onTap: () {
+                        selectedIndex = dummyData.indexWhere((data) =>
+                            data['parking_zone_name'] ==
+                            item['parking_zone_name']);
+                        showReservationSubmit = true;
+                        _moveToLocation(item['latitude'], item['longitude']);
+                        setState(() {
+                          searchText = ''; // 검색어 초기화
+                        });
+                      },
+                    ),
+                ],
               ),
             ),
+
           // 지도 구현
           Expanded(
             flex: showReservationSubmit ? 1 : 2,
@@ -145,7 +147,11 @@ class _ReservationScreenState extends State<ReservationScreen> {
                         mapController: _mapController,
                         options: MapOptions(
                           center: currentCenter,
+                          maxZoom: 18.0,
                           zoom: 15.0,
+                          minZoom: 10.0,
+                          interactiveFlags:
+                              InteractiveFlag.all & ~InteractiveFlag.rotate,
                         ),
                         children: [
                           TileLayer(
@@ -154,43 +160,116 @@ class _ReservationScreenState extends State<ReservationScreen> {
                             subdomains: ['a', 'b', 'c'],
                           ),
                           MarkerLayer(
-                            markers: filteredData.map((data) {
-                              LatLng location =
-                                  LatLng(data['latitude'], data['longitude']);
-                              int markerIndex =
-                                  dummyData.indexOf(data); // 현재 마커의 인덱스 가져오기
-                              return Marker(
-                                point: location,
-                                builder: (ctx) => GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      // 이미 선택된 마커를 다시 클릭하면 예약 창을 닫음
-                                      if (selectedIndex == markerIndex &&
-                                          showReservationSubmit) {
-                                        showReservationSubmit = false;
-                                        selectedIndex = null;
-                                      } else {
-                                        selectedIndex = markerIndex;
-                                        showReservationSubmit = true;
-                                      }
-                                    });
-                                  },
-                                  child: SvgPicture.asset(
-                                    'assets/icons/pin_map.svg',
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                            markers: showReservationSubmit &&
+                                    selectedIndex != null
+                                ? [
+                                    // 예약 제출이 활성화된 경우 선택된 마커만 표시
+                                    Marker(
+                                      point: LatLng(
+                                        dummyData[selectedIndex!]['latitude'],
+                                        dummyData[selectedIndex!]['longitude'],
+                                      ),
+                                      builder: (ctx) => Stack(
+                                        clipBehavior: Clip
+                                            .none, // Stack 영역 밖으로 나가도 클리핑되지 않게 설정
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                showReservationSubmit = false;
+                                                selectedIndex = null;
+                                              });
+                                            },
+                                            child: SvgPicture.asset(
+                                              'assets/icons/pin_map.svg',
+                                              height: 40,
+                                              width: 40,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 0,
+                                            left: 30,
+                                            child: Container(
+                                              padding: EdgeInsets.all(0),
+                                              color:
+                                                  Colors.white.withOpacity(0.8),
+                                              child: Text(
+                                                dummyData[selectedIndex!]
+                                                    ['parking_zone_name'],
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                                : dummyData.map((data) {
+                                    LatLng location = LatLng(
+                                        data['latitude'], data['longitude']);
+                                    int markerIndex = dummyData.indexOf(data);
+                                    return Marker(
+                                      point: location,
+                                      builder: (ctx) => Stack(
+                                        clipBehavior: Clip
+                                            .none, // Stack 영역 밖으로 나가도 클리핑되지 않게 설정
+                                        children: [
+                                          Positioned(
+                                            bottom: 0, // 마커를 아래로 배치
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (selectedIndex ==
+                                                          markerIndex &&
+                                                      showReservationSubmit) {
+                                                    showReservationSubmit =
+                                                        false;
+                                                    selectedIndex = null;
+                                                  } else {
+                                                    selectedIndex = markerIndex;
+                                                    showReservationSubmit =
+                                                        true;
+                                                  }
+                                                });
+                                              },
+                                              child: SvgPicture.asset(
+                                                'assets/icons/pin_map.svg',
+                                                height: 40,
+                                                width: 40,
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 0, // y축에 30만큼 위로 이동
+                                            left: 30, // x축에 20만큼 오른쪽으로 이동
+                                            child: Container(
+                                              padding: EdgeInsets.all(0),
+                                              color:
+                                                  Colors.white.withOpacity(0.7),
+                                              child: Text(
+                                                data['parking_zone_name'],
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
                           )
                         ],
                       ),
                     ],
                   ),
           ),
+
           if (showReservationSubmit && selectedIndex != null)
             Expanded(
+              flex: 2,
               child: ReservationSubmit(
                 latitude: dummyData[selectedIndex!]['latitude'],
                 longitude: dummyData[selectedIndex!]['longitude'],
