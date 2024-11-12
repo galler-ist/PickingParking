@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
+import 'package:frontend/screens/complete_screen.dart';
 
 class ReservationSubmit extends StatefulWidget {
   final double latitude;
@@ -247,8 +247,13 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                                       actions: [
                                         TextButton(
                                           onPressed: () {
-                                            Get.to(() =>
-                                                ParkingZoneSubmitComplete());
+                                            Get.to(
+                                              () => CompleteScreen(),
+                                              arguments: {
+                                                'type': 'reservation'
+                                              },
+                                            );
+                                            ;
                                           },
                                           child: const Text('결제하기'),
                                         ),

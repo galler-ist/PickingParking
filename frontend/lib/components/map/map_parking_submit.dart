@@ -3,8 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
-import 'package:frontend/screens/home_screen.dart';
+import 'package:frontend/screens/complete_screen.dart';
 
 class ParkingSubmit extends StatefulWidget {
   final double latitude;
@@ -54,7 +53,6 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data['results'][0]['land']);
         if (data["results"][0].isNotEmpty) {
           setState(() {
             address1 = data["results"][0]['region']['area1']['name'];
@@ -90,9 +88,10 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
       'address': address,
       'detailedAddress': detailedAddress,
     });
-    print('미리 볼 JSON 데이터 :  $data');
-    // final url = 'YOUR_API_ENDPOINT'; // 실제 API 엔드포인트로 변경하세요
+    print('미리 볼 JSON 데이터: $data');
 
+    // 실제 API 요청 코드
+    // final url = 'YOUR_API_ENDPOINT';
     // try {
     //   final response = await http.post(
     //     Uri.parse(url),
@@ -104,7 +103,6 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
     //       'longitude': widget.longitude,
     //     }),
     //   );
-
     //   if (response.statusCode == 200) {
     //     print('주소 제출 성공');
     //   } else {
@@ -162,7 +160,11 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
                       ElevatedButton(
                         onPressed: () {
                           _submitAddress();
-                          Get.to(() => ParkingZoneSubmitComplete());
+                          // 주소 제출 후 CompleteScreen으로 이동하며 'parking' 타입 전달
+                          Get.to(
+                            () => CompleteScreen(),
+                            arguments: {'type': 'parking'},
+                          );
                         },
                         child: const Text('주소 제출하기'),
                       ),

@@ -9,6 +9,7 @@ import 'package:flutter_compass_v2/flutter_compass_v2.dart';
 import 'dart:math' as math;
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/map/map_reservation_submit.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});

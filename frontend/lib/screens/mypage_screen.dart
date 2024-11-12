@@ -10,7 +10,6 @@ import 'package:frontend/screens/preparation_screen.dart';
 import 'package:frontend/screens/notification_setting_screen.dart';
 import 'package:frontend/screens/my_report_screen.dart';
 import 'package:frontend/screens/member_withdraw_screen.dart';
-import 'package:frontend/screens/gallery_screen.dart';
 import 'package:frontend/screens/update_member_screen.dart';
 
 class MyPageScreen extends StatefulWidget {
@@ -135,7 +134,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     ),
                     SettingItem(
                       title: "포인트 내역",
-                      screen: GalleryScreen(),
                     ),
                     SettingItem(
                       title: "로그아웃",

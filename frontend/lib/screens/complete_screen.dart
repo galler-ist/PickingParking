@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/button.dart';
+import 'package:get/get.dart';
 
 class CompleteScreen extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class _CompleteScreenState extends State<CompleteScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _checkAnimation;
+  late String message;
+  late String detailMessage;
 
   @override
   void initState() {
@@ -22,17 +25,28 @@ class _CompleteScreenState extends State<CompleteScreen>
       vsync: this,
     );
 
-    // 스케일 애니메이션 초기화 (원 크기 확대)
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
     );
 
-    // 체크 마크 그리기 애니메이션 초기화
     _checkAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    _controller.forward(); // 애니메이션 시작
+    _controller.forward();
+
+    // arguments를 통해 상황에 맞는 메시지를 설정
+    final args = Get.arguments ?? {};
+    if (args['type'] == 'reservation') {
+      message = "예약 완료!";
+      detailMessage = "버튼을 누르시면 예약 화면으로 돌아갑니다.";
+    } else if (args['type'] == 'parking') {
+      message = "주차 구역 등록 완료!";
+      detailMessage = "버튼을 누르시면 주차 화면으로 돌아갑니다.";
+    } else {
+      message = "결제 완료!";
+      detailMessage = "버튼을 누르시면 충전 화면으로 돌아갑니다.";
+    }
   }
 
   @override
@@ -44,7 +58,7 @@ class _CompleteScreenState extends State<CompleteScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("결제 완료")),
+      appBar: AppBar(title: const Text("완료")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,14 +89,14 @@ class _CompleteScreenState extends State<CompleteScreen>
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              "결제 완료!",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              message,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            const Text(
-              "버튼을 누르시면 충전 화면으로 돌아갑니다.",
-              style: TextStyle(fontSize: 16),
+            Text(
+              detailMessage,
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
             Button(
@@ -116,13 +130,11 @@ class CheckPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // 체크 마크 경로 설정
     final path = Path();
-    path.moveTo(size.width * 0.1, size.height * 0.5); // 시작 지점
-    path.lineTo(size.width * 0.4, size.height * 0.8); // 중간 지점
-    path.lineTo(size.width * 0.9, size.height * 0.2); // 끝 지점
+    path.moveTo(size.width * 0.1, size.height * 0.5);
+    path.lineTo(size.width * 0.4, size.height * 0.8);
+    path.lineTo(size.width * 0.9, size.height * 0.2);
 
-    // 애니메이션 진행에 따라 체크 마크를 부분적으로 그리기
     final pathMetrics = path.computeMetrics();
     for (var metric in pathMetrics) {
       final extractPath = metric.extractPath(0.0, metric.length * progress);
