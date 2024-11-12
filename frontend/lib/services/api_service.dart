@@ -97,7 +97,7 @@ class ApiService {
 
   Future<dynamic> login(Map<String, dynamic> formData) async {
     const storage = FlutterSecureStorage();
-    final url = Uri.parse('$baseUrl/user/login');
+    final url = Uri.parse('$baseUrl/api/user/login');
     try {
       final response = await http.post(
         url,
@@ -109,15 +109,11 @@ class ApiService {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         controller.accessToken.value = responseData['accessToken'];
-        // await storage.write(
-        //     key: "login",
-        //     value:
-        //         "${controller.memberEmail.value} ${controller.accessToken.value} ${controller.memberId.value} ${controller.memberName.value} ${controller.memberRole.value}");
-        // await sendFCMToken();
-
         return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
+        print(response.statusCode);
+        print('$baseUrl/api/user/login');
         return responseData;
       }
     } catch (e) {

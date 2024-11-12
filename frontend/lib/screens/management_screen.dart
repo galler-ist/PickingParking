@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/reservation_management_screen.dart';
 import 'package:frontend/screens/parking_zone_management_screen.dart';
+import 'package:frontend/screens/parking_zone_submit_screen.dart';
 
 class ManagementScreen extends StatelessWidget {
   const ManagementScreen({Key? key}) : super(key: key);
@@ -24,20 +25,19 @@ class ManagementScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 스크린 상단부 소개 문구
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text: "Picking Parking",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
                     const TextSpan(
-                      text: "을 통해 간편하게 주차 문제를 해결보세요",
+                      text: "은 다양한 주차 관련 서비스를 제공합니다.",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -49,28 +49,27 @@ class ManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               const Text(
-                "다양한 기능이 있습니다.",
+                "앱 하나로 편리하게 주차 문제를 해결해보세요.",
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 10,
                   color: Colors.black54,
                 ),
               ),
               const SizedBox(height: 24),
-
-              // 관리 카드 영역
               Center(
                 child: Wrap(
                   spacing: 16.0,
                   runSpacing: 16.0,
                   alignment: WrapAlignment.center,
                   children: [
-                    // 예약 관리 카드
                     _buildManagementCard(
-                      icon: SvgPicture.asset(
-                          'assets/icons/icon_reservation.svg',
-                          width: 48),
+                      icon: Image.asset(
+                        'assets/icons/reservation_management.png',
+                        width: 48,
+                        height: 48,
+                      ),
                       label: "예약 관리",
-                      description: "예약 관리에서는 현재 예약 관리, 차량 설정, 찜한 주차장 기능이 있습니다.",
+                      description: "예약 관리에서는 내 예약 관리, 내 차량 설정 기능을 제공합니다.",
                       onTap: () {
                         Get.to(() => const ReservationManagementScreen());
                       },
@@ -78,12 +77,14 @@ class ManagementScreen extends StatelessWidget {
                           ? (screenWidth - 64) / 2
                           : screenWidth - 32,
                     ),
-                    // 주차장 관리 카드
                     _buildManagementCard(
-                      icon: SvgPicture.asset('assets/icons/icon_management.svg',
-                          width: 48),
+                      icon: Image.asset(
+                        'assets/icons/parking_zone_management.png',
+                        width: 48,
+                        height: 48,
+                      ),
                       label: "주차장 관리",
-                      description: "주차장 관리에서는 주차장 등록 및 관리 기능을 제공합니다.",
+                      description: "주차장 관리에서는 신고 기능과 현재 주차장 상태를 제공합니다.",
                       onTap: () {
                         Get.to(() => const ParkingZoneManagementScreen());
                       },
@@ -91,9 +92,24 @@ class ManagementScreen extends StatelessWidget {
                           ? (screenWidth - 64) / 2
                           : screenWidth - 32,
                     ),
+                    _buildManagementCard(
+                      icon: Image.asset(
+                        'assets/icons/parking_zone_submit.png',
+                        width: 48,
+                        height: 48,
+                      ),
+                      label: "주차장 등록",
+                      description: "새로운 주차장을 등록하고 관리하세요.",
+                      onTap: () {
+                        Get.to(() => const ParkingZoneSubmitScreen());
+                      },
+                      cardWidth: isWideScreen
+                          ? (screenWidth - 64) / 2
+                          : screenWidth - 32,
+                    ),
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -106,7 +122,6 @@ class ManagementScreen extends StatelessWidget {
     );
   }
 
-  // 관리 카드 빌드 메서드
   Widget _buildManagementCard({
     required Widget icon,
     required String label,
@@ -118,28 +133,45 @@ class ManagementScreen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: cardWidth,
-        height: 140,
+        height: 160,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                icon,
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  icon,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             Text(

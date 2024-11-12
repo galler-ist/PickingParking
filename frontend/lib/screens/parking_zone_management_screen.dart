@@ -6,7 +6,6 @@ import 'package:frontend/controller.dart';
 import 'package:frontend/screens/parking_zone_history_screen.dart';
 import 'package:frontend/components/common/custom_modal.dart';
 import 'package:frontend/screens/parking_zone_setting_screen.dart';
-import 'package:frontend/screens/parking_zone_submit_screen.dart';
 import 'package:frontend/screens/parking_zone_detail_screen.dart';
 
 class ParkingZoneManagementScreen extends StatelessWidget {
@@ -59,16 +58,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
-              ElevatedButton(
-                onPressed: () => Get.to(() => const ParkingZoneSubmitScreen()),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-                child: const Text("주차장 등록"),
-              ),
-              const SizedBox(height: 24),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

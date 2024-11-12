@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:frontend/screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,13 +20,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final MainController controller = Get.put(MainController());
   final formKey = GlobalKey<FormState>();
+  Map<String, dynamic> formData = {};
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   String? idError;
   String? passwordError;
 
-  void submitForm() async {
+  // 로그인 API 호출 함수
+  Future<void> submitForm() async {
     setState(() {
       idError = null;
       passwordError = null;
@@ -49,7 +53,34 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (isValid) {
-      print("로그인 성공");
+      formKey.currentState!.save();
+      final apiService = ApiService();
+      formData = {
+        'username': idController.text,
+        'password': passwordController.text,
+      };
+
+      try {
+        final res = await apiService.login(formData);
+        if (res == 200) {
+          // 로그인 성공 시 홈 화면으로 이동
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            controller.changePage(0); // 홈 화면으로 이동
+          });
+        } else {
+          Get.snackbar(
+            '오류',
+            '${res["message"]}',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      } catch (e) {
+        Get.snackbar(
+          '오류',
+          '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     }
   }
 
