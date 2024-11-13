@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+//    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,12 +30,10 @@ public class UserService {
 
     // 회원가입
     public User signupUser(String userId, String password, String phoneNumber) {
-        logger.info("회원가입 시도 1 - userId: {}", userId);
         if (userRepository.findByUserId(userId).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
-        logger.info("회원가입 시도 2 - userId: {}", userId);
 
         User user = User.builder()
                 .userId(userId)
@@ -48,26 +46,20 @@ public class UserService {
 
     // 로그인
     public User loginUser(String userId, String password) {
-        logger.info("로그인 시도 1 - userId : {}", userId);
+
         Optional<User> userOptional = userRepository.findByUserId(userId);
+        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        logger.info("로그인 시도 2 - userId : {}", userId);
-
-        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        logger.info("로그인 시도 3 - userId : {}", userId);
 
         if(user.getUnsubcribedDate() != null) {
             throw new IllegalArgumentException("탈퇴한 사용자입니다. 로그인할 수 없습니다.");
         }
 
-        logger.info("로그인 시도 4 - userId : {}", userId);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        logger.info("로그인 시도 5 - userId : {}", userId);
 
         return user;
     }
