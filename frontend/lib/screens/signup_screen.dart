@@ -54,31 +54,26 @@ class _SignupScreenState extends State<SignupScreen> {
 
     bool isValid = true;
 
-    // 아이디 입력 검사
     if (idController.text.isEmpty) {
       idError = "아이디를 입력하세요.";
       isValid = false;
     }
 
-    // 비밀번호 검사
     if (passwordController.text.length < 6) {
       passwordError = "비밀번호는 6자 이상이어야 합니다.";
       isValid = false;
     }
 
-    // 비밀번호 확인 검사
     if (confirmPasswordController.text != passwordController.text) {
       confirmPasswordError = "비밀번호가 일치하지 않습니다.";
       isValid = false;
     }
 
-    // 전화번호 검사
     if (phoneController.text.isEmpty) {
       phoneError = "휴대폰 번호를 입력하세요.";
       isValid = false;
     }
 
-    // 차량 번호 검사
     if (carNumberController.text.isEmpty) {
       carNumberError = "차량 번호를 입력하세요.";
       isValid = false;

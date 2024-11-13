@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/management_screen.dart';
 import 'package:frontend/screens/reservation_screen.dart';
@@ -14,7 +13,6 @@ import 'controller.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: 'assets/config/.env');
-  // await Firebase.initializeApp();
 
   await checkPermissions();
 
