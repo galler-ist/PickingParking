@@ -22,9 +22,7 @@ class ParkingZoneSettingScreen extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add, size: 24),
-                  onPressed: () {
-                    // + 버튼 동작 추가
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -64,14 +62,12 @@ class ParkingZoneSettingScreen extends StatelessWidget {
                             ),
                           ],
                           icon: const Icon(Icons.more_vert),
-                          offset: const Offset(0, 40), // 버튼 아래에 메뉴가 나타나도록 조정
+                          offset: const Offset(0, 40),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-
-                  // 주차장 상세 정보 항목들
                   _buildDetailRow("주차장 이름", "서울 역삼 멀티캠퍼스 주차장"),
                   const SizedBox(height: 8),
                   _buildDetailRow("주차장 위치", "서울특별시 강남구 역삼동"),
@@ -86,7 +82,6 @@ class ParkingZoneSettingScreen extends StatelessWidget {
     );
   }
 
-  // Detail Row 통일된 디자인
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

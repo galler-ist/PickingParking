@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String? idError;
   String? passwordError;
 
-  // 로그인 API 호출 함수
   Future<void> submitForm() async {
     setState(() {
       idError = null;
@@ -36,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     bool isValid = true;
 
-    // 아이디 유효성 검사
     if (idController.text.isEmpty) {
       setState(() {
         idError = "아이디를 입력하세요.";
@@ -44,7 +42,6 @@ class _LoginScreenState extends State<LoginScreen> {
       isValid = false;
     }
 
-    // 비밀번호 유효성 검사
     if (passwordController.text.isEmpty || passwordController.text.length < 6) {
       setState(() {
         passwordError = "비밀번호는 6자 이상이어야 합니다.";
@@ -63,9 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         final res = await apiService.login(formData);
         if (res == 200) {
-          // 로그인 성공 시 홈 화면으로 이동
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            controller.changePage(0); // 홈 화면으로 이동
+            controller.changePage(0);
           });
         } else {
           Get.snackbar(

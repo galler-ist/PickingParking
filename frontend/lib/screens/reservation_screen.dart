@@ -4,11 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:frontend/components/map/parking_zone_reservation.dart';
-import 'package:flutter_compass_v2/flutter_compass_v2.dart';
-import 'dart:math' as math;
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/map/map_reservation_submit.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});
@@ -24,7 +22,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   bool loading = true;
   int? selectedIndex;
   bool showReservationSubmit = false;
-  String searchText = ''; // 검색어 상태 변수
+  String searchText = '';
 
   final List<Map<String, dynamic>> dummyData = [
     {
@@ -85,7 +83,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 
-  // 주차장 검색 기능
+  void _moveToCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      currentCenter = LatLng(position.latitude, position.longitude);
+      _mapController.move(currentCenter!, 15.0);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredData = dummyData.where((data) {
@@ -97,9 +102,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // 검색창 및 연관 검색어 리스트
           Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -115,7 +119,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
               },
             ),
           ),
-          // 검색창에 문자 썼을 때 나타나는 위젯
           if (searchText.isNotEmpty)
             SingleChildScrollView(
               child: Column(
@@ -130,15 +133,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
                         showReservationSubmit = true;
                         _moveToLocation(item['latitude'], item['longitude']);
                         setState(() {
-                          searchText = ''; // 검색어 초기화
+                          searchText = '';
                         });
                       },
                     ),
                 ],
               ),
             ),
-
-          // 지도 구현
           Expanded(
             flex: showReservationSubmit ? 1 : 2,
             child: loading
@@ -165,15 +166,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
                             markers: showReservationSubmit &&
                                     selectedIndex != null
                                 ? [
-                                    // 예약 제출이 활성화된 경우 선택된 마커만 표시
                                     Marker(
                                       point: LatLng(
                                         dummyData[selectedIndex!]['latitude'],
                                         dummyData[selectedIndex!]['longitude'],
                                       ),
                                       builder: (ctx) => Stack(
-                                        clipBehavior: Clip
-                                            .none, // Stack 영역 밖으로 나가도 클리핑되지 않게 설정
+                                        clipBehavior: Clip.none,
                                         children: [
                                           GestureDetector(
                                             onTap: () {
@@ -215,11 +214,10 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                     return Marker(
                                       point: location,
                                       builder: (ctx) => Stack(
-                                        clipBehavior: Clip
-                                            .none, // Stack 영역 밖으로 나가도 클리핑되지 않게 설정
+                                        clipBehavior: Clip.none,
                                         children: [
                                           Positioned(
-                                            bottom: 0, // 마커를 아래로 배치
+                                            bottom: 0,
                                             child: GestureDetector(
                                               onTap: () {
                                                 setState(() {
@@ -244,8 +242,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                             ),
                                           ),
                                           Positioned(
-                                            bottom: 0, // y축에 30만큼 위로 이동
-                                            left: 30, // x축에 20만큼 오른쪽으로 이동
+                                            bottom: 0,
+                                            left: 30,
                                             child: Container(
                                               padding: EdgeInsets.all(0),
                                               color:
@@ -265,10 +263,19 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           )
                         ],
                       ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          onPressed: _moveToCurrentLocation,
+                          backgroundColor: Colors.grey,
+                          child:
+                              const Icon(Icons.my_location, color: Colors.blue),
+                        ),
+                      ),
                     ],
                   ),
           ),
-
           if (showReservationSubmit && selectedIndex != null)
             Expanded(
               flex: 2,

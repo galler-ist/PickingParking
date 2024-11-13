@@ -24,8 +24,6 @@ class ParkingZoneDetailScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
-              // 주차장 상세 정보
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
@@ -63,7 +61,6 @@ class ParkingZoneDetailScreen extends StatelessWidget {
     );
   }
 
-  // 공통 Detail Row 위젯
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

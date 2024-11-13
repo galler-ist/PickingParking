@@ -11,7 +11,6 @@ class ReservationHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final MainController controller = Get.find<MainController>();
 
-    // Simplified dummy data with only necessary fields
     final List<Map<String, dynamic>> dummyData = [
       {
         "date": "2024.06.11",
@@ -52,7 +51,6 @@ class ReservationHistoryScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Date header
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
@@ -64,7 +62,6 @@ class ReservationHistoryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // Transactions for the date
               ...dateSection["transactions"].map<Widget>((transaction) {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -75,7 +72,6 @@ class ReservationHistoryScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      // Icon and location
                       Row(
                         children: [
                           Icon(
@@ -99,7 +95,7 @@ class ReservationHistoryScreen extends StatelessWidget {
                         transaction["points"],
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.red, // All points are deductions
+                          color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
