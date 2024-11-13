@@ -268,9 +268,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
                         right: 20,
                         child: FloatingActionButton(
                           onPressed: _moveToCurrentLocation,
-                          backgroundColor: Colors.grey,
-                          child:
-                              const Icon(Icons.my_location, color: Colors.blue),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Icon(Icons.my_location,
+                              color: Theme.of(context).primaryColorLight),
                         ),
                       ),
                     ],
