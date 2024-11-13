@@ -4,12 +4,15 @@ import a102.PickingParking.entity.User;
 import a102.PickingParking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -45,7 +48,7 @@ public class UserService {
     }
 
     // 로그인
-    public User loginUser(String userId, String password) {
+    public ResponseEntity<Map<String, String>> loginUser(String userId, String password) {
 
         Optional<User> userOptional = userRepository.findByUserId(userId);
         User user = userOptional.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -59,9 +62,13 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        // 로그인 성공 시 accessToken 응답
+        String accessToken = user.getUserId();
+        Map<String, String> response = new HashMap<>();
+        response.put("accessToken", accessToken);
+        response.put("userId", userId);
 
-
-        return user;
+        return ResponseEntity.ok(response);
     }
 
     // 회원탈퇴
