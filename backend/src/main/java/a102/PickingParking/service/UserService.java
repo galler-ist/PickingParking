@@ -48,7 +48,7 @@ public class UserService {
     }
 
     // 로그인
-    public ResponseEntity<Map<String, String>> loginUser(String userId, String password) {
+    public Map<String, String> loginUser(String userId, String password) {
 
         Optional<User> userOptional = userRepository.findByUserId(userId);
         User user = userOptional.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -68,7 +68,7 @@ public class UserService {
         response.put("accessToken", accessToken);
         response.put("userId", userId);
 
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     // 회원탈퇴

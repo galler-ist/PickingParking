@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "인증/인가 API", description = "인증/인가 관련 API")
@@ -37,13 +39,12 @@ public class UserController {
     // 로그인 API
     // @RequestParam String username, @RequestParam String password
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Map<String,String>> loginUser(@RequestBody UserRequestDto userRequestDto) {
         try {
-            userService.loginUser(userRequestDto.getUser_id(),
-                    userRequestDto.getUser_pw());
-            return ResponseEntity.ok("로그인 성공");
+            Map<String,String> response = userService.loginUser(userRequestDto.getUser_id(),userRequestDto.getUser_pw());
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
     }
 
