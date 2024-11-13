@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
-import 'package:frontend/screens/home_screen.dart';
 
 class ParkingSubmit extends StatefulWidget {
   final double latitude;

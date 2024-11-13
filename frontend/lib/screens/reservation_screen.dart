@@ -4,11 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:frontend/components/map/parking_zone_reservation.dart';
-import 'package:flutter_compass_v2/flutter_compass_v2.dart';
-import 'dart:math' as math;
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/map/map_reservation_submit.dart';
+import 'package:frontend/components/common/bottom_navigation_bar.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({super.key});
@@ -24,7 +22,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   bool loading = true;
   int? selectedIndex;
   bool showReservationSubmit = false;
-  String searchText = ''; // 검색어 상태 변수
+  String searchText = '';
 
   final List<Map<String, dynamic>> dummyData = [
     {
@@ -81,6 +79,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
   void _moveToLocation(double lat, double lng) {
     setState(() {
       currentCenter = LatLng(lat, lng);
+      _mapController.move(currentCenter!, 15.0);
+    });
+  }
+
+  void _moveToCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      currentCenter = LatLng(position.latitude, position.longitude);
       _mapController.move(currentCenter!, 15.0);
     });
   }
@@ -264,6 +270,16 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                   }).toList(),
                           )
                         ],
+                      ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          onPressed: _moveToCurrentLocation,
+                          backgroundColor: Colors.blue,
+                          child: const Icon(Icons.my_location,
+                              color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
