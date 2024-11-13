@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
+import 'package:frontend/screens/complete_screen.dart';
 
 class ReservationSubmit extends StatefulWidget {
   final double latitude;
@@ -118,7 +118,6 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
               ],
             ),
 
-            // 시간 및 요금 탭
             Column(
               children: [
                 const SizedBox(height: 16),
@@ -130,7 +129,7 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                         children: [
                           Text("시작 시간"),
                           Container(
-                            height: 120, // 높이를 조정
+                            height: 120,
                             child: Row(
                               children: [
                                 Expanded(
@@ -177,7 +176,7 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                         children: [
                           Text("종료 시간"),
                           Container(
-                            height: 120, // 높이를 조정
+                            height: 120,
                             child: Row(
                               children: [
                                 Expanded(
@@ -246,8 +245,13 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                                       actions: [
                                         TextButton(
                                           onPressed: () {
-                                            Get.to(() =>
-                                                ParkingZoneSubmitComplete());
+                                            Get.to(
+                                              () => CompleteScreen(),
+                                              arguments: {
+                                                'type': 'reservation'
+                                              },
+                                            );
+                                            ;
                                           },
                                           child: const Text('결제하기'),
                                         ),

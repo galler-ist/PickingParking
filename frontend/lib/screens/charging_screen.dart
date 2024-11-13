@@ -100,7 +100,10 @@ class ChargingScreen extends StatelessWidget {
           content: "충전하시겠습니까?",
           onConfirm: () {
             Navigator.of(context).pop();
-            Get.to(() => CompleteScreen());
+            Get.to(
+              () => CompleteScreen(),
+              arguments: {'type': 'charging'},
+            );
           },
           onCancel: () => Navigator.of(context).pop(),
         );

@@ -27,11 +27,8 @@ class ParkingZoneManagementScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 내 주차장 섹션 헤더
               _buildSectionHeader("내 주차장"),
               const SizedBox(height: 8),
-
-              // 내 주차장 정보
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
@@ -58,7 +55,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -93,8 +89,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-
-              // 최근 주차 내역 섹션
               _buildSectionHeader("최근 주차 내역"),
               const SizedBox(height: 8),
               _buildHistoryItem(
@@ -104,8 +98,6 @@ class ParkingZoneManagementScreen extends StatelessWidget {
                 amount: "4500 P",
               ),
               const SizedBox(height: 16),
-
-              // 최근 신고 내역 섹션
               _buildSectionHeader("최근 신고 내역"),
               const SizedBox(height: 8),
               _buildHistoryItem(

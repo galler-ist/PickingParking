@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 class SettingItem extends StatelessWidget {
   final String title;
-  final Widget? screen; // 화면 이동이 필요한 경우
-  final VoidCallback? onTap; // 콜백 함수가 필요한 경우
+  final Widget? screen;
+  final VoidCallback? onTap;
   final Color? fontColor;
 
   const SettingItem({
