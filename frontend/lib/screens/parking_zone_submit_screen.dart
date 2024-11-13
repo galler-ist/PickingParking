@@ -28,6 +28,23 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
     getPosition();
   }
 
+  Future<void> _moveToCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
+      );
+      setState(() {
+        currentCenter = LatLng(position.latitude, position.longitude);
+        _mapController.move(currentCenter!, 15.0);
+      });
+    } catch (e) {
+      print("Error fetching current location: $e");
+    }
+  }
+
   void _onMapMove(MapPosition position, bool hasGesture) {
     setState(() {
       currentCenter = position.center;
@@ -137,6 +154,16 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
                           'assets/icons/pin_map.svg',
                           width: 40,
                           height: 40,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          onPressed: _moveToCurrentLocation,
+                          backgroundColor: Colors.blue,
+                          child: const Icon(Icons.my_location,
+                              color: Colors.white),
                         ),
                       ),
                     ],
