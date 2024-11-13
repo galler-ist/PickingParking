@@ -8,7 +8,6 @@ import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/components/setting_screen/setting_item.dart';
 import 'package:frontend/screens/preparation_screen.dart';
 import 'package:frontend/screens/notification_setting_screen.dart';
-import 'package:frontend/screens/my_report_screen.dart';
 import 'package:frontend/screens/member_withdraw_screen.dart';
 import 'package:frontend/screens/update_member_screen.dart';
 
@@ -117,7 +116,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.grey.shade300),
                 const SizedBox(height: 10),
-                // 설정 항목 리스트
                 Column(
                   children: [
                     SettingItem(
@@ -127,10 +125,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     SettingItem(
                       title: "고객센터",
                       screen: PreparationScreen(),
-                    ),
-                    SettingItem(
-                      title: "나의 신고",
-                      screen: MyReportScreen(),
                     ),
                     SettingItem(
                       title: "포인트 내역",

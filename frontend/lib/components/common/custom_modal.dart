@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'button.dart'; // Import your custom button component
+import 'button.dart';
 
 class CustomModal extends StatelessWidget {
   final String title;
   final String content;
   final VoidCallback onConfirm;
-  final VoidCallback? onCancel; // Make onCancel nullable
+  final VoidCallback? onCancel;
 
   const CustomModal({
     Key? key,
     required this.title,
     required this.content,
     required this.onConfirm,
-    this.onCancel, // Allow null
+    this.onCancel,
   }) : super(key: key);
 
   @override

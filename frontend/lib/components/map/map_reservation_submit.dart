@@ -119,7 +119,6 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
               ],
             ),
 
-            // 시간 및 요금 탭
             Column(
               children: [
                 const SizedBox(height: 16),
@@ -131,7 +130,7 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                         children: [
                           Text("시작 시간"),
                           Container(
-                            height: 120, // 높이를 조정
+                            height: 120,
                             child: Row(
                               children: [
                                 Expanded(
@@ -178,7 +177,7 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
                         children: [
                           Text("종료 시간"),
                           Container(
-                            height: 120, // 높이를 조정
+                            height: 120,
                             child: Row(
                               children: [
                                 Expanded(

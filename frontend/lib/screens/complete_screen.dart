@@ -35,7 +35,6 @@ class _CompleteScreenState extends State<CompleteScreen>
 
     _controller.forward();
 
-    // arguments를 통해 상황에 맞는 메시지를 설정
     final args = Get.arguments ?? {};
     if (args['type'] == 'reservation') {
       message = "예약 완료!";
@@ -116,7 +115,6 @@ class _CompleteScreenState extends State<CompleteScreen>
   }
 }
 
-// 체크 마크 애니메이션을 그리기 위한 CustomPainter
 class CheckPainter extends CustomPainter {
   final double progress;
 

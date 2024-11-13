@@ -89,28 +89,6 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
       'detailedAddress': detailedAddress,
     });
     print('미리 볼 JSON 데이터: $data');
-
-    // 실제 API 요청 코드
-    // final url = 'YOUR_API_ENDPOINT';
-    // try {
-    //   final response = await http.post(
-    //     Uri.parse(url),
-    //     headers: {"Content-Type": "application/json"},
-    //     body: jsonEncode({
-    //       'address': address,
-    //       'detailed_address': detailedAddress,
-    //       'latitude': widget.latitude,
-    //       'longitude': widget.longitude,
-    //     }),
-    //   );
-    //   if (response.statusCode == 200) {
-    //     print('주소 제출 성공');
-    //   } else {
-    //     print('주소 제출 실패: ${response.statusCode}');
-    //   }
-    // } catch (e) {
-    //   print('오류 발생: $e');
-    // }
   }
 
   @override
@@ -160,7 +138,6 @@ class _ParkingSubmitState extends State<ParkingSubmit> {
                       ElevatedButton(
                         onPressed: () {
                           _submitAddress();
-                          // 주소 제출 후 CompleteScreen으로 이동하며 'parking' 타입 전달
                           Get.to(
                             () => CompleteScreen(),
                             arguments: {'type': 'parking'},
