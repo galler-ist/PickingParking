@@ -5,8 +5,6 @@ class MainController extends GetxController {
   var accessToken = "".obs;
   var currentIndex = 0.obs;
   var pageStack = <int>[0].obs;
-
-  // Urecar api service 오류 방지 위한 임시 변수들
   var memberEmail = "".obs;
   var memberId = 0.obs;
   var memberName = "".obs;

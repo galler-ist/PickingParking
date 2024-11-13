@@ -19,12 +19,12 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
   final MapController _mapController = MapController();
   LatLng? currentCenter;
   bool loading = true;
-  bool showParkingSubmit = false; // ParkingSubmit 위젯 표시 여부
+  bool showParkingSubmit = false;
 
   @override
   void initState() {
     super.initState();
-    currentCenter = LatLng(37.50125721312779, 127.03957422312601); // 초기 위치 설정
+    currentCenter = LatLng(37.50125721312779, 127.03957422312601);
     getPosition();
   }
 
@@ -73,7 +73,7 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
 
   void _toggleParkingSubmit() {
     setState(() {
-      showParkingSubmit = !showParkingSubmit; // 상태 토글
+      showParkingSubmit = !showParkingSubmit;
     });
   }
 
@@ -109,7 +109,7 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
       body: Column(
         children: [
           Expanded(
-            flex: showParkingSubmit ? 1 : 2, // ParkingSubmit 표시 여부에 따라 비율 조정
+            flex: showParkingSubmit ? 1 : 2,
             child: loading
                 ? const Center(child: CircularProgressIndicator())
                 : Stack(
@@ -132,7 +132,6 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
                           ),
                         ],
                       ),
-                      // 고정된 핀 아이콘
                       Center(
                         child: SvgPicture.asset(
                           'assets/icons/pin_map.svg',
@@ -143,9 +142,9 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
                     ],
                   ),
           ),
-          if (showParkingSubmit) // ParkingSubmit 위젯을 조건부로 표시
+          if (showParkingSubmit)
             Expanded(
-              flex: 1, // ParkingSubmit 위젯의 비율을 1로 설정
+              flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ParkingSubmit(
@@ -157,10 +156,10 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: _toggleParkingSubmit, // 버튼 클릭 시 상태 토글
-              child: Text(showParkingSubmit ? '닫기' : '등록하기'), // 버튼 텍스트 변경
+              onPressed: _toggleParkingSubmit,
+              child: Text(showParkingSubmit ? '닫기' : '등록하기'),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // 버튼 전체 폭 사용
+                minimumSize: Size(double.infinity, 50),
                 backgroundColor: Colors.blue,
               ),
             ),

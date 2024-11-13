@@ -242,8 +242,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                             ),
                                           ),
                                           Positioned(
-                                            bottom: 0, // y축에 30만큼 위로 이동
-                                            left: 30, // x축에 20만큼 오른쪽으로 이동
+                                            bottom: 0,
+                                            left: 30,
                                             child: Container(
                                               padding: EdgeInsets.all(0),
                                               color:

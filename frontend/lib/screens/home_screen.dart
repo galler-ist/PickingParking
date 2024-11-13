@@ -97,7 +97,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 포인트 컨테이너
   Widget _buildPointContainer(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),

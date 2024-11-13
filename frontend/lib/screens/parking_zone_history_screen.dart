@@ -14,9 +14,8 @@ class ParkingZoneHistoryScreen extends StatefulWidget {
 
 class _ParkingZoneHistoryScreenState extends State<ParkingZoneHistoryScreen> {
   final MainController controller = Get.find<MainController>();
-  bool showParkingHistory = true; // 토글 상태를 위한 변수
+  bool showParkingHistory = true;
 
-  // 주차 이력 더미 데이터
   final List<Map<String, dynamic>> parkingHistoryData = [
     {
       "date": "2024.07.15",
@@ -47,7 +46,6 @@ class _ParkingZoneHistoryScreenState extends State<ParkingZoneHistoryScreen> {
     }
   ];
 
-  // 신고 이력 더미 데이터
   final List<Map<String, dynamic>> reportHistoryData = [
     {
       "date": "2024.07.20",

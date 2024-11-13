@@ -19,14 +19,11 @@ class ReservationDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 섹션 헤더
               const Text(
                 "예약 상세 정보",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
-              // 예약 상세 정보 Container
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
@@ -65,7 +62,6 @@ class ReservationDetailScreen extends StatelessWidget {
     );
   }
 
-  // 예약 상세 정보 Row
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
