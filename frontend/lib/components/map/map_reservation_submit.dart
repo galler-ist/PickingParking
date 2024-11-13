@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:frontend/screens/parking_zone_submit_complete_screen.dart';
 
