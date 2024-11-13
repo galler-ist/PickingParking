@@ -4,9 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:frontend/components/map/parking_zone_reservation.dart';
-import 'package:flutter_compass_v2/flutter_compass_v2.dart';
-import 'dart:math' as math;
 import 'package:frontend/controller.dart';
 import 'package:frontend/components/map/map_reservation_submit.dart';
 import 'package:frontend/components/common/bottom_navigation_bar.dart';
@@ -86,6 +83,14 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 
+  void _moveToCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      currentCenter = LatLng(position.latitude, position.longitude);
+      _mapController.move(currentCenter!, 15.0);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredData = dummyData.where((data) {
@@ -98,7 +103,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -257,6 +262,16 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                   }).toList(),
                           )
                         ],
+                      ),
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          onPressed: _moveToCurrentLocation,
+                          backgroundColor: Colors.grey,
+                          child:
+                              const Icon(Icons.my_location, color: Colors.blue),
+                        ),
                       ),
                     ],
                   ),
