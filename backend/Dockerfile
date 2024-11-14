@@ -11,4 +11,4 @@ COPY build/libs/*.jar /usr/app/
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/app/app.jar"]
