@@ -35,6 +35,6 @@ public class ParkingZone {
     @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "user_seq")
     private User user;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String prk_cmpr;
+    @Column(nullable = false, unique = true, length = 20, name = "prk_cmpr")
+    private String prkCmpr;
 }
