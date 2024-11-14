@@ -2,6 +2,7 @@ package a102.PickingParking.service;
 
 
 import a102.PickingParking.dto.ParkingZoneResponse;
+import a102.PickingParking.dto.UserIdDto;
 import a102.PickingParking.entity.ParkingZone;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.entity.ZoneStatus;
@@ -10,7 +11,9 @@ import a102.PickingParking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingZoneService {
@@ -52,7 +55,11 @@ public class ParkingZoneService {
         response.setPrice(parkingZone.getPrice());
         response.setStatus(parkingZone.getStatus());
         response.setPrkCmpr(parkingZone.getPrkCmpr());
-        response.setUserId(parkingUser.getUserId()); // userId만 포함
+
+        // userId만 포함
+        UserIdDto userResponse = new UserIdDto();
+        userResponse.setUserId(parkingUser.getUserId()); // userId 설정
+        response.setUser(userResponse); // UserResponse로 설정
 
         return response;
 
@@ -74,9 +81,42 @@ public class ParkingZoneService {
         response.setPrkCmpr(parkingZone.getPrkCmpr());
 
         if (parkingZone.getUser() != null) {
-            response.setUserId(parkingZone.getUser().getUserId());
+            UserIdDto userResponse = new UserIdDto();
+            userResponse.setUserId(parkingZone.getUser().getUserId()); // userId만 설정
+            response.setUser(userResponse); // UserResponse로 설정
         } else {
-            response.setUserId(null);
+            response.setUser(null);
+        }
+
+        return response;
+    }
+
+    // 모든 주차장 조회
+    public List<ParkingZoneResponse> getAllParkingZones() {
+        List<ParkingZone> allParkingZones = parkingZoneRepository.findAll();
+        return allParkingZones.stream()
+                .map(this::convertToResponse) // 응답 DTO로 변환
+                .collect(Collectors.toList());
+    }
+
+    // 주차장 객체를 응답 DTO로 변환
+    private ParkingZoneResponse convertToResponse(ParkingZone parkingZone) {
+        ParkingZoneResponse response = new ParkingZoneResponse();
+        response.setSeq(parkingZone.getSeq());
+        response.setLocation(parkingZone.getLocation());
+        response.setLatitude(parkingZone.getLatitude());
+        response.setLongitude(parkingZone.getLongitude());
+        response.setPrice(parkingZone.getPrice());
+        response.setStatus(parkingZone.getStatus());
+        response.setPrkCmpr(parkingZone.getPrkCmpr());
+
+        // User 정보 설정
+        if (parkingZone.getUser() != null) {
+            UserIdDto userResponse = new UserIdDto();
+            userResponse.setUserId(parkingZone.getUser().getUserId()); // userId만 설정
+            response.setUser(userResponse); // UserResponse로 s설정
+        } else {
+            response.setUser(null); // 주인이 없는 경우
         }
 
         return response;

@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDeleteDto {
-    private String user_id;
+public class UserIdDto {
+    private String userId;
 }

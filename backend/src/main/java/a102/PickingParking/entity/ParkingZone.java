@@ -1,5 +1,6 @@
 package a102.PickingParking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -33,6 +34,7 @@ public class ParkingZone {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "user_seq")
+    @JsonIgnore // 직렬화에서 제외
     private User user;
 
     @Column(nullable = false, unique = true, length = 20, name = "prk_cmpr")

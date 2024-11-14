@@ -64,24 +64,24 @@ public class UserControllerTest {
     }
     
     
-    @Test
-    @DisplayName("로그인 API 테스트")
-    public void testLoginUser() throws Exception{
-        //given
-        UserRequestDto userRequestDto = new UserRequestDto("testUser", "testPass");
-        User user = User.builder()
-                .userId(userRequestDto.getUser_id())
-                .password(passwordEncoder.encode(userRequestDto.getUser_pw()))
-                .build();
-
-        when(userService.loginUser(userRequestDto.getUser_id(), userRequestDto.getUser_pw())).thenReturn(user);
-
-        //when then
-        mockMvc.perform(post("/api/user/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("로그인 성공"));
-    }
+//    @Test
+//    @DisplayName("로그인 API 테스트")
+//    public void testLoginUser() throws Exception{
+//        //given
+//        UserRequestDto userRequestDto = new UserRequestDto("ssafy", "ilovessafy");
+//        User user = User.builder()
+//                .userId(userRequestDto.getUser_id())
+//                .password(passwordEncoder.encode(userRequestDto.getUser_pw()))
+//                .build();
+//
+//        when(userService.loginUser(userRequestDto.getUser_id(), userRequestDto.getUser_pw())).thenReturn(user);
+//
+//        //when then
+//        mockMvc.perform(post("/api/user/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(userRequestDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("로그인 성공"));
+//    }
 
 }

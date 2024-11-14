@@ -6,10 +6,13 @@ import a102.PickingParking.dto.PrkCmprDto;
 import a102.PickingParking.entity.ParkingZone;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.service.ParkingZoneService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Tag(name = "주차장 API", description = "주차장 관련 API")
@@ -35,5 +38,12 @@ public class ParkingZoneController {
     public ResponseEntity<ParkingZoneResponse> getUserByZoneId(@PathVariable Integer zoneSeq) {
         ParkingZoneResponse parkingZoneResponse = parkingZoneService.getParkingZoneBySeq(zoneSeq);
         return ResponseEntity.ok(parkingZoneResponse);
+    }
+
+    @Operation(summary = "주차장 조회", description = "모든 주차장을 리스트로 반환합니다.주차장의 주인이 있으면 dictionary로, 없으면 null")
+    @GetMapping
+    public ResponseEntity<List<ParkingZoneResponse>> getAllParkingZones() {
+        List<ParkingZoneResponse> allZones = parkingZoneService.getAllParkingZones();
+        return ResponseEntity.ok(allZones);
     }
 }

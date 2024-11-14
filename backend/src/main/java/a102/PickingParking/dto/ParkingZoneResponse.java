@@ -16,5 +16,5 @@ public class ParkingZoneResponse {
     private Integer price;
     private ZoneStatus status;
     private String prkCmpr;
-    private String userId;
+    private UserIdDto user;
 }
