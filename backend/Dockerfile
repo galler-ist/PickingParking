@@ -7,9 +7,9 @@ WORKDIR /usr/app
 ARG JAR_PATH=./build/libs
 
 # JAR 파일을 /usr/app/ 디렉토리로 복사
-COPY ${JAR_PATH}/PickingParking-0.0.1-SNAPSHOT.jar /usr/app/
+COPY ${JAR_PATH}/*.jar /usr/app/
 
 EXPOSE 8080
 
 # JAR 파일 실행
-ENTRYPOINT ["java", "-jar", "/usr/app/PickingParking-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/app/*.jar"]
