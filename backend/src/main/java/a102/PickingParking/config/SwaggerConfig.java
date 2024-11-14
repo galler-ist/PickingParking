@@ -21,15 +21,16 @@ public class SwaggerConfig {
                         .version("v1")
                         .description("API 명세서"));
         // 서버 정보 추가
-        Server localServer = new Server();
-        localServer.setDescription("local server");
-        localServer.setUrl("http://localhost:8080");
+//        Server localServer = new Server();
+//        localServer.setDescription("local server");
+//        localServer.setUrl("http://localhost:8080");
 
         Server prodHttpServer = new Server();
         prodHttpServer.setDescription("prod Https Server");
         prodHttpServer.setUrl("http://k11a102.p.ssafy.io:8080");
 
-        openAPI.setServers(Arrays.asList(localServer, prodHttpServer));
+//        openAPI.setServers(Arrays.asList(localServer, prodHttpServer));
+        openAPI.setServers(Arrays.asList(prodHttpServer));
         return openAPI;
 
     }
