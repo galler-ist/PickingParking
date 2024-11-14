@@ -25,11 +25,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
     const storage = FlutterSecureStorage();
     await storage.delete(key: 'login');
     setState(() {
-      controller.memberEmail.value = "";
+      controller.userEmail.value = "";
       controller.accessToken.value = "";
-      controller.memberId.value = 0;
-      controller.memberName.value = "";
-      controller.memberRole.value = "";
+      controller.userId.value = 0;
+      controller.userName.value = "";
+      controller.userRole.value = "";
     });
   }
 
@@ -55,7 +55,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 6.0),
                   child: GestureDetector(
                     onTap: () {
-                      Get.to(() => controller.memberName.value != ""
+                      Get.to(() => controller.userName.value != ""
                           ? const UpdateMemberScreen()
                           : const LoginScreen());
                     },
@@ -90,8 +90,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    controller.memberName.value != ""
-                                        ? controller.memberName.value
+                                    controller.userName.value != ""
+                                        ? controller.userName.value
                                         : "로그인",
                                     style: const TextStyle(
                                       fontSize: 24,
@@ -99,7 +99,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       color: Colors.black,
                                     ),
                                   ),
-                                  if (controller.memberName.value != "")
+                                  if (controller.userName.value != "")
                                     const Text(
                                       "정보 수정",
                                       style: TextStyle(color: Colors.grey),

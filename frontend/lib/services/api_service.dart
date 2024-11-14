@@ -87,9 +87,10 @@ class ApiService {
         },
         body: jsonEncode(formData),
       );
+      print(response.body);
       if (response.statusCode == 200) {
-        // final responseData = jsonDecode(response.body);
-        // controller.accessToken.value = responseData['accessToken'];
+        final responseData = jsonDecode(response.body);
+        controller.userName.value = responseData['userId'];
         return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
@@ -97,6 +98,7 @@ class ApiService {
         return responseData;
       }
     } catch (e) {
+      print(e);
       return e;
     }
   }
@@ -113,8 +115,8 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         controller.accessToken.value = "";
-        controller.memberId.value = 0;
-        controller.memberName.value = "";
+        controller.userId.value = 0;
+        controller.userName.value = "";
 
         return response.statusCode;
       } else {

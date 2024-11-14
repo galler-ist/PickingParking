@@ -22,7 +22,7 @@ class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
 
     void withdraw() async {
       final apiService = ApiService();
-      Map<String, dynamic> formData = {"memberId": controller.memberId.value};
+      Map<String, dynamic> formData = {"memberId": controller.userId.value};
       try {
         final res = await apiService.withdraw(formData);
         if (res == 200) {
