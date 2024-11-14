@@ -1,10 +1,13 @@
 FROM openjdk:21-jdk-slim
 
+# 앱 디렉토리 생성
+RUN mkdir -p /usr/app
+
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 
-# .jar 파일이 하나만 있을 경우, 단일 파일을 복사
-COPY build/libs/*.jar /usr/app/
+# .jar 파일을 앱 디렉토리로 복사
+COPY build/libs/*.jar /usr/app/app.jar
 
 EXPOSE 8080
 
