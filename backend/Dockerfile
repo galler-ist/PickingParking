@@ -1,15 +1,14 @@
 FROM openjdk:21-jdk-slim
 
-# 작업 디렉토리 설정
-WORKDIR /usr/app
+# 앱 디렉토리 생성
+RUN mkdir -p /usr/app
 
-# JAR 파일 경로 설정
-ARG JAR_PATH=./build/libs
+ENV APP_HOME=/usr/app/
+WORKDIR $APP_HOME
 
-# JAR 파일을 /usr/app/ 디렉토리로 복사
-COPY ${JAR_PATH}/*.jar /usr/app/
+# .jar 파일을 /usr/app/ 디렉토리로 복사
+COPY build/libs/*.jar /usr/app/
 
 EXPOSE 8080
 
-# JAR 파일 실행
 ENTRYPOINT ["java", "-jar", "/usr/app/*.jar"]
