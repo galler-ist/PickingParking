@@ -13,7 +13,7 @@
 # ENTRYPOINT ["java", "-jar", "/usr/app/PickingParking-0.0.1-SNAPSHOT.jar"]
 FROM openjdk:21-jdk-slim
 
-ARG JAR_FILE=PickingParking-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/PickingParking-0.0.1-SNAPSHOT.jar
 
 COPY ${JAR_FILE} /app.jar
 
