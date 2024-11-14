@@ -7,7 +7,7 @@ ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 
 # .jar 파일을 앱 디렉토리로 복사
-COPY build/libs/*.jar /usr/app/app.jar
+COPY build/libs/*.jar /usr/app.jar
 
 EXPOSE 8080
 
