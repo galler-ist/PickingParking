@@ -7,8 +7,7 @@ ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 
 # .jar 파일을 /usr/app/ 디렉토리로 복사
-COPY build/libs/*.jar /usr/app/app.jar
-
+COPY build/libs/*.jar /usr/app/
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/usr/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/app/PickingParking-0.0.1-SNAPSHOT.jar"]
