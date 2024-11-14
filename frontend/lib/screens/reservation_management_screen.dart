@@ -38,13 +38,16 @@ class ReservationManagementScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildReservationDetailRow("현재 주차중인 장소", "서울 역삼 멀티캠퍼스 주차장"),
                     _buildReservationDetailRow(
-                        "예약 시간", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 21:00"),
+                        context, "장소", "서울 역삼 멀티캠퍼스 주차장"),
                     _buildReservationDetailRow(
-                        "접수된 예약", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
-                    _buildReservationDetailRow("시간당 요금", "900 P/분"),
-                    _buildReservationDetailRow("현재 요금", "2700 P"),
+                        context, "현재 주차장 상태", "다른 차량 주차중"),
+                    _buildReservationDetailRow(context, "예약 시간",
+                        "3월 11일 (수) 10:00 ~ 3월 13일 (목) 21:00"),
+                    _buildReservationDetailRow(context, "접수된 예약",
+                        "3월 11일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
+                    _buildReservationDetailRow(context, "시간당 요금", "900 P/분"),
+                    _buildReservationDetailRow(context, "현재 요금", "2700 P"),
                   ],
                 ),
               ),
@@ -99,7 +102,18 @@ class ReservationManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReservationDetailRow(String label, String value) {
+  Widget _buildReservationDetailRow(
+      BuildContext context, String label, String value) {
+    Color getStatusColor(String status) {
+      if (status == '내 차 주차중') {
+        return Theme.of(context).primaryColor;
+      } else if (status == '다른 차량 주차중') {
+        return Colors.red;
+      } else {
+        return Colors.black;
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
@@ -108,14 +122,21 @@ class ReservationManagementScreen extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 10),
+              style: TextStyle(
+                fontSize: 10,
+                color:
+                    label == '현재 주차장 상태' ? getStatusColor(value) : Colors.black,
+              ),
             ),
           ),
         ],

@@ -5,10 +5,10 @@ class MainController extends GetxController {
   var accessToken = "".obs;
   var currentIndex = 0.obs;
   var pageStack = <int>[0].obs;
-  var memberEmail = "".obs;
-  var memberId = 0.obs;
-  var memberName = "".obs;
-  var memberRole = "".obs;
+  var userEmail = "".obs;
+  var userId = 0.obs;
+  var userName = "".obs;
+  var userRole = "".obs;
 
   void changePage(int index) {
     if (index < 0 || index >= 5) return;
