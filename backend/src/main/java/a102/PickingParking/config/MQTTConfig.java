@@ -365,9 +365,9 @@ public class MQTTConfig {
             String clientId = dotenv.get("AWS_CLIENT_ID");
 
             // 인증서 리소스 로드
-            String certPath = "classpath:certs/certificate.pem.crt";
-            String keyPath = "classpath:certs/private.pem.key";
-            String caPath = "classpath:certs/AmazonRootCA1.pem";
+            String certPath = "certs/certificate.pem.crt";
+            String keyPath = "certs/private.pem.key";
+            String caPath = "certs/AmazonRootCA1.pem";
 
             log.info("Loading certificates...");
 
