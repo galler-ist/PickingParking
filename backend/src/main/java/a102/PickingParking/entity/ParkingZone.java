@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "parking_zone")
@@ -39,4 +40,7 @@ public class ParkingZone {
 
     @Column(nullable = false, unique = true, length = 20, name = "prk_cmpr")
     private String prkCmpr;
+
+    @OneToMany(mappedBy = "parkingZone", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AvailableTime> availableTimes;
 }
