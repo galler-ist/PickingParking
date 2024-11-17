@@ -27,7 +27,7 @@ FROM openjdk:21-jdk-slim
 
 # JAR 파일 경로 변수 설정
 ARG JAR_FILE=build/libs/PickingParking-0.0.1-SNAPSHOT.jar
-ARG CERT_FILE=src/main/resources/certs/AmazonRootCA1.pem
+ARG CERT_FILE=backend/src/main/resources/certs/AmazonRootCA1.pem
 # 작업 디렉토리 생성
 WORKDIR /app
 
