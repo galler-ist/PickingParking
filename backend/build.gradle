@@ -63,7 +63,7 @@ test {
 
 processResources {
 	from('src/main/resources') {
-		include '**/*.pem'
+		include 'certs/**'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	}
 }
