@@ -38,12 +38,17 @@ public class ReservationService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
+//        // payment_seq가 4인 결제 정보 조회
+//        Payment payment = new Payment();
+//        payment.setSeq(4); // 고정된 payment_seq 설정
+
         // 예약 생성
         Reservation reservation = new Reservation();
         reservation.setStartTime(request.getStartTime());
         reservation.setEndTime(request.getEndTime());
         reservation.setZone(parkingZone);
         reservation.setUser(user);
+//        reservation.setPayment(payment);
         reservation.setStatus(ReservationStatus.RESERVATION); // 예약 상태 설정
 
         // 예약 저장
