@@ -13,7 +13,7 @@
 # # ENTRYPOINT ["java", "-jar", "/usr/app/PickingParking-0.0.1-SNAPSHOT.jar"]
 FROM openjdk:21-jdk-slim
 
-COPY .env /app/.env
+# COPY .env /app/.env
 
 # JAR 파일 경로 변수 설정
 ARG JAR_FILE=build/libs/PickingParking-0.0.1-SNAPSHOT.jar
