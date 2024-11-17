@@ -38,7 +38,7 @@ RUN mkdir -p /app/certs
 COPY ${JAR_FILE} app.jar
 
 # 인증서 파일만 직접 복사
-COPY src/main/resources/certs/AmazonRootCA1.pem /app/certs/
+COPY ./src/main/resources/certs/AmazonRootCA1.pem /app/certs/
 
 # 파일이 제대로 복사되었는지 확인 (디버깅용)
 RUN ls -la /app/certs
