@@ -33,12 +33,12 @@ public class ResultController {
 //    public void updateValidationResult(VehicleValidationResponse response) {
 //        this.latestResponse = response;
 //    }
-
+    private static final Long DEFAULT_TIMEOUT = 60L * 1000; // 1분
     private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @GetMapping(value = "/response", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamValidationResults() {
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
 
         // 클라이언트 연결 시 emitters에 추가
         emitters.add(emitter);
@@ -54,9 +54,9 @@ public class ResultController {
     public void updateValidationResult(VehicleValidationResponse response) {
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send(response); // 클라이언트에 결과 전송
+                emitter.send(response); // 연결된 클라이언트에게 데이터 전송
             } catch (IOException e) {
-                emitters.remove(emitter); // 오류 발생 시 emitter 제거
+                emitters.remove(emitter); // 전송 실패 시 emitter 제거
             }
         }
     }

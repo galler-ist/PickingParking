@@ -367,8 +367,8 @@ public class MQTTConfig {
 
             log.info("Parsed Message: {}", response);
             // ResultController의 updateValidationResult 메서드를 호출하여 결과 업데이트
-//            resultController.updateValidationResult(response);
-            sendResponseToFrontend(response);
+            resultController.updateValidationResult(response);
+//            sendResponseToFrontend(response);
         } catch (Exception e) {
             log.error("JSON parsing failed: {}", e.getMessage());
             e.printStackTrace();
