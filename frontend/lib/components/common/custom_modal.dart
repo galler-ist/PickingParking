@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'button.dart'; // Import your custom button component
+import 'button.dart';
 
 class CustomModal extends StatelessWidget {
   final String title;
   final String content;
   final VoidCallback onConfirm;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   const CustomModal({
     Key? key,
     required this.title,
     required this.content,
     required this.onConfirm,
-    required this.onCancel,
+    this.onCancel,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      backgroundColor:
-          const Color(0xFFF6F6F6), // Set background color to #f6f6f6
+      backgroundColor: const Color(0xFFF6F6F6),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -41,14 +40,15 @@ class CustomModal extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Button(
-                  text: "취소",
-                  onPressed: onCancel,
-                  horizontal: 6,
-                  vertical: 8,
-                  fontSize: 16,
-                  backgroundColor: Colors.grey,
-                ),
+                if (onCancel != null)
+                  Button(
+                    text: "취소",
+                    onPressed: onCancel!,
+                    horizontal: 6,
+                    vertical: 8,
+                    fontSize: 16,
+                    backgroundColor: Colors.grey,
+                  ),
                 Button(
                   text: "확인",
                   onPressed: onConfirm,
