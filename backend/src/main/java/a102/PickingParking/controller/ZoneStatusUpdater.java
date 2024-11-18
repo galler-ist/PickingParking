@@ -13,17 +13,17 @@ import java.util.Date;
 
 @Component
 public class ZoneStatusUpdater {
-    @Autowired
-    private ParkingZoneRepository parkingZoneRepository;
-
-    @Scheduled(fixedRate = 60000) // 1분마다 실행
-    @Transactional
-    public void updateZoneStatus() {
-        // 모든 주차장에 대해 상태 업데이트
-        parkingZoneRepository.findAll().forEach(parkingZone -> {
-            parkingZoneRepository.updateZoneStatusByZoneSeq(parkingZone.getSeq());
-        });
-    }
+//    @Autowired
+//    private ParkingZoneRepository parkingZoneRepository;
+//
+//    @Scheduled(fixedRate = 60000) // 1분마다 실행
+//    @Transactional
+//    public void updateZoneStatus() {
+//        // 모든 주차장에 대해 상태 업데이트
+//        parkingZoneRepository.findAll().forEach(parkingZone -> {
+//            parkingZoneRepository.updateZoneStatusByZoneSeq(parkingZone.getSeq());
+//        });
+//    }
 
 
 //    @Scheduled(fixedRate = 60000) // 1분마다 실행

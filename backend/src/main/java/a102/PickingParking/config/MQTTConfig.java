@@ -351,6 +351,7 @@ public class MQTTConfig {
     }
 
     private void handleMqttMessage(String payload) {
+        log.info("Start handling MQTT message");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // JSON 문자열을 VehicleMessage 객체로 변환
@@ -364,12 +365,15 @@ public class MQTTConfig {
             // VehicleValidationResponse 생성
             VehicleValidationResponse response = new VehicleValidationResponse(isMatched, licensePlate, zoneSeq);
 
-
+            log.info("Parsed Message: {}", response);
             // ResultController의 updateValidationResult 메서드를 호출하여 결과 업데이트
             resultController.updateValidationResult(response);
+//            sendResponseToFrontend(response);
         } catch (Exception e) {
+            log.error("JSON parsing failed: {}", e.getMessage());
             e.printStackTrace();
         }
+        log.info("End handling MQTT message");
     }
 //    private String extractLicensePlateFromMessage(String payload) {
 //        // JSON 파싱 로직을 추가하여 차량 번호를 반환
@@ -396,12 +400,11 @@ public class MQTTConfig {
     private void sendResponseToFrontend(VehicleValidationResponse response) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://k11a102.p.ssafy.io/api/vehicle/validation/response";
-
         try {
             restTemplate.postForObject(url, response, String.class);
-            log.info("Response sent to frontend: {}", response);
+            log.info("Response sent to frontend successfully: {}", response);
         } catch (Exception e) {
-            log.error("Failed to send response: {}", e.getMessage());
+            log.error("Failed to send response to frontend: {}", e.getMessage());
         }
     }
 
