@@ -113,13 +113,7 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.my_location),
-            onPressed: () {
-              if (currentCenter != null) {
-                _mapController.move(currentCenter!, 15.0);
-                print(
-                    'Current center: ${currentCenter!.latitude}, ${currentCenter!.longitude}');
-              }
-            },
+            onPressed: _moveToCurrentLocation,
           ),
         ],
       ),
@@ -177,20 +171,23 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
                 child: ParkingSubmit(
                   latitude: currentCenter!.latitude,
                   longitude: currentCenter!.longitude,
+                  onClose: _toggleParkingSubmit,
                 ),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: _toggleParkingSubmit,
-              child: Text(showParkingSubmit ? '닫기' : '등록하기'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Colors.blue,
+          if (!showParkingSubmit)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: _toggleParkingSubmit,
+                child: const Text('등록하기'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ),
-          ),
         ],
       ),
       bottomNavigationBar: BottomNavigation(
