@@ -177,7 +177,7 @@ class ParkingZoneManagementScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return CustomModal(
           title: "신고 확인",
-          content: "이 차량을 신고하시겠습니까?",
+          content: "현재 주차중인 차량을 신고하시겠습니까?",
           onConfirm: () {
             Navigator.of(context).pop();
             _showCompletionModal(context);
