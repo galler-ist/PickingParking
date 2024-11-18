@@ -35,7 +35,6 @@ public class MqttMessageController {
                 Boolean isMatched = true; // 예시로 true를 설정, 실제 로직에 맞게 수정
                 String licensePlate = message.getResult(); // 차량 번호판
                 Integer messageZoneSeq = message.getZoneSeq(); // zone_seq
-
                 // DTO 객체 생성
                 VehicleValidationResponse response = new VehicleValidationResponse(isMatched, licensePlate, messageZoneSeq);
                 responses.add(response);
