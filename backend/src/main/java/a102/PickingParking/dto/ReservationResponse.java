@@ -1,18 +1,16 @@
 package a102.PickingParking.dto;
 
-import lombok.AllArgsConstructor;
+import a102.PickingParking.entity.ReservationStatus;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ReservationRequest {
+public class ReservationResponse {
+    private Integer seq;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private ReservationStatus status; // 상태 추가
 }

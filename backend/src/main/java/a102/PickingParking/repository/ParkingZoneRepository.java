@@ -1,6 +1,7 @@
 package a102.PickingParking.repository;
 
 import a102.PickingParking.entity.ParkingZone;
+import a102.PickingParking.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,12 +9,16 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ParkingZoneRepository extends JpaRepository<ParkingZone, Integer> {
     // 주차장 이름으로 주차장 조회
     Optional<ParkingZone> findByPrkCmpr(String prk_cmpr);
+    List<ParkingZone> findByUser(User user);
+    Optional<ParkingZone> findBySeq(Integer seq);
+
 
     @Modifying
     @Query("UPDATE ParkingZone p SET p.status = 'Y' " +

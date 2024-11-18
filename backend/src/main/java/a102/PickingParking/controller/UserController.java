@@ -6,6 +6,7 @@ import a102.PickingParking.dto.UserSignupRequestDto;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.service.PointService;
 import a102.PickingParking.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class UserController {
 
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입")
     public ResponseEntity<String> signupUser(@RequestBody UserSignupRequestDto userSignupRequestDto) {
         try {
             userService.signupUser(userSignupRequestDto.getUser_id(),
@@ -38,6 +40,7 @@ public class UserController {
 
     // 로그인 API
     // @RequestParam String username, @RequestParam String password
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> loginUser(@RequestBody UserRequestDto userRequestDto) {
         try {
@@ -49,6 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/delete")
+    @Operation(summary = "회원 탈퇴")
     public ResponseEntity<String> deleteUser(@RequestBody UserIdDto userIdDto) {
         try {
             userService.deleteUser(userIdDto.getUserId());
@@ -59,6 +63,7 @@ public class UserController {
     }
 
     // 사용자 포인트 조회
+    @Operation(summary = "특정 유저의 포인트 조회")
     @GetMapping("/{userId}/point")
     public ResponseEntity<Integer> getUserPoint(@PathVariable String userId) {
         User user = userService.getUserByUserId(userId)
