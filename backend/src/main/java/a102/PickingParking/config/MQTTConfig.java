@@ -215,6 +215,7 @@ package a102.PickingParking.config;
 import a102.PickingParking.controller.ResultController;
 import a102.PickingParking.dto.LicensePlateResponse;
 import a102.PickingParking.dto.VehicleValidationResponse;
+import a102.PickingParking.service.MqttMessageService;
 import a102.PickingParking.service.VehicleValidationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -280,6 +281,9 @@ public class MQTTConfig {
         return inputStream;
     }
 
+    @Autowired
+    private MqttMessageService mqttMessageService;
+
     @PostConstruct
     public void init() {
         try {
@@ -318,7 +322,8 @@ public class MQTTConfig {
                     String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
                     log.info("Message received on topic {}: {}", topic, payload);
                     try {
-                        handleMqttMessage(payload);
+                        // MQTT 메시지 처리
+                        mqttMessageService.handleMqttMessage(payload);
                     } catch (Exception e) {
                         log.error("Failed to process MQTT message", e);
                     }
