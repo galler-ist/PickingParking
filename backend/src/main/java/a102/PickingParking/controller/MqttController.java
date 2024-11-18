@@ -97,7 +97,9 @@ public class MqttController {
     public ResponseEntity<String> publishZoneStatus(@RequestBody ZoneStatus zoneStatus) {
         try {
             String message = zoneStatus.name();  // ZoneStatus enum 값을 문자열로 변환
-            mqttConfig.publishMessage("mqtt_test", message);
+            String topic = "mqtt_test";  // 여기에서 topic을 지정하거나, 클라이언트가 보내는 데이터로 받을 수 있습니다
+    
+            mqttConfig.publishMessage(topic, message);  // 메시지를 특정 topic에 발행
             log.info("Successfully published ZoneStatus: {}", message);
             return ResponseEntity.ok("ZoneStatus published successfully: " + zoneStatus.name());
         } catch (Exception e) {
