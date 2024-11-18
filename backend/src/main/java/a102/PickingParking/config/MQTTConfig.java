@@ -255,7 +255,7 @@ public class MQTTConfig {
     private MqttClient client;
     private MqttConnectOptions options;
     private final VehicleValidationService vehicleValidationService;
-    private final String topic = "mqtt_test";
+    private final String topic = "OCR";
 
     @Autowired
     public MQTTConfig(VehicleValidationService vehicleValidationService, ResultController resultController) {
@@ -346,8 +346,9 @@ public class MQTTConfig {
     }
 
     private void handleMqttMessage(String payload) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
+
 
             // JSON 문자열을 VehicleMessage 객체로 변환
             LicensePlateResponse vehicleMessage = objectMapper.readValue(payload, LicensePlateResponse.class);
