@@ -84,6 +84,7 @@ public class ReservationService {
         response.setStartTime(reservation.getStartTime());
         response.setEndTime(reservation.getEndTime());
         response.setStatus(reservation.getStatus());
+        response.setZoneSeq(reservation.getZone().getSeq());
         return response;
     }
 

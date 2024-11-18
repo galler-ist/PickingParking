@@ -8,13 +8,9 @@ import org.aspectj.bridge.Message;
 @Getter
 @Setter
 public class LicensePlateResponse {
-    @JsonProperty("message")
-    private Message message;
+    @JsonProperty("result")
+    private String licensePlate;
 
-    @Getter
-    @Setter
-    public static class Message {
-        @JsonProperty("result")
-        private String result;
-    }
+    @JsonProperty("zone_seq")
+    private Integer zoneSeq;
 }

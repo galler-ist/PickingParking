@@ -346,15 +346,26 @@ public class MQTTConfig {
     }
 
     private void handleMqttMessage(String payload) {
-        // JSON 파싱하여 차량 번호 추출
-        String licensePlate = extractLicensePlateFromMessage(payload);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-        // 차량 번호 유효성 검사
-        VehicleValidationResponse response = vehicleValidationService.validateVehicle(licensePlate);
+            // JSON 문자열을 VehicleMessage 객체로 변환
+            LicensePlateResponse vehicleMessage = objectMapper.readValue(payload, LicensePlateResponse.class);
+            String licensePlate = vehicleMessage.getLicensePlate();
+            Integer zoneSeq = vehicleMessage.getZoneSeq(); // zone_seq 추출
 
-        // 결과를 프론트엔드로 전송하는 로직을 추가합니다.
-        // ResultController의 updateValidationResult 메서드를 호출하여 결과 업데이트
-        resultController.updateValidationResult(response);
+            // 차량 번호 유효성 검사 수행
+            Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
+
+            // VehicleValidationResponse 생성
+            VehicleValidationResponse response = new VehicleValidationResponse(isMatched, licensePlate, zoneSeq);
+
+
+            // ResultController의 updateValidationResult 메서드를 호출하여 결과 업데이트
+            resultController.updateValidationResult(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 //    private String extractLicensePlateFromMessage(String payload) {
 //        // JSON 파싱 로직을 추가하여 차량 번호를 반환
@@ -364,19 +375,19 @@ public class MQTTConfig {
 //        return ""; // 실제 차량 번호 추출 로직
 //    }
 
-    private String extractLicensePlateFromMessage(String payload) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // JSON 문자열을 LicensePlateResponse 객체로 변환
-            LicensePlateResponse response = objectMapper.readValue(payload, LicensePlateResponse.class);
-
-            // 차량번호 추출
-            return response.getMessage().getResult();
-        } catch (Exception e) {
-            log.error("Failed to parse JSON message: {}", e.getMessage());
-            return ""; // 오류 발생 시 빈 문자열 반환 또는 적절한 예외 처리
-        }
-    }
+//    private String extractLicensePlateFromMessage(String payload) {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            // JSON 문자열을 LicensePlateResponse 객체로 변환
+//            LicensePlateResponse response = objectMapper.readValue(payload, LicensePlateResponse.class);
+//
+//            // 차량번호 추출
+//            return response.getMessage().getResult();
+//        } catch (Exception e) {
+//            log.error("Failed to parse JSON message: {}", e.getMessage());
+//            return ""; // 오류 발생 시 빈 문자열 반환 또는 적절한 예외 처리
+//        }
+//    }
 
     private void sendResponseToFrontend(VehicleValidationResponse response) {
         RestTemplate restTemplate = new RestTemplate();

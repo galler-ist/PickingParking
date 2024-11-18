@@ -13,4 +13,5 @@ public class ReservationResponse {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private ReservationStatus status; // 상태 추가
+    private Integer zoneSeq;
 }
