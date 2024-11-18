@@ -2,6 +2,7 @@ package a102.PickingParking.controller;
 
 import a102.PickingParking.dto.ReservationRequest;
 import a102.PickingParking.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class ReservationController {
 
     // 예약 API
     @PostMapping()
+    @Operation(summary = "예약 등록")
     public ResponseEntity<String> reserveTime(@RequestParam Integer zoneSeq,
                                               @RequestBody ReservationRequest request,
                                               @RequestParam String userId) {
