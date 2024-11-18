@@ -72,6 +72,12 @@ public class ReservationService {
         return reservations.stream().map(this::convertToResponse).collect(Collectors.toList());
     }
 
+    // 사용자 ID로 예약 목록 조회
+    public List<ReservationResponse> getReservationsByUserId(String userId) {
+        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+        return reservations.stream().map(this::convertToResponse).collect(Collectors.toList());
+    }
+
     private ReservationResponse convertToResponse(Reservation reservation) {
         ReservationResponse response = new ReservationResponse();
         response.setSeq(reservation.getSeq());
