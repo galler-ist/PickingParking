@@ -17,6 +17,8 @@ public interface ParkingZoneRepository extends JpaRepository<ParkingZone, Intege
     // 주차장 이름으로 주차장 조회
     Optional<ParkingZone> findByPrkCmpr(String prk_cmpr);
     List<ParkingZone> findByUser(User user);
+    Optional<ParkingZone> findBySeq(Integer seq);
+
 
     @Modifying
     @Query("UPDATE ParkingZone p SET p.status = 'Y' " +

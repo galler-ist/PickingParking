@@ -1,6 +1,7 @@
 package a102.PickingParking.service;
 
 import a102.PickingParking.dto.ReservationRequest;
+import a102.PickingParking.dto.ReservationResponse;
 import a102.PickingParking.entity.*;
 import a102.PickingParking.repository.AvailableTimeRepository;
 import a102.PickingParking.repository.ParkingZoneRepository;
@@ -8,6 +9,9 @@ import a102.PickingParking.repository.ReservationRepository;
 import a102.PickingParking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -57,6 +61,24 @@ public class ReservationService {
         // 예약 가능한 시간 업데이트
         availableTimeService.updateTimes(zoneSeq, request);
 
+    }
+
+    // 특정 주차장 예약 목록 조회
+    public List<ReservationResponse> getReservationsByZoneSeq(Integer zoneSeq) {
+        ParkingZone parkingZone = parkingZoneRepository.findBySeq(zoneSeq)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주차장입니다."));
+
+        List<Reservation> reservations = reservationRepository.findByZone(parkingZone);
+        return reservations.stream().map(this::convertToResponse).collect(Collectors.toList());
+    }
+
+    private ReservationResponse convertToResponse(Reservation reservation) {
+        ReservationResponse response = new ReservationResponse();
+        response.setSeq(reservation.getSeq());
+        response.setStartTime(reservation.getStartTime());
+        response.setEndTime(reservation.getEndTime());
+        response.setStatus(reservation.getStatus());
+        return response;
     }
 
 }
