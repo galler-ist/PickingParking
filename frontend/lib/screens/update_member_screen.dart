@@ -4,8 +4,6 @@ import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/screens/mypage_screen.dart';
-import 'package:frontend/controller.dart';
-import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 
 class UpdateMemberScreen extends StatefulWidget {
@@ -16,9 +14,8 @@ class UpdateMemberScreen extends StatefulWidget {
 }
 
 class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
-  final MainController controller = Get.put(MainController());
   final formKey = GlobalKey<FormState>();
-  Map<String, dynamic> formData = {};
+
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -28,7 +25,8 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
   String? confirmPasswordError;
   String? telError;
 
-  void submitForm() async {
+  // 폼 제출 함수 (API 제거된 버전)
+  void submitForm() {
     setState(() {
       passwordError = null;
       confirmPasswordError = null;
@@ -37,13 +35,15 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
 
     bool isValid = true;
 
-    if (passwordController.text.length < 6) {
+    // 비밀번호 유효성 검사
+    if (passwordController.text.isEmpty || passwordController.text.length < 6) {
       setState(() {
         passwordError = "비밀번호는 6자 이상이어야 합니다.";
       });
       isValid = false;
     }
 
+    // 비밀번호 확인 검사
     if (confirmPasswordController.text != passwordController.text) {
       setState(() {
         confirmPasswordError = "비밀번호가 일치하지 않습니다.";
@@ -51,6 +51,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
       isValid = false;
     }
 
+    // 전화번호 유효성 검사
     if (phoneController.text.isEmpty) {
       setState(() {
         telError = "전화번호를 입력하세요.";
@@ -58,26 +59,9 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
       isValid = false;
     }
 
+    // 유효한 경우 MyPageScreen으로 이동
     if (isValid) {
-      formKey.currentState!.save();
-      final apiService = ApiService();
-      formData['email'] = controller.memberEmail.value;
-      formData['tel'] = phoneController.text;
-      formData['password'] = passwordController.text;
-
-      try {
-        final res = await apiService.updateMember(formData);
-        if (res == 200) {
-          Get.snackbar('성공', '회원 정보가 업데이트되었습니다.',
-              snackPosition: SnackPosition.BOTTOM);
-          Get.offAll(() => const MyPageScreen());
-        } else {
-          Get.snackbar('오류', '${res["message"]}',
-              snackPosition: SnackPosition.BOTTOM);
-        }
-      } catch (e) {
-        Get.snackbar('오류', '$e', snackPosition: SnackPosition.BOTTOM);
-      }
+      Get.off(() => const MyPageScreen());
     }
   }
 
@@ -94,7 +78,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/icons/logo.png',
                   width: 350,
                 ),
               ),
@@ -120,9 +104,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
                 inputType: TextInputType.phone,
               ),
               if (telError != null) ValidatorText(text: telError!),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),
                 child: SizedBox(

@@ -7,12 +7,12 @@ class ParkingZoneReservation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center, // 중앙 정렬
+      alignment: Alignment.center,
       children: [
         Align(
-          alignment: Alignment.center, // 핀 이미지 중앙 정렬
+          alignment: Alignment.center,
           child: SvgPicture.asset(
-            'assets/icons/pin_map.svg', // 핀 이미지
+            'assets/icons/pin_map.svg',
             height: 40,
             width: 40,
           ),
