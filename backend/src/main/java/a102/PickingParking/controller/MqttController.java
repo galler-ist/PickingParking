@@ -93,7 +93,7 @@ public class MqttController {
     }
 
     // 새로운 엔드포인트: ZoneStatus 발행
-    @PostMapping("/publish-zone-status")
+    @PostMapping("/publish_zone_status")
     public ResponseEntity<String> publishZoneStatus(@RequestBody ZoneStatus zoneStatus) {
         try {
             String message = zoneStatus.name();  // ZoneStatus enum 값을 문자열로 변환
