@@ -1,6 +1,5 @@
 package a102.PickingParking.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -24,7 +23,6 @@ public class Payment {
     private ParkingZone zone;
 
     @Column(nullable = false, name = "payment_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime time;
 
 //    @ManyToOne(optional = false, fetch = FetchType.LAZY)
