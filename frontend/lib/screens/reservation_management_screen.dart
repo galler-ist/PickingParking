@@ -16,67 +16,21 @@ class ReservationManagementScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     double iconSize = screenWidth < 400 ? 50 : 60;
-    double fontSize = screenWidth < 400 ? 12 : 14;
+    double fontSize = screenWidth < 400 ? 10 : 13;
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionHeader("내 예약"),
-              const SizedBox(height: 6),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildReservationDetailRow("현재 주차중인 장소", "서울 역삼 멀티캠퍼스 주차장"),
-                    _buildReservationDetailRow(
-                        "예약 시간", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 21:00"),
-                    _buildReservationDetailRow(
-                        "접수된 예약", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
-                    _buildReservationDetailRow("시간당 요금", "900 P/분"),
-                    _buildReservationDetailRow("현재 요금", "2700 P"),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildActionIcon(
-                    Icons.access_time,
-                    "예약 관리",
-                    iconSize,
-                    fontSize,
-                    onTap: () => Get.to(() => const ReservationDetailScreen()),
-                  ),
-                  _buildActionIcon(
-                      Icons.local_parking, "찜한 주차장", iconSize, fontSize),
-                  _buildActionIcon(
-                    Icons.receipt_long,
-                    "각종 내역",
-                    iconSize,
-                    fontSize,
-                    onTap: () => Get.to(() => const ReservationHistoryScreen()),
-                  ),
-                  _buildActionIcon(
-                    Icons.settings,
-                    "차량 설정",
-                    iconSize,
-                    fontSize,
-                    onTap: () => Get.to(() => const CarSettingScreen()),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 8),
+              _buildReservationInfo(context),
+              const SizedBox(height: 16),
+              _buildActionButtons(context, iconSize, fontSize),
               const SizedBox(height: 24),
               _buildSectionHeader("최근 이용 내역"),
               const SizedBox(height: 8),
@@ -99,27 +53,109 @@ class ReservationManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReservationDetailRow(String label, String value) {
+  Widget _buildReservationInfo(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "서울 역삼 멀티캠퍼스 주차장",
+            style: TextStyle(fontSize: 13),
+          ),
+          const SizedBox(height: 8),
+          _buildReservationDetailRow(context, "현재 주차장 상태", "다른 차량 주차중"),
+          _buildReservationDetailRow(
+              context, "예약 시간", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 21:00"),
+          _buildReservationDetailRow(
+              context, "접수된 예약", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
+          _buildReservationDetailRow(context, "시간당 요금", "900 P/분"),
+          _buildReservationDetailRow(context, "현재 요금", "2700 P"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReservationDetailRow(
+      BuildContext context, String label, String value) {
+    Color getStatusColor(String status) {
+      if (status == '내 차 주차중') {
+        return Theme.of(context).primaryColor;
+      } else if (status == '다른 차량 주차중') {
+        return Colors.red;
+      } else {
+        return Colors.black;
+      }
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: const TextStyle(
-                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 10),
+              style: TextStyle(
+                fontSize: 10,
+                color:
+                    label == '현재 주차장 상태' ? getStatusColor(value) : Colors.black,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildActionButtons(
+      BuildContext context, double iconSize, double fontSize) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildActionIcon(
+          Icons.access_time,
+          "예약 관리",
+          iconSize,
+          fontSize,
+          onTap: () => Get.to(() => const ReservationDetailScreen()),
+        ),
+        _buildActionIcon(
+          Icons.local_parking,
+          "찜한 주차장",
+          iconSize,
+          fontSize,
+        ),
+        _buildActionIcon(
+          Icons.receipt_long,
+          "각종 내역",
+          iconSize,
+          fontSize,
+          onTap: () => Get.to(() => const ReservationHistoryScreen()),
+        ),
+        _buildActionIcon(
+          Icons.settings,
+          "차량 설정",
+          iconSize,
+          fontSize,
+          onTap: () => Get.to(() => const CarSettingScreen()),
+        ),
+      ],
     );
   }
 
@@ -173,7 +209,7 @@ class ReservationManagementScreen extends StatelessWidget {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(8),
@@ -185,10 +221,7 @@ class ReservationManagementScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _buildDetailRow("사용 시간", duration),
           _buildDetailRow("이용한 주차장", location),
-          if (amount != null) ...[
-            const SizedBox(height: 8),
-            _buildDetailRow("결제 금액", amount),
-          ],
+          if (amount != null) _buildDetailRow("결제 금액", amount),
         ],
       ),
     );
@@ -197,20 +230,20 @@ class ReservationManagementScreen extends StatelessWidget {
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
             style: const TextStyle(
-                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 10),
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 10),
           ),
         ],
       ),

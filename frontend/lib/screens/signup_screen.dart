@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:frontend/controller.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
+import 'package:frontend/controller.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:frontend/screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -19,69 +20,88 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final MainController controller = Get.put(MainController());
   final formKey = GlobalKey<FormState>();
-  final ImagePicker picker = ImagePicker();
-  XFile? vehicleImage;
-
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController carNumberController = TextEditingController();
 
   String? idError;
   String? passwordError;
   String? confirmPasswordError;
   String? phoneError;
-  String? carNumberError;
 
-  Future<void> pickVehicleImage() async {
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      vehicleImage = pickedFile;
-    });
-  }
-
-  void submitForm() async {
+  Future<void> submitForm() async {
     setState(() {
       idError = null;
       passwordError = null;
       confirmPasswordError = null;
       phoneError = null;
-      carNumberError = null;
     });
 
     bool isValid = true;
 
     if (idController.text.isEmpty) {
-      idError = "아이디를 입력하세요.";
+      setState(() {
+        idError = "아이디를 입력하세요.";
+      });
       isValid = false;
     }
 
     if (passwordController.text.length < 6) {
-      passwordError = "비밀번호는 6자 이상이어야 합니다.";
+      setState(() {
+        passwordError = "비밀번호는 6자 이상이어야 합니다.";
+      });
       isValid = false;
     }
 
     if (confirmPasswordController.text != passwordController.text) {
-      confirmPasswordError = "비밀번호가 일치하지 않습니다.";
+      setState(() {
+        confirmPasswordError = "비밀번호가 일치하지 않습니다.";
+      });
       isValid = false;
     }
 
     if (phoneController.text.isEmpty) {
-      phoneError = "휴대폰 번호를 입력하세요.";
-      isValid = false;
-    }
-
-    if (carNumberController.text.isEmpty) {
-      carNumberError = "차량 번호를 입력하세요.";
+      setState(() {
+        phoneError = "휴대폰 번호를 입력하세요.";
+      });
       isValid = false;
     }
 
     if (isValid) {
-      print("회원가입 성공");
-      Get.to(() => LoginScreen());
+      final apiService = ApiService();
+      Map<String, dynamic> formData = {
+        'user_id': idController.text,
+        'user_pw': passwordController.text,
+        'user_phone': phoneController.text,
+      };
+
+      try {
+        final res = await apiService.signUp(formData);
+        if (res == 200) {
+          Get.snackbar(
+            '성공',
+            '회원가입이 완료되었습니다.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Get.to(() => const LoginScreen());
+          });
+        } else {
+          Get.snackbar(
+            '오류',
+            res['message'] ?? '회원가입에 실패했습니다.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      } catch (e) {
+        Get.snackbar(
+          '오류',
+          '회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     }
   }
 
@@ -104,8 +124,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     const SizedBox(height: 40),
                     Center(
-                      child: Image.asset(
-                        'assets/icons/logo.png',
+                      child: SvgPicture.asset(
+                        'assets/icons/logo.svg',
                         width: inputWidth * 0.6,
                         height: inputWidth * 0.6,
                       ),
@@ -142,28 +162,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       inputType: TextInputType.phone,
                     ),
                     if (phoneError != null) ValidatorText(text: phoneError!),
-                    const SizedBox(height: 20),
-                    const InputLabel(name: "차량 번호"),
-                    Input(
-                      controller: carNumberController,
-                      inputType: TextInputType.text,
-                    ),
-                    if (carNumberError != null)
-                      ValidatorText(text: carNumberError!),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: TextButton(
-                        onPressed: pickVehicleImage,
-                        child:
-                            Text(vehicleImage != null ? "이미지 선택됨" : "이미지 선택하기"),
-                      ),
-                    ),
-                    if (vehicleImage != null)
-                      Image.file(
-                        File(vehicleImage!.path),
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
                     const SizedBox(height: 30),
                     Center(
                       child: Button(
@@ -173,6 +171,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         horizontal: 5,
                         vertical: 15,
                         fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => Get.to(() => const LoginScreen()),
+                        child: const Text("로그인 화면으로 돌아가기"),
                       ),
                     ),
                   ],
