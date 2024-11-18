@@ -1,5 +1,6 @@
 package a102.PickingParking.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -27,10 +28,12 @@ public class User {
     private Integer point = 0;
 
     @Column(name = "created_at")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     @Builder.Default
     private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "unsubcribed_at")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime unsubcribedDate;
 
     @Column(nullable = false, length = 20, name = "user_phone")
