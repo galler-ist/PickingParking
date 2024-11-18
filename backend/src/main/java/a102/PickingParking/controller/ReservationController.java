@@ -40,4 +40,12 @@ public class ReservationController {
         List<ReservationResponse> reservations = reservationService.getReservationsByZoneSeq(zone_seq);
         return ResponseEntity.ok(reservations);
     }
+
+    // 사용자 ID로 예약 목록 조회
+    @Operation(summary = "사용자 ID로 예약 목록 조회")
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@PathVariable String user_id) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(user_id);
+        return ResponseEntity.ok(reservations);
+    }
 }
