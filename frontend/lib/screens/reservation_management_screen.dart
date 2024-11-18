@@ -23,14 +23,17 @@ class _ReservationManagementScreenState
   final ApiService apiService = ApiService();
   List<dynamic> myReservations = [];
   List<dynamic> jsonNano = [];
+  List<dynamic> myCar = [];
   Timer? _timer;
 
   String hourlyPrice = "정보 없음";
+  String parkingLocation = "정보 없음";
 
   @override
   void initState() {
     super.initState();
     _fetchReservations();
+    _fetchMyCar();
     _startAutoRefresh();
   }
 
@@ -52,39 +55,46 @@ class _ReservationManagementScreenState
       setState(() {
         myReservations = data;
       });
-      print("예약 데이터 가져오기 성공: $data");
 
       if (myReservations.isNotEmpty) {
-        final lastReservationSeq = myReservations.last['seq'];
+        final lastReservationSeq = myReservations.last['zoneSeq'];
         await _fetchReservationPrice(lastReservationSeq);
       }
     } else if (data is Map && data.containsKey('error')) {
-      print("예약 데이터 가져오기 실패: ${data['error']}");
-    } else {
-      print("알 수 없는 오류 발생");
+      print("예약 정보 가져오기 실패: ${data['error']}");
     }
   }
 
-  Future<void> _fetchReservationPrice(int zoneSeq) async {
-    final data = await apiService.searchMyParkingZoneReservations(zoneSeq);
-    print(data);
-    if (mounted && data is List && data.isNotEmpty) {
-      setState(() {
-        hourlyPrice = "${data[0]['price']} P/분";
-      });
-      print("가격 정보 가져오기 성공: $hourlyPrice");
-    } else if (data is Map && data.containsKey('error')) {
-      print("가격 정보 가져오기 실패: ${data['error']}");
+  Future<void> _fetchMyCar() async {
+    final data = await apiService.searchMyCar();
+    if (data is List) {
+      if (mounted) {
+        setState(() {
+          myCar = data;
+        });
+      }
     }
   }
 
   Future<void> _fetchJsonNano() async {
-    final data = await apiService.connectJsonNano();
-    if (mounted && data is List) {
+    final data = await apiService.searchJsonNano();
+    if (mounted && data is List && data.isNotEmpty) {
       setState(() {
-        jsonNano = data;
+        jsonNano = [data.last];
       });
-      print("주차 구역 데이터 갱신: $data");
+      print("주차 구역 데이터 갱신: $jsonNano");
+    }
+  }
+
+  Future<void> _fetchReservationPrice(int lastReservationSeq) async {
+    final data = await apiService.searchSpecificParkingZone(lastReservationSeq);
+    if (mounted && data is Map && data.isNotEmpty) {
+      setState(() {
+        hourlyPrice = "${data['price']} P/분";
+        parkingLocation = data['location'] ?? "정보 없음";
+      });
+    } else if (data is Map && data.containsKey('error')) {
+      print("가격 정보 가져오기 실패: ${data['error']}");
     }
   }
 
@@ -108,15 +118,6 @@ class _ReservationManagementScreenState
               const SizedBox(height: 16),
               _buildActionButtons(context, iconSize, fontSize),
               const SizedBox(height: 24),
-              // _buildSectionHeader("최근 이용 내역"),
-              const SizedBox(height: 8),
-              // _buildHistoryItem(
-              //   title: "이용 차량",
-              //   vehicle: "24차 1231",
-              //   duration: "3월 10일 (일) 12:00 ~ 3월 10일 (일) 21:00",
-              //   location: "서울 역삼 멀티캠퍼스 주차장",
-              //   amount: "4500 P",
-              // ),
             ],
           ),
         ),
@@ -140,6 +141,25 @@ class _ReservationManagementScreenState
       );
     }
 
+    String parkingStatus = "주차 가능";
+    Color statusColor = Colors.black;
+
+    String? myCarPlate = myCar.isNotEmpty ? myCar.first['plate'] : null;
+
+    if (jsonNano.isNotEmpty && jsonNano[0] is Map) {
+      final recentData = jsonNano[0];
+      bool isMatched = recentData['isMatched'] ?? false;
+      String licensePlate = recentData['licensePlate'] ?? "번호판 정보 없음";
+
+      if (isMatched && licensePlate == myCarPlate) {
+        parkingStatus = "정상 주차중";
+        statusColor = Theme.of(context).primaryColor;
+      } else {
+        parkingStatus = "다른 차량 주차중";
+        statusColor = Colors.red;
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16.0),
@@ -150,12 +170,17 @@ class _ReservationManagementScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "서울 역삼 멀티캠퍼스 주차장",
-            style: TextStyle(fontSize: 13),
+          Text(
+            parkingLocation,
+            style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 8),
-          _buildReservationDetailRow(context, "현재 주차장 상태", "다른 차량 주차중"),
+          _buildReservationDetailRow(
+            context,
+            "현재 주차장 상태",
+            parkingStatus,
+            statusColor: statusColor,
+          ),
           _buildReservationDetailRow(context, "예약 시간", reservationTime),
           _buildReservationDetailRow(context, "시간당 요금", hourlyPrice),
         ],
@@ -181,7 +206,11 @@ class _ReservationManagementScreenState
   }
 
   Widget _buildReservationDetailRow(
-      BuildContext context, String label, String value) {
+    BuildContext context,
+    String label,
+    String value, {
+    Color statusColor = Colors.black,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -200,7 +229,10 @@ class _ReservationManagementScreenState
             alignment: Alignment.centerRight,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 10),
+              style: TextStyle(
+                fontSize: 10,
+                color: statusColor,
+              ),
             ),
           ),
         ],
@@ -278,54 +310,4 @@ class _ReservationManagementScreenState
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
-}
-
-Widget _buildHistoryItem({
-  required String title,
-  required String vehicle,
-  required String duration,
-  required String location,
-  String? amount,
-}) {
-  return Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12.0),
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildDetailRow(title, vehicle),
-        const SizedBox(height: 8),
-        _buildDetailRow("사용 시간", duration),
-        _buildDetailRow("이용한 주차장", location),
-        if (amount != null) _buildDetailRow("결제 금액", amount),
-      ],
-    ),
-  );
-}
-
-Widget _buildDetailRow(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 10),
-        ),
-      ],
-    ),
-  );
 }

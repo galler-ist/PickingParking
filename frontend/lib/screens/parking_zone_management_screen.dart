@@ -46,24 +46,22 @@ class _ParkingZoneManagementScreenState
     });
   }
 
+  Future<void> _fetchJsonNano() async {
+    final data = await apiService.searchJsonNano();
+    if (mounted && data is List && data.isNotEmpty) {
+      setState(() {
+        jsonNano = [data.last];
+      });
+      print("주차 구역 데이터 갱신: $jsonNano");
+    }
+  }
+
   Future<void> _fetchMyReservations(int zoneSeq) async {
     final data = await apiService.searchMyParkingZoneReservations(zoneSeq);
     if (mounted && data is List && data.isNotEmpty) {
       setState(() {
         myReservations = data;
       });
-    } else {
-      print("예약 조회 실패: ${data['error']}");
-    }
-  }
-
-  Future<void> _fetchJsonNano() async {
-    final data = await apiService.connectJsonNano();
-    if (mounted && data is List) {
-      setState(() {
-        jsonNano = data;
-      });
-      print("주차 구역 데이터 갱신: $data");
     }
   }
 
@@ -108,22 +106,6 @@ class _ParkingZoneManagementScreenState
               const SizedBox(height: 16),
               _buildActionButtons(context, iconSize, fontSize),
               const SizedBox(height: 24),
-              // _buildSectionHeader("최근 주차 내역"),
-              const SizedBox(height: 8),
-              // _buildHistoryItem(
-              //   title: "주차 차량",
-              //   vehicle: "04수 1234",
-              //   duration: "3월 10일 (일) 12:00 ~ 3월 10일 (일) 21:00",
-              //   amount: "4500 P",
-              // ),
-              const SizedBox(height: 16),
-              // _buildSectionHeader("최근 신고 내역"),
-              const SizedBox(height: 8),
-              // _buildHistoryItem(
-              //   title: "신고 차량",
-              //   vehicle: "95서 0718",
-              //   duration: "3월 10일 (일) 11:52",
-              // ),
             ],
           ),
         ),
@@ -349,31 +331,6 @@ Widget _buildSectionHeader(String title) {
   return Text(
     title,
     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  );
-}
-
-Widget _buildHistoryItem({
-  required String title,
-  required String vehicle,
-  required String duration,
-  String? amount,
-}) {
-  return Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12.0),
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildDetailRow(title, vehicle),
-        const SizedBox(height: 8),
-        _buildDetailRow("사용 시간", duration),
-        if (amount != null) _buildDetailRow("결제 금액", amount),
-      ],
-    ),
   );
 }
 

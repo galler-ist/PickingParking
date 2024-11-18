@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/screens/charging_screen.dart';
 import 'package:frontend/screens/car_setting_screen.dart';
 import 'package:frontend/services/api_service.dart';
+import 'package:frontend/screens/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,11 +25,22 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> myCar = [];
 
   @override
+  @override
   void initState() {
     super.initState();
+    _checkUserLoggedIn();
     _fetchMyParkingZones();
     _fetchReservations();
     _fetchMyCar();
+  }
+
+  /// 사용자 로그인 여부 확인
+  void _checkUserLoggedIn() {
+    if (controller.userName.value.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAll(() => const LoginScreen());
+      });
+    }
   }
 
   Future<void> _fetchReservations() async {

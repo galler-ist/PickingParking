@@ -52,19 +52,17 @@ class ApiService {
     }
   }
 
-  Future<dynamic> connectJsonNano() async {
+  Future<dynamic> searchJsonNano() async {
     final url = Uri.parse('$baseUrl/api/vehicle/validation/response');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+        final List<dynamic> responseData = json.decode(response.body);
         return responseData;
       } else {
-        print(response.statusCode);
         return {'error': 'Failed to fetch data', 'status': response.statusCode};
       }
     } catch (e) {
-      print(e);
       return {'error': e.toString()};
     }
   }
@@ -79,6 +77,22 @@ class ApiService {
         return responseData;
       } else {
         print(response.statusCode);
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchSpecificParkingZone(int zoneSeq) async {
+    final url = Uri.parse('$baseUrl/api/zone/$zoneSeq');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData =
+            json.decode(utf8.decode(response.bodyBytes));
+        return responseData;
+      } else {
         return {'error': 'Failed to fetch data', 'status': response.statusCode};
       }
     } catch (e) {
