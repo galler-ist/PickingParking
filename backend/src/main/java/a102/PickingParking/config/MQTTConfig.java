@@ -317,7 +317,12 @@ public class MQTTConfig {
                 public void messageArrived(String topic, MqttMessage message) {
                     String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
                     log.info("Message received on topic {}: {}", topic, payload);
-                    handleMqttMessage(payload);
+                    try {
+                        handleMqttMessage(payload);
+                    } catch (Exception e) {
+                        log.error("Failed to process MQTT message", e);
+                    }
+
                 }
 
                 @Override
@@ -348,12 +353,10 @@ public class MQTTConfig {
     private void handleMqttMessage(String payload) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-
-
             // JSON 문자열을 VehicleMessage 객체로 변환
             LicensePlateResponse vehicleMessage = objectMapper.readValue(payload, LicensePlateResponse.class);
-            String licensePlate = vehicleMessage.getLicensePlate();
-            Integer zoneSeq = vehicleMessage.getZoneSeq(); // zone_seq 추출
+            String licensePlate = vehicleMessage.getMessage().getResult();
+            Integer zoneSeq = vehicleMessage.getMessage().getZone_seq(); // zone_seq 추출
 
             // 차량 번호 유효성 검사 수행
             Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
@@ -453,7 +456,7 @@ public class MQTTConfig {
         try {
             if (client != null && !client.isConnected()) {
                 client.connect(options);
-//                client.subscribe(topic);
+                client.subscribe(topic);
                 log.info("Connected to AWS IoT Core");
             }
         } catch (MqttException e) {
