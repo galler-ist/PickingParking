@@ -212,6 +212,11 @@
 //}
 package a102.PickingParking.config;
 
+import a102.PickingParking.controller.ResultController;
+import a102.PickingParking.dto.LicensePlateResponse;
+import a102.PickingParking.dto.VehicleValidationResponse;
+import a102.PickingParking.service.VehicleValidationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -220,9 +225,12 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -240,11 +248,20 @@ import java.security.cert.X509Certificate;
 
 @Configuration
 @Slf4j
+@EnableScheduling
 public class MQTTConfig {
 
+    private final ResultController resultController;
     private MqttClient client;
     private MqttConnectOptions options;
+    private final VehicleValidationService vehicleValidationService;
     private final String topic = "mqtt_test";
+
+    @Autowired
+    public MQTTConfig(VehicleValidationService vehicleValidationService, ResultController resultController) {
+        this.vehicleValidationService = vehicleValidationService;
+        this.resultController = resultController;
+    };
 
     private String loadResourceAsString(String resourcePath) throws IOException {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
@@ -266,11 +283,12 @@ public class MQTTConfig {
     @PostConstruct
     public void init() {
         try {
+            // MQTT 브로커 설정
             Dotenv dotenv = Dotenv.load();
             String broker = "ssl://" + dotenv.get("AWS_IOT_ENDPOINT") + ":8883";
             String clientId = dotenv.get("AWS_CLIENT_ID");
 
-            // 인증서 리소스 로드
+            // 인증서 리소스 로드 및 MQTT 클라이언트 설정
             String certPath = "certs/certificate.pem.crt";
             String keyPath = "certs/private.pem.key";
             String caPath = "certs/AmazonRootCA1.pem";
@@ -278,7 +296,6 @@ public class MQTTConfig {
             log.info("Loading certificates...");
 
             client = new MqttClient(broker, clientId, new MemoryPersistence());
-
             options = new MqttConnectOptions();
             options.setCleanSession(true);
             options.setKeepAliveInterval(60);
@@ -298,7 +315,9 @@ public class MQTTConfig {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) {
-                    log.info("Message received on topic {}: {}", topic, new String(message.getPayload()));
+                    String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
+                    log.info("Message received on topic {}: {}", topic, payload);
+                    handleMqttMessage(payload);
                 }
 
                 @Override
@@ -308,21 +327,69 @@ public class MQTTConfig {
             });
 
             connect(options);
+            client.subscribe(topic);
+            log.info("Subscribed to topic {}", topic);
 
-            // 초기 테스트 메시지 발행
-            if (client.isConnected()) {
-                String payload = "Hello from PickingParking!";
-                publishMessage(topic, payload);
-                log.info("Initial message published successfully");
-            } else {
-                log.warn("Client is not connected. Unable to publish initial message.");
-            }
+//            // 초기 테스트 메시지 발행
+//            if (client.isConnected()) {
+//                String payload = "Hello from PickingParking!";
+//                publishMessage(topic, payload);
+//                log.info("Initial message published successfully");
+//            } else {
+//                log.warn("Client is not connected. Unable to publish initial message.");
+//            }
 
         } catch (Exception e) {
             log.error("Failed to initialize MQTT client", e);
             throw new RuntimeException("Failed to initialize MQTT client", e);
         }
     }
+
+    private void handleMqttMessage(String payload) {
+        // JSON 파싱하여 차량 번호 추출
+        String licensePlate = extractLicensePlateFromMessage(payload);
+
+        // 차량 번호 유효성 검사
+        VehicleValidationResponse response = vehicleValidationService.validateVehicle(licensePlate);
+
+        // 결과를 프론트엔드로 전송하는 로직을 추가합니다.
+        // ResultController의 updateValidationResult 메서드를 호출하여 결과 업데이트
+        resultController.updateValidationResult(response);
+    }
+//    private String extractLicensePlateFromMessage(String payload) {
+//        // JSON 파싱 로직을 추가하여 차량 번호를 반환
+//        // 예를 들어, Jackson이나 Gson을 사용하여 JSON 파싱
+//        // {"message": {"result": "ABC1234"}} 형식의 JSON에서 "result" 추출
+//        // JSON 파싱 라이브러리를 사용하여 이 부분을 구현하세요.
+//        return ""; // 실제 차량 번호 추출 로직
+//    }
+
+    private String extractLicensePlateFromMessage(String payload) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // JSON 문자열을 LicensePlateResponse 객체로 변환
+            LicensePlateResponse response = objectMapper.readValue(payload, LicensePlateResponse.class);
+
+            // 차량번호 추출
+            return response.getMessage().getResult();
+        } catch (Exception e) {
+            log.error("Failed to parse JSON message: {}", e.getMessage());
+            return ""; // 오류 발생 시 빈 문자열 반환 또는 적절한 예외 처리
+        }
+    }
+
+    private void sendResponseToFrontend(VehicleValidationResponse response) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://k11a102.p.ssafy.io/api/vehicle/validation/response";
+
+        try {
+            restTemplate.postForObject(url, response, String.class);
+            log.info("Response sent to frontend: {}", response);
+        } catch (Exception e) {
+            log.error("Failed to send response: {}", e.getMessage());
+        }
+    }
+
 
     private SSLSocketFactory getSSLSocketFactory(String caPath, String certPath, String keyPath) throws Exception {
         // CA 인증서 로드
@@ -374,7 +441,7 @@ public class MQTTConfig {
         try {
             if (client != null && !client.isConnected()) {
                 client.connect(options);
-                client.subscribe(topic);
+//                client.subscribe(topic);
                 log.info("Connected to AWS IoT Core");
             }
         } catch (MqttException e) {
