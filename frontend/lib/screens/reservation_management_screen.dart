@@ -58,10 +58,14 @@ class _ReservationManagementScreenState
 
       if (myReservations.isNotEmpty) {
         final lastReservationSeq = myReservations.last['zoneSeq'];
-        await _fetchReservationPrice(lastReservationSeq);
+        if (mounted) {
+          await _fetchReservationPrice(lastReservationSeq);
+        }
       }
     } else if (data is Map && data.containsKey('error')) {
-      print("예약 정보 가져오기 실패: ${data['error']}");
+      if (mounted) {
+        print("예약 정보 가져오기 실패: ${data['error']}");
+      }
     }
   }
 

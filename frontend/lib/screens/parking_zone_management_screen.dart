@@ -52,7 +52,6 @@ class _ParkingZoneManagementScreenState
       setState(() {
         jsonNano = [data.last];
       });
-      print("주차 구역 데이터 갱신: $jsonNano");
     }
   }
 
@@ -80,7 +79,9 @@ class _ParkingZoneManagementScreenState
       });
 
       for (var zone in myParkingZones) {
-        await _fetchMyReservations(zone['seq']);
+        if (mounted) {
+          await _fetchMyReservations(zone['seq']);
+        }
       }
     }
   }
@@ -90,7 +91,7 @@ class _ParkingZoneManagementScreenState
     double screenWidth = MediaQuery.of(context).size.width;
     double iconSize = screenWidth < 400 ? 50 : 60;
     double fontSize = screenWidth < 400 ? 10 : 13;
-    String reservedVehicle = "12가 1234";
+    String reservedVehicle = "24모7216";
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
@@ -136,6 +137,11 @@ class _ParkingZoneManagementScreenState
   }
 
   Widget _buildParkingInfo(BuildContext context, String reservedVehicle) {
+    String? currentLicensePlate;
+    if (jsonNano.isNotEmpty && jsonNano[0] is Map) {
+      currentLicensePlate = jsonNano[0]['licensePlate'];
+    }
+
     return Column(
       children: List.generate(myParkingZones.length, (index) {
         var zone = myParkingZones[index];
@@ -164,7 +170,7 @@ class _ParkingZoneManagementScreenState
               _buildParkingDetailRow(
                 context,
                 "현재 주차중인 차량",
-                reservedVehicle,
+                currentLicensePlate ?? "차량 정보 없음",
                 reservedVehicle: reservedVehicle,
               ),
               _buildParkingDetailRow(
@@ -172,7 +178,11 @@ class _ParkingZoneManagementScreenState
                 "접수된 예약",
                 reservationTime,
               ),
-              _buildParkingDetailRow(context, "예약 차량", reservedVehicle),
+              _buildParkingDetailRow(
+                context,
+                "예약 차량",
+                reservedVehicle,
+              ),
               _buildParkingDetailRow(
                 context,
                 "시간당 요금",
