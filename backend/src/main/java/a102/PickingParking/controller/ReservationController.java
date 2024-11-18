@@ -1,12 +1,15 @@
 package a102.PickingParking.controller;
 
 import a102.PickingParking.dto.ReservationRequest;
+import a102.PickingParking.dto.ReservationResponse;
 import a102.PickingParking.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservation")
@@ -28,5 +31,13 @@ public class ReservationController {
                                               @RequestParam String userId) {
         reservationService.createReservation(zoneSeq, request, userId);
         return ResponseEntity.ok("예약 완료");
+    }
+
+    // 특정 주차장의 예약 목록 조회
+    @Operation(summary = "특정 주차장의 예약 목록 조회")
+    @GetMapping("/zone/{zone_seq}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByZoneSeq(@PathVariable Integer zone_seq) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByZoneSeq(zone_seq);
+        return ResponseEntity.ok(reservations);
     }
 }
