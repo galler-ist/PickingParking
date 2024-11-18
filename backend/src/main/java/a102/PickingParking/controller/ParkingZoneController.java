@@ -27,6 +27,7 @@ public class ParkingZoneController {
     }
 
     // 주차장 주인 등록
+    @Operation(summary = "주차장 등록")
     @PutMapping("/user/{userId}")
     public ResponseEntity<ParkingZoneResponse> registerParkingUser(@PathVariable String userId, @RequestBody PrkCmprDto prkCmprDto) {
         ParkingZoneResponse updatedZoneResponse = parkingZoneService.registerParkingUser(userId, prkCmprDto.getPrk_cmpr());
@@ -34,6 +35,7 @@ public class ParkingZoneController {
     }
 
     // 특정 주차장의 정보 조회
+    @Operation(summary = "특정 주차장 조회")
     @GetMapping("/{zoneSeq}")
     public ResponseEntity<ParkingZoneResponse> getUserByZoneId(@PathVariable Integer zoneSeq) {
         ParkingZoneResponse parkingZoneResponse = parkingZoneService.getParkingZoneBySeq(zoneSeq);

@@ -6,6 +6,7 @@ import a102.PickingParking.entity.PointSource;
 import a102.PickingParking.entity.User;
 import a102.PickingParking.service.PointService;
 import a102.PickingParking.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class PointController {
 //    }
 
     @PostMapping
+    @Operation(summary = "포인트 거래")
     public ResponseEntity<String> handlePoint(@RequestBody PointRequestDto pointRequestDto) {
         try {
             pointService.pointRequest(pointRequestDto); // PointRequestDto를 단일 인수로 전달
@@ -62,6 +64,7 @@ public class PointController {
         }
     }
 
+    @Operation(summary = "특정 유저의 포인트 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<Integer> getPoint(@PathVariable String userId) {
         User user = userService.getUserByUserId(userId)
