@@ -46,4 +46,11 @@ public class ParkingZoneController {
         List<ParkingZoneResponse> allZones = parkingZoneService.getAllParkingZones();
         return ResponseEntity.ok(allZones);
     }
+
+    // 특정 유저의 주차장 조회
+    @Operation(summary = "특정 유저의 주차장 조회")
+    @GetMapping("/user/{userId}")
+    public ParkingZoneResponse getParkingZoneByUserId(@PathVariable String userId) {
+        return parkingZoneService.getParkingZoneByUserId(userId);
+    }
 }

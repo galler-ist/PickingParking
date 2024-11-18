@@ -91,6 +91,16 @@ public class ParkingZoneService {
         return response;
     }
 
+    // 특정 유저의 주차장 정보 조회
+    public ParkingZoneResponse getParkingZoneByUserId(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+
+        ParkingZone parkingZone = parkingZoneRepository.findByUser(user).stream().findFirst().orElse(null);
+        return convertToResponse2(parkingZone);
+    }
+
     // 모든 주차장 조회
     public List<ParkingZoneResponse> getAllParkingZones() {
         List<ParkingZone> allParkingZones = parkingZoneRepository.findAll();
@@ -110,14 +120,39 @@ public class ParkingZoneService {
         response.setStatus(parkingZone.getStatus());
         response.setPrkCmpr(parkingZone.getPrkCmpr());
 
-        // User 정보 설정
-        if (parkingZone.getUser() != null) {
-            UserIdDto userResponse = new UserIdDto();
-            userResponse.setUserId(parkingZone.getUser().getUserId()); // userId만 설정
-            response.setUser(userResponse); // UserResponse로 s설정
-        } else {
-            response.setUser(null); // 주인이 없는 경우
+//        // User 정보 설정
+//        if (parkingZone.getUser() != null) {
+//            UserIdDto userResponse = new UserIdDto();
+//            userResponse.setUserId(parkingZone.getUser().getUserId()); // userId만 설정
+//            response.setUser(userResponse); // UserResponse로 s설정
+//        } else {
+//            response.setUser(null); // 주인이 없는 경우
+//        }
+
+        return response;
+    }
+
+    // 주차장 객체 1개를 응답 DTO로 변환
+    public ParkingZoneResponse convertToResponse2(ParkingZone parkingZone) {
+        if (parkingZone == null) {
+            return null; // 또는 예외 처리
         }
+
+        UserIdDto userResponse = new UserIdDto();
+        userResponse.setUserId(parkingZone.getUser().getUserId());
+
+
+        ParkingZoneResponse response = new ParkingZoneResponse();
+        response.setSeq(parkingZone.getSeq());
+        response.setLocation(parkingZone.getLocation());
+        response.setLatitude(parkingZone.getLatitude());
+        response.setLongitude(parkingZone.getLongitude());
+        response.setPrice(parkingZone.getPrice());
+        response.setStatus(parkingZone.getStatus());
+        response.setPrkCmpr(parkingZone.getPrkCmpr());
+
+        response.setUser(userResponse);
+
 
         return response;
     }
