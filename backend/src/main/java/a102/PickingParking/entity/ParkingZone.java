@@ -1,8 +1,10 @@
 package a102.PickingParking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "parking_zone")
@@ -33,8 +35,12 @@ public class ParkingZone {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition  = "INT UNSIGNED", name = "user_seq")
+    @JsonIgnore // 직렬화에서 제외
     private User user;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String prk_cmpr;
+    @Column(nullable = false, unique = true, length = 20, name = "prk_cmpr")
+    private String prkCmpr;
+
+    @OneToMany(mappedBy = "parkingZone", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AvailableTime> availableTimes;
 }

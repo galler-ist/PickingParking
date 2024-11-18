@@ -1,6 +1,6 @@
 package a102.PickingParking.controller;
 
-import a102.PickingParking.dto.UserDeleteDto;
+import a102.PickingParking.dto.UserIdDto;
 import a102.PickingParking.dto.UserRequestDto;
 import a102.PickingParking.dto.UserSignupRequestDto;
 import a102.PickingParking.entity.User;
@@ -49,9 +49,9 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto) {
+    public ResponseEntity<String> deleteUser(@RequestBody UserIdDto userIdDto) {
         try {
-            userService.deleteUser(userDeleteDto.getUser_id());
+            userService.deleteUser(userIdDto.getUserId());
             return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

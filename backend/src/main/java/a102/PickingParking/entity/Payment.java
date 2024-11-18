@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payment {
@@ -24,9 +25,9 @@ public class Payment {
     @Column(nullable = false, name = "payment_time")
     private LocalDateTime time;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "point_seq")
-    private Point point;
+//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+//    @JoinColumn(nullable = false, columnDefinition = "INT UNSIGNED", name = "point_seq")
+//    private Point point;
 
     @Column(name = "payment_source")
     @Enumerated(EnumType.STRING)
