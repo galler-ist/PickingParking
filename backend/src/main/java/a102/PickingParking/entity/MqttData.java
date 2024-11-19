@@ -17,7 +17,7 @@ public class MqttData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "INT UNSIGNED", name = "mqtt_seq")
     private Integer seq;
-
+    private Boolean isMatched;
     private Integer zoneSeq;
     private String result;
 

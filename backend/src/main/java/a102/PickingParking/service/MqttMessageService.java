@@ -17,6 +17,9 @@ public class MqttMessageService {
     @Autowired
     private MqttMessageRepository mqttMessageRepository;
 
+    @Autowired
+    private VehicleValidationService vehicleValidationService; // 서비스 주입
+
     public void handleMqttMessage(String payload) {
 
         try {
@@ -27,11 +30,19 @@ public class MqttMessageService {
             ObjectMapper objectMapper = new ObjectMapper();
             LicensePlateResponse messageDto = objectMapper.readValue(decodedPayload, LicensePlateResponse.class);
 
+            String licensePlate = messageDto.getMessage().getResult();
+            Integer zoneSeq = messageDto.getMessage().getZone_seq();
+
+            // 차량 유효성 검사
+            Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
+
             // 데이터베이스에 저장
             MqttData messageData = new MqttData();
-            messageData.setZoneSeq(messageDto.getMessage().getZone_seq());
-            messageData.setResult(messageDto.getMessage().getResult());
+            messageData.setZoneSeq(zoneSeq);
+            messageData.setResult(licensePlate);
+            messageData.setIsMatched(isMatched); // isMatched를 MqttData에 추가해야 함
             mqttMessageRepository.save(messageData);
+
         } catch (Exception e) {
             e.printStackTrace(); // 예외 처리
         }
