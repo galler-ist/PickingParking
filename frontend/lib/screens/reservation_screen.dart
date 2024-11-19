@@ -42,7 +42,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
     {
       "longitude": 127.040000,
       "latitude": 37.502000,
-      "parking_zone_name": "Gangnam Parking Zone B",
+      "parking_zone_name": "강남 주차장",
       "fee": 3000,
       "time": [
         {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
@@ -52,7 +52,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
     {
       "longitude": 127.041000,
       "latitude": 37.503000,
-      "parking_zone_name": "Gangnam Parking Zone C",
+      "parking_zone_name": "멀티캠퍼스 주차장",
       "fee": 4000,
       "time": [
         {"start": "2024-11-10T06:00:00", "end": "2024-11-10T09:00:00"},
@@ -72,6 +72,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
       currentCenter = LatLng(position.latitude, position.longitude);
+      currentCenter = LatLng(37.501257, 127.039574);
       loading = false;
     });
   }

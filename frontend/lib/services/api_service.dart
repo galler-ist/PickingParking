@@ -8,6 +8,7 @@ import 'package:dio/dio.dart' as dio_pkg;
 import 'package:mime/mime.dart';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
+import 'dart:convert';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -43,6 +44,142 @@ class ApiService {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         return responseData['predictions'];
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchJsonNano() async {
+    final url = Uri.parse('$baseUrl/api/vehicle/validation/response');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchParkingZone() async {
+    final url = Uri.parse('$baseUrl/api/zone');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = json.decode(response.body);
+        print(responseData);
+        return responseData;
+      } else {
+        print(response.statusCode);
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchSpecificParkingZone(int zoneSeq) async {
+    final url = Uri.parse('$baseUrl/api/zone/$zoneSeq');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData =
+            json.decode(utf8.decode(response.bodyBytes));
+        return responseData;
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchMyParkingZone() async {
+    final userId = controller.userName.value;
+    final url = Uri.parse('$baseUrl/api/zone/user/$userId');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.bodyBytes));
+
+        if (responseData is Map<String, dynamic>) {
+          return [responseData];
+        } else if (responseData is List) {
+          return responseData;
+        } else {
+          return {'error': 'Unexpected data format'};
+        }
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchMyReservation() async {
+    final userId = controller.userName.value;
+    final url = Uri.parse('$baseUrl/api/reservation/user/$userId');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.bodyBytes));
+
+        if (responseData is Map<String, dynamic>) {
+          return [responseData];
+        } else if (responseData is List) {
+          return responseData;
+        } else {
+          return {'error': 'Unexpected data format'};
+        }
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchMyCar() async {
+    final userId = controller.userName.value;
+    final url = Uri.parse('$baseUrl/api/car/$userId');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.bodyBytes));
+
+        if (responseData is Map<String, dynamic>) {
+          return [responseData];
+        } else if (responseData is List) {
+          return responseData;
+        } else {
+          return {'error': 'Unexpected data format'};
+        }
+      } else {
+        return {'error': 'Failed to fetch data', 'status': response.statusCode};
+      }
+    } catch (e) {
+      return {'error': e.toString()};
+    }
+  }
+
+  Future<dynamic> searchMyParkingZoneReservations(int zoneSeq) async {
+    final url = Uri.parse('$baseUrl/api/reservation/zone/$zoneSeq');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.bodyBytes));
+        if (responseData is List) {
+          return responseData;
+        } else {
+          return {'error': 'Unexpected data format'};
+        }
       } else {
         return {'error': 'Failed to fetch data', 'status': response.statusCode};
       }
@@ -87,19 +224,40 @@ class ApiService {
         },
         body: jsonEncode(formData),
       );
-      print(response.body);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         controller.userName.value = responseData['userId'];
         return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
-        print('$baseUrl/api/user/login');
         return responseData;
       }
     } catch (e) {
-      print(e);
       return e;
+    }
+  }
+
+  Future<dynamic> submitParkingZone(Map<String, dynamic> formData) async {
+    final userId = controller.userName.value;
+    final url = Uri.parse('$baseUrl/api/user/zone/$userId');
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return {'status': 200, 'data': responseData};
+      } else {
+        return {'status': response.statusCode, 'error': '등록 실패'};
+      }
+    } catch (e) {
+      return {'status': 500, 'error': e.toString()};
     }
   }
 
