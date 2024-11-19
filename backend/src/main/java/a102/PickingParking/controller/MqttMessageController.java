@@ -3,6 +3,7 @@ package a102.PickingParking.controller;
 import a102.PickingParking.dto.VehicleValidationResponse;
 import a102.PickingParking.entity.MqttData;
 import a102.PickingParking.repository.MqttMessageRepository;
+import a102.PickingParking.service.VehicleValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,9 @@ public class MqttMessageController {
     @Autowired
     private MqttMessageRepository mqttMessageRepository;
 
+    @Autowired
+    private VehicleValidationService vehicleValidationService;
+
     @GetMapping("/validation/response")
     public ResponseEntity<List<VehicleValidationResponse>> getMessages(
             @RequestParam(required = false) Integer zoneSeq) {
@@ -32,9 +36,9 @@ public class MqttMessageController {
             // zoneSeq가 null이거나 일치하는 경우에만 응답에 추가
             if (zoneSeq == null || message.getZoneSeq().equals(zoneSeq)) {
                 // 필요한 값 추출
-                Boolean isMatched = true; // 예시로 true를 설정, 실제 로직에 맞게 수정
                 String licensePlate = message.getResult(); // 차량 번호판
                 Integer messageZoneSeq = message.getZoneSeq(); // zone_seq
+                Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
                 // DTO 객체 생성
                 VehicleValidationResponse response = new VehicleValidationResponse(isMatched, licensePlate, messageZoneSeq);
                 responses.add(response);
