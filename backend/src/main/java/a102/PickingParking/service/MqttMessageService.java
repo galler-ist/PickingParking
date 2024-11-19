@@ -26,8 +26,8 @@ public class MqttMessageService {
             ObjectMapper objectMapper = new ObjectMapper();
             LicensePlateResponse messageDto = objectMapper.readValue(payload, LicensePlateResponse.class);
 
-            String licensePlate = messageDto.getMessage().getResult();
-            Integer zoneSeq = messageDto.getMessage().getZone_seq();
+            String licensePlate = messageDto.getResult();
+            Integer zoneSeq = messageDto.getZoneSeq();
 
             // 차량 유효성 검사
             Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
