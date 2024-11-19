@@ -6,15 +6,105 @@ import 'package:frontend/controller.dart';
 import 'package:frontend/screens/reservation_history_screen.dart';
 import 'package:frontend/screens/reservation_detail_screen.dart';
 import 'package:frontend/screens/car_setting_screen.dart';
+import 'package:frontend/services/api_service.dart';
+import 'dart:async';
 
-class ReservationManagementScreen extends StatelessWidget {
+class ReservationManagementScreen extends StatefulWidget {
   const ReservationManagementScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final MainController controller = Get.find<MainController>();
-    double screenWidth = MediaQuery.of(context).size.width;
+  _ReservationManagementScreenState createState() =>
+      _ReservationManagementScreenState();
+}
 
+class _ReservationManagementScreenState
+    extends State<ReservationManagementScreen> {
+  final MainController controller = Get.find<MainController>();
+  final ApiService apiService = ApiService();
+  List<dynamic> myReservations = [];
+  List<dynamic> jsonNano = [];
+  List<dynamic> myCar = [];
+  Timer? _timer;
+
+  String hourlyPrice = "정보 없음";
+  String parkingLocation = "정보 없음";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReservations();
+    _fetchMyCar();
+    _startAutoRefresh();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startAutoRefresh() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      _fetchJsonNano();
+    });
+  }
+
+  Future<void> _fetchReservations() async {
+    final data = await apiService.searchMyReservation();
+    if (mounted && data is List) {
+      setState(() {
+        myReservations = data;
+      });
+
+      if (myReservations.isNotEmpty) {
+        final lastReservationSeq = myReservations.last['zoneSeq'];
+        if (mounted) {
+          await _fetchReservationPrice(lastReservationSeq);
+        }
+      }
+    } else if (data is Map && data.containsKey('error')) {
+      if (mounted) {
+        print("예약 정보 가져오기 실패: ${data['error']}");
+      }
+    }
+  }
+
+  Future<void> _fetchMyCar() async {
+    final data = await apiService.searchMyCar();
+    if (data is List) {
+      if (mounted) {
+        setState(() {
+          myCar = data;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchJsonNano() async {
+    final data = await apiService.searchJsonNano();
+    if (mounted && data is List && data.isNotEmpty) {
+      setState(() {
+        jsonNano = [data.last];
+      });
+      print("주차 구역 데이터 갱신: $jsonNano");
+    }
+  }
+
+  Future<void> _fetchReservationPrice(int lastReservationSeq) async {
+    final data = await apiService.searchSpecificParkingZone(lastReservationSeq);
+    if (mounted && data is Map && data.isNotEmpty) {
+      setState(() {
+        hourlyPrice = "${data['price']} P/분";
+        parkingLocation = data['location'] ?? "정보 없음";
+      });
+    } else if (data is Map && data.containsKey('error')) {
+      print("가격 정보 가져오기 실패: ${data['error']}");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     double iconSize = screenWidth < 400 ? 50 : 60;
     double fontSize = screenWidth < 400 ? 10 : 13;
 
@@ -32,15 +122,6 @@ class ReservationManagementScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildActionButtons(context, iconSize, fontSize),
               const SizedBox(height: 24),
-              _buildSectionHeader("최근 이용 내역"),
-              const SizedBox(height: 8),
-              _buildHistoryItem(
-                title: "이용 차량",
-                vehicle: "24차 1231",
-                duration: "3월 10일 (일) 12:00 ~ 3월 10일 (일) 21:00",
-                location: "서울 역삼 멀티캠퍼스 주차장",
-                amount: "4500 P",
-              ),
             ],
           ),
         ),
@@ -54,6 +135,35 @@ class ReservationManagementScreen extends StatelessWidget {
   }
 
   Widget _buildReservationInfo(BuildContext context) {
+    String reservationTime = "예약 정보 없음";
+
+    if (myReservations.isNotEmpty) {
+      final latestReservation = myReservations.last;
+      reservationTime = _formatReservationTime(
+        latestReservation['startTime'],
+        latestReservation['endTime'],
+      );
+    }
+
+    String parkingStatus = "주차 가능";
+    Color statusColor = Colors.black;
+
+    String? myCarPlate = myCar.isNotEmpty ? myCar.first['plate'] : null;
+
+    if (jsonNano.isNotEmpty && jsonNano[0] is Map) {
+      final recentData = jsonNano[0];
+      bool isMatched = recentData['isMatched'] ?? false;
+      String licensePlate = recentData['licensePlate'] ?? "번호판 정보 없음";
+
+      if (isMatched && licensePlate == myCarPlate) {
+        parkingStatus = "정상 주차중";
+        statusColor = Theme.of(context).primaryColor;
+      } else {
+        parkingStatus = "다른 차량 주차중";
+        statusColor = Colors.red;
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16.0),
@@ -64,35 +174,47 @@ class ReservationManagementScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "서울 역삼 멀티캠퍼스 주차장",
-            style: TextStyle(fontSize: 13),
+          Text(
+            parkingLocation,
+            style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 8),
-          _buildReservationDetailRow(context, "현재 주차장 상태", "다른 차량 주차중"),
           _buildReservationDetailRow(
-              context, "예약 시간", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 21:00"),
-          _buildReservationDetailRow(
-              context, "접수된 예약", "3월 11일 (수) 10:00 ~ 3월 13일 (목) 10:00"),
-          _buildReservationDetailRow(context, "시간당 요금", "900 P/분"),
-          _buildReservationDetailRow(context, "현재 요금", "2700 P"),
+            context,
+            "현재 주차장 상태",
+            parkingStatus,
+            statusColor: statusColor,
+          ),
+          _buildReservationDetailRow(context, "예약 시간", reservationTime),
+          _buildReservationDetailRow(context, "시간당 요금", hourlyPrice),
         ],
       ),
     );
   }
 
-  Widget _buildReservationDetailRow(
-      BuildContext context, String label, String value) {
-    Color getStatusColor(String status) {
-      if (status == '내 차 주차중') {
-        return Theme.of(context).primaryColor;
-      } else if (status == '다른 차량 주차중') {
-        return Colors.red;
-      } else {
-        return Colors.black;
-      }
-    }
+  String _formatReservationTime(String startTime, String endTime) {
+    final startDateTime = DateTime.parse(startTime);
+    final endDateTime = DateTime.parse(endTime);
 
+    final startFormatted =
+        "${startDateTime.month}월 ${startDateTime.day}일 (${_getWeekday(startDateTime.weekday)}) ${startDateTime.hour}:${startDateTime.minute.toString().padLeft(2, '0')}";
+    final endFormatted =
+        "${endDateTime.month}월 ${endDateTime.day}일 (${_getWeekday(endDateTime.weekday)}) ${endDateTime.hour}:${endDateTime.minute.toString().padLeft(2, '0')}";
+
+    return "$startFormatted ~ $endFormatted";
+  }
+
+  String _getWeekday(int weekday) {
+    const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    return weekdays[weekday - 1];
+  }
+
+  Widget _buildReservationDetailRow(
+    BuildContext context,
+    String label,
+    String value, {
+    Color statusColor = Colors.black,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -113,8 +235,7 @@ class ReservationManagementScreen extends StatelessWidget {
               value,
               style: TextStyle(
                 fontSize: 10,
-                color:
-                    label == '현재 주차장 상태' ? getStatusColor(value) : Colors.black,
+                color: statusColor,
               ),
             ),
           ),
@@ -134,12 +255,6 @@ class ReservationManagementScreen extends StatelessWidget {
           iconSize,
           fontSize,
           onTap: () => Get.to(() => const ReservationDetailScreen()),
-        ),
-        _buildActionIcon(
-          Icons.local_parking,
-          "찜한 주차장",
-          iconSize,
-          fontSize,
         ),
         _buildActionIcon(
           Icons.receipt_long,
@@ -197,56 +312,6 @@ class ReservationManagementScreen extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _buildHistoryItem({
-    required String title,
-    required String vehicle,
-    required String duration,
-    required String location,
-    String? amount,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDetailRow(title, vehicle),
-          const SizedBox(height: 8),
-          _buildDetailRow("사용 시간", duration),
-          _buildDetailRow("이용한 주차장", location),
-          if (amount != null) _buildDetailRow("결제 금액", amount),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 10),
-          ),
-        ],
-      ),
     );
   }
 }

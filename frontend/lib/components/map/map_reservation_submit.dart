@@ -47,7 +47,8 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
     final endMinutes = endHour * 60 + endMinute;
     final duration = endMinutes - startMinutes;
 
-    if (duration <= 0 || selectedDates.length < 1) return 0;
+    if (duration <= 0 || selectedDates.isEmpty) return 0;
+
     final days = selectedDates.length;
     final hours = duration / 60;
     return (widget.fee * hours * days).round();
@@ -60,7 +61,7 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.parkingZoneName),
-          bottom: TabBar(
+          bottom: const TabBar(
             tabs: [
               Tab(text: '달력'),
               Tab(text: '시간 및 요금'),
@@ -69,212 +70,192 @@ class _ReservationSubmitState extends State<ReservationSubmit> {
         ),
         body: TabBarView(
           children: [
-            // 달력 탭
-            Column(
-              children: [
-                const SizedBox(height: 16),
-                Expanded(
-                    child: TableCalendar(
-                  firstDay: DateTime.now(),
-                  lastDay: DateTime(2025, 12, 31),
-                  focusedDay: DateTime.now(),
-                  rangeSelectionMode: RangeSelectionMode.toggledOn,
-                  selectedDayPredicate: (day) => selectedDates.contains(day),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      if (selectedDates.contains(selectedDay)) {
-                        selectedDates.remove(selectedDay);
-                      } else {
-                        // 새로운 범위 선택 처리
-                        DateTime startDate = selectedDates.isEmpty
-                            ? selectedDay
-                            : selectedDates.first;
-                        DateTime endDate = selectedDay;
-
-                        // 범위 선택 후 해당 날짜들 추가
-                        selectedDates = [];
-                        for (DateTime date = startDate;
-                            date.isBefore(endDate) ||
-                                date.isAtSameMomentAs(endDate);
-                            date = date.add(Duration(days: 1))) {
-                          selectedDates.add(date);
-                        }
-                      }
-                      selectedDates.sort();
-                    });
-                  },
-                  calendarStyle: CalendarStyle(
-                    isTodayHighlighted: true,
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
+            SingleChildScrollView(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: constraints.maxWidth,
+                          child: TableCalendar(
+                            firstDay: DateTime.now(),
+                            lastDay: DateTime(2025, 12, 31),
+                            focusedDay: DateTime.now(),
+                            rangeSelectionMode: RangeSelectionMode.toggledOn,
+                            selectedDayPredicate: (day) =>
+                                selectedDates.contains(day),
+                            onDaySelected: (selectedDay, focusedDay) {
+                              _onDaySelected(selectedDay, focusedDay);
+                            },
+                            calendarStyle: const CalendarStyle(
+                              isTodayHighlighted: true,
+                              selectedDecoration: BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              todayDecoration: BoxDecoration(
+                                color: Colors.orange,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.orange,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                )),
-              ],
+                  );
+                },
+              ),
             ),
-
-            Column(
-              children: [
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text("시작 시간"),
-                          Container(
-                            height: 120,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: CupertinoPicker(
-                                    itemExtent: 40,
-                                    magnification: 1.2,
-                                    squeeze: 1.2,
-                                    onSelectedItemChanged: (int value) {
-                                      setState(() {
-                                        startHour = value;
-                                      });
-                                    },
-                                    children:
-                                        List<Widget>.generate(24, (int index) {
-                                      return Center(child: Text("$index 시"));
-                                    }),
-                                  ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text("시작 시간"),
+                              SizedBox(
+                                height: 120,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: CupertinoPicker(
+                                        itemExtent: 40,
+                                        onSelectedItemChanged: (int value) {
+                                          setState(() {
+                                            startHour = value;
+                                          });
+                                        },
+                                        children:
+                                            List<Widget>.generate(24, (index) {
+                                          return Center(
+                                              child: Text("$index 시"));
+                                        }),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CupertinoPicker(
+                                        itemExtent: 40,
+                                        onSelectedItemChanged: (int value) {
+                                          setState(() {
+                                            startMinute = value * 10;
+                                          });
+                                        },
+                                        children:
+                                            List<Widget>.generate(6, (index) {
+                                          return Center(
+                                              child: Text("${index * 10} 분"));
+                                        }),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(
-                                  child: CupertinoPicker(
-                                    itemExtent: 40,
-                                    magnification: 1.2,
-                                    squeeze: 1.2,
-                                    onSelectedItemChanged: (int value) {
-                                      setState(() {
-                                        startMinute = value * 10;
-                                      });
-                                    },
-                                    children:
-                                        List<Widget>.generate(6, (int index) {
-                                      return Center(
-                                          child: Text("${index * 10} 분"));
-                                    }),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text("종료 시간"),
+                              SizedBox(
+                                height: 120,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: CupertinoPicker(
+                                        itemExtent: 40,
+                                        onSelectedItemChanged: (int value) {
+                                          setState(() {
+                                            endHour = value;
+                                          });
+                                        },
+                                        children:
+                                            List<Widget>.generate(24, (index) {
+                                          return Center(
+                                              child: Text("$index 시"));
+                                        }),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CupertinoPicker(
+                                        itemExtent: 40,
+                                        onSelectedItemChanged: (int value) {
+                                          setState(() {
+                                            endMinute = value * 10;
+                                          });
+                                        },
+                                        children:
+                                            List<Widget>.generate(6, (index) {
+                                          return Center(
+                                              child: Text("${index * 10} 분"));
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text("종료 시간"),
-                          Container(
-                            height: 120,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: CupertinoPicker(
-                                    itemExtent: 40,
-                                    magnification: 1.2,
-                                    squeeze: 1.2,
-                                    onSelectedItemChanged: (int value) {
-                                      setState(() {
-                                        endHour = value;
-                                      });
-                                    },
-                                    children:
-                                        List<Widget>.generate(24, (int index) {
-                                      return Center(child: Text("$index 시"));
-                                    }),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: CupertinoPicker(
-                                    itemExtent: 40,
-                                    magnification: 1.2,
-                                    squeeze: 1.2,
-                                    onSelectedItemChanged: (int value) {
-                                      setState(() {
-                                        endMinute = value * 10;
-                                      });
-                                    },
-                                    children:
-                                        List<Widget>.generate(6, (int index) {
-                                      return Center(
-                                          child: Text("${index * 10} 분"));
-                                    }),
-                                  ),
-                                ),
-                              ],
-                            ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${calculateFee()} 원',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
+                        ),
+                        ElevatedButton(
+                          onPressed: selectedDates.isNotEmpty
+                              ? () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('결제하시겠습니까?'),
+                                        content:
+                                            Text('결제 금액: ${calculateFee()}원'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.to(() => CompleteScreen(),
+                                                  arguments: {
+                                                    'type': 'reservation'
+                                                  });
+                                            },
+                                            child: const Text('결제하기'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('결제하기'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${calculateFee()} 원',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      ElevatedButton(
-                        onPressed: selectedDates.length >= 1
-                            ? () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('결제하시겠습니까?'),
-                                      content: Text(
-                                        '결제 금액: ${calculateFee()}원',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Get.to(
-                                              () => CompleteScreen(),
-                                              arguments: {
-                                                'type': 'reservation'
-                                              },
-                                            );
-                                            ;
-                                          },
-                                          child: const Text('결제하기'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          backgroundColor: Colors.blue,
-                        ),
-                        child: const Text(
-                          '결제하기',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
