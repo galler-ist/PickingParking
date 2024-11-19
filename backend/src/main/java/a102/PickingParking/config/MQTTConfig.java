@@ -361,8 +361,8 @@ public class MQTTConfig {
         try {
             // JSON 문자열을 VehicleMessage 객체로 변환
             LicensePlateResponse vehicleMessage = objectMapper.readValue(payload, LicensePlateResponse.class);
-            String licensePlate = vehicleMessage.getMessage().getResult();
-            Integer zoneSeq = vehicleMessage.getMessage().getZone_seq(); // zone_seq 추출
+            String licensePlate = vehicleMessage.getResult();
+            Integer zoneSeq = vehicleMessage.getZoneSeq(); // zone_seq 추출
 
             // 차량 번호 유효성 검사 수행
             Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);
