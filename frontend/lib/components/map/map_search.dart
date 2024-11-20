@@ -23,7 +23,6 @@ class _MapSearchState extends State<MapSearch> {
 
   void cardClickEvent(BuildContext context, int index) {
     String content = itemContents[index];
-    print('다음 데이터를 받았다! $content');
   }
 
   @override

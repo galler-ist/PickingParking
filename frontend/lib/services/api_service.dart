@@ -57,7 +57,8 @@ class ApiService {
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final List<dynamic> responseData = json.decode(response.body);
+        final List<dynamic> responseData =
+            json.decode(utf8.decode(response.bodyBytes));
         return responseData;
       } else {
         return {'error': 'Failed to fetch data', 'status': response.statusCode};
@@ -73,10 +74,8 @@ class ApiService {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final List<dynamic> responseData = json.decode(response.body);
-        print(responseData);
         return responseData;
       } else {
-        print(response.statusCode);
         return {'error': 'Failed to fetch data', 'status': response.statusCode};
       }
     } catch (e) {

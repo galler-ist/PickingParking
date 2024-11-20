@@ -40,9 +40,7 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
         currentCenter = LatLng(position.latitude, position.longitude);
         _mapController.move(currentCenter!, 15.0);
       });
-    } catch (e) {
-      print("Error fetching current location: $e");
-    }
+    } catch (e) {}
   }
 
   void _onMapMove(MapPosition position, bool hasGesture) {
@@ -54,7 +52,6 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
   Future<void> getPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print("Location services are disabled.");
       return;
     }
 
@@ -62,13 +59,11 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print("Location permissions are denied.");
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print("Location permissions are permanently denied.");
       return;
     }
 
@@ -83,9 +78,7 @@ class _ParkingZoneSubmitScreenState extends State<ParkingZoneSubmitScreen> {
         currentCenter = LatLng(position.latitude, position.longitude);
         loading = false;
       });
-    } catch (e) {
-      print("Error fetching location: $e");
-    }
+    } catch (e) {}
   }
 
   void _toggleParkingSubmit() {

@@ -91,7 +91,7 @@ class _ParkingZoneManagementScreenState
     double screenWidth = MediaQuery.of(context).size.width;
     double iconSize = screenWidth < 400 ? 50 : 60;
     double fontSize = screenWidth < 400 ? 10 : 13;
-    String reservedVehicle = "24모7216";
+    String reservedVehicle = "24모 7216";
 
     return Scaffold(
       appBar: TopBar(onNotificationTap: () {}),
@@ -187,11 +187,6 @@ class _ParkingZoneManagementScreenState
                 context,
                 "시간당 요금",
                 zone['price'],
-              ),
-              _buildParkingDetailRow(
-                context,
-                "상태",
-                zone['status'],
               ),
             ],
           ),
