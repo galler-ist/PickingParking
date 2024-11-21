@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Service
 public class MqttMessageService {
@@ -23,15 +22,12 @@ public class MqttMessageService {
     public void handleMqttMessage(String payload) {
 
         try {
-            byte[] decodedBytes = Base64.getDecoder().decode(payload);
-            String decodedPayload = new String(decodedBytes, StandardCharsets.UTF_8);
-
             // JSON 문자열을 DTO로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            LicensePlateResponse messageDto = objectMapper.readValue(decodedPayload, LicensePlateResponse.class);
+            LicensePlateResponse messageDto = objectMapper.readValue(payload, LicensePlateResponse.class);
 
-            String licensePlate = messageDto.getMessage().getResult();
-            Integer zoneSeq = messageDto.getMessage().getZone_seq();
+            String licensePlate = messageDto.getResult();
+            Integer zoneSeq = messageDto.getZoneSeq();
 
             // 차량 유효성 검사
             Boolean isMatched = vehicleValidationService.validateVehicle(licensePlate, zoneSeq);

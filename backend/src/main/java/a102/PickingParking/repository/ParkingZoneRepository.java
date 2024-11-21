@@ -41,23 +41,23 @@ public interface ParkingZoneRepository extends JpaRepository<ParkingZone, Intege
 //    void updateZoneStatusDuringReservation();
 
 
-//    @Modifying
-//    @Query("UPDATE ParkingZone p SET p.status = 'Y' " +
-//            "WHERE p.status = 'B' " +
-//            "AND EXISTS (" +
-//            "   SELECT 1 FROM Reservation r " +
-//            "   WHERE r.zone.seq = p.seq " + // zone을 통해 zoneSeq에 접근
-//            "    AND r.startTime = :oneHourLater" +
-//            ")")
-//    void updateZoneStatusBeforeReservation(LocalDateTime oneHourLater);
+    @Modifying
+    @Query("UPDATE ParkingZone p SET p.status = 'Y' " +
+            "WHERE p.status = 'B' " +
+            "AND EXISTS (" +
+            "   SELECT 1 FROM Reservation r " +
+            "   WHERE r.zone.seq = p.seq " + // zone을 통해 zoneSeq에 접근
+            "    AND r.startTime = :oneHourLater" +
+            ")")
+    void updateZoneStatusBeforeReservation(LocalDateTime oneHourLater);
 
-//    @Modifying
-//    @Query("UPDATE ParkingZone p SET p.status = 'R' " +
-//            "WHERE p.status = 'Y' " +
-//            "AND EXISTS (" +
-//            "   SELECT 1 FROM Reservation r " +
-//            "   WHERE r.zone.seq = p.seq " +
-//            "    AND CURRENT_TIMESTAMP BETWEEN r.startTime AND r.endTime" +
-//            ")")
-//    void updateZoneStatusDuringReservation();
+    @Modifying
+    @Query("UPDATE ParkingZone p SET p.status = 'R' " +
+            "WHERE p.status = 'Y' " +
+            "AND EXISTS (" +
+            "   SELECT 1 FROM Reservation r " +
+            "   WHERE r.zone.seq = p.seq " +
+            "    AND CURRENT_TIMESTAMP BETWEEN r.startTime AND r.endTime" +
+            ")")
+    void updateZoneStatusDuringReservation();
 }
